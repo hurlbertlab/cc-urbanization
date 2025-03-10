@@ -11,6 +11,8 @@ library(interactions)
 library(ggpubr)
 library(png)
 library(maps)
+library(viridisLite)
+
 
 # (1) Read in latest Caterpillars Count! raw dataset from the caterpillars-analysis-public repo
 data_repo <- "https://github.com/hurlbertlab/caterpillars-analysis-public/tree/master/data"
@@ -52,7 +54,7 @@ goodData = fullDataset %>%
             ant = ifelse(sum(Group == 'ant', na.rm = TRUE) > 0, 1, 0))
     
 
-# (4) Read in Landcover data
+# (4) Read in maps and Landcover data
 #     Sources: NLCD
 #              Canada Land Cover 2020
 
@@ -65,11 +67,43 @@ us_devo_1km = rast('data/devo_1km_east.tif')
 canada_forest_1km = rast('data/forest_1km_toronto.tif')
 us_forest_1km = rast('data/forest_1km_east.tif')
 
-can_devo_geog = project(canada_devo_1km, crs(us_devo3km_geog))
 us_devo_geog = project(us_devo_1km, crs(us_devo3km_geog))
+can_devo_geog = project(canada_devo_1km, crs(us_devo_geog))
+can_devo_albers = project(canada_devo_1km, crs(us_devo_1km))
 
-can_forest_geog = project(canada_forest_1km, crs(us_devo3km_geog))
-us_forest_geog = project(us_forest_1km, crs(us_devo3km_geog))
+can_forest_geog = project(canada_forest_1km, crs(us_devo_geog))
+us_forest_geog = project(us_forest_1km, crs(us_devo3_geog))
+
+
+
+northam = st_read("data/na_base_Lambert_Azimuthal.shp")
+
+us_devo_la = project(us_devo_1km, crs(northam))
+
+us_devo_na <- clamp(us_devo_1km, lower=0.0001, value=FALSE)
+
+northam_geom = st_cast(northam$geometry,"POLYGON")
+
+northam_albers = st_transform(northam_geom, crs(us_devo_1km))
+
+northam_albers_vect = vect(northam_albers)
+
+# Crop out ocean
+us_devo_crop <- crop(us_devo_1km, northam_albers_vect, mask= T)
+can_devo_crop <- crop(can_devo_albers, northam_albers_vect, mask= T)
+
+# Crop to similar bounding box
+e <- ext(-1e+06, 2.5e+06, 170000, 3.1e+06)
+
+us_devo_ext = extend(us_devo_crop, can_devo_crop, snap = "out") %>%
+  crop(e, snap = "out")
+
+can_devo_ext = extend(can_devo_crop, us_devo_crop, snap = "in") %>%
+  crop(e, snap = "out")
+
+# Still not working because even after projecting to same projection,
+# resolution and extents end up differing
+nam_devo = us_devo_ext + can_devo_ext
 
 
 # Mosaic not working at the moment, as projected rasters don't have the same resolution. Need to fix...
@@ -96,6 +130,20 @@ US_sites$forest = us_forest$`NLCD Land Cover Class`
 sites = rbind(US_sites, CAN_sites)
 
 
+sites_sf <- st_as_sf(sites[sites$Name %in% goodSites$Name, ], 
+                     coords = c("Longitude", "Latitude"), crs = 4326) %>%
+  st_transform(crs(us_devo_1km))
+
+us_devo_df = as.data.frame(us_devo_crop, xy = TRUE)
+
+
+# Doesn't currently include Canada landcover but good enough for now.
+ggplot() +
+  geom_raster(data = us_devo_df, aes(x = x, y = y, fill = `NLCD Land Cover Class`)) + 
+  scale_fill_gradientn(colors = viridis(10)) + 
+  geom_sf(data = sites_sf, aes(color = "red"), size = 2)
+  
+
 # (5) Join landcover data to arthropod data
 
 dataset = left_join(goodData, sites, by = 'Name')
@@ -103,8 +151,18 @@ dataset = left_join(goodData, sites, by = 'Name')
 
 # Note that 3 historical sites in western NC from Coweeta only surveyed for caterpillars. These sites should be excluded from analyses of other arthropod groups. Perhaps it makes sense even to include them from caterpillar analyses so that results for caterpillars are geographically comparable to other groups
 
-nonCoweetaDataset = dataset %>%
+dataset2 = dataset %>%
   filter(!Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK'))
+
+siteSummary = dataset %>%
+  group_by(Name, Region, Longitude, Latitude, dev, forest) %>%
+  summarize(nSurvs = n_distinct(ID),
+            propCat = n_distinct(ID[caterpillar == 1])/nSurvs,
+            propBeet = n_distinct(ID[beetle == 1])/nSurvs,
+            propTruebug = n_distinct(ID[truebug == 1])/nSurvs,
+            propspider = n_distinct(ID[spider == 1])/nSurvs,
+            propHopper = n_distinct(ID[hopper == 1])/nSurvs,
+            propAnt = n_distinct(ID[ant == 1])/nSurvs,)
 
 # (6) glms examining presence as a function of % developed or forest cover, latitude, and interaction
 
@@ -112,41 +170,66 @@ nonCoweetaDataset = dataset %>%
 
 # Developed cover models
 cat.Dev.Latitude = glm(caterpillar ~ dev + Latitude + dev*Latitude, 
-                          data = nonCoweetaDataset, family = "binomial")
+                          data = dataset2, family = "binomial")
 
 spi.Dev.Latitude = glm(spider ~ dev + Latitude + dev*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
 
 beet.Dev.Latitude = glm(beetle ~ dev + Latitude + dev*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
 
 hop.Dev.Latitude = glm(hopper ~ dev + Latitude + dev*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
 
 bug.Dev.Latitude = glm(truebug ~ dev + Latitude + dev*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
+
+# No strong interaction, so model without interaction here:
+bug.Dev.Latitude2 = glm(truebug ~ dev + Latitude, data = dataset2, family = "binomial")
 
 ant.Dev.Latitude = glm(ant ~ dev + Latitude + dev*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
 
 # Forest cover models
 cat.For.Latitude = glm(caterpillar ~ forest + Latitude + forest*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
 
 spi.For.Latitude = glm(spider ~ forest + Latitude + forest*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
 
 beet.For.Latitude = glm(beetle ~ forest + Latitude + forest*Latitude, 
-                        data = nonCoweetaDataset, family = "binomial")
+                        data = dataset2, family = "binomial")
 
 hop.For.Latitude = glm(hopper ~ forest + Latitude + forest*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
 
 bug.For.Latitude = glm(truebug ~ forest + Latitude + forest*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
 
 ant.For.Latitude = glm(ant ~ forest + Latitude + forest*Latitude, 
-                       data = nonCoweetaDataset, family = "binomial")
+                       data = dataset2, family = "binomial")
+
+
+# GLM output
+
+devOutput = data.frame(rbind(summary(cat.Dev.Latitude)$coefficients, 
+                  summary(spi.Dev.Latitude)$coefficients, 
+                  summary(beet.Dev.Latitude)$coefficients,
+                  summary(hop.Dev.Latitude)$coefficients, 
+                  summary(bug.Dev.Latitude)$coefficients,
+                  summary(ant.Dev.Latitude)$coefficients))
+devOutput$term = rep(c('Intercept', 'dev', 'Latitude', 'dev*Latitude'), times = 6)
+devOutput$Group = rep(c('caterpillar', 'spider', 'beetle', 'leafhopper', 'truebugs', 'ant'), each = 4)
+
+
+forOutput = data.frame(rbind(summary(cat.For.Latitude)$coefficients, 
+                             summary(spi.For.Latitude)$coefficients, 
+                             summary(beet.For.Latitude)$coefficients,
+                             summary(hop.For.Latitude)$coefficients, 
+                             summary(bug.For.Latitude)$coefficients,
+                             summary(ant.For.Latitude)$coefficients))
+forOutput$term = rep(c('Intercept', 'forest', 'Latitude', 'forest*Latitude'), times = 6)
+forOutput$Group = rep(c('caterpillar', 'spider', 'beetle', 'leafhopper', 'truebugs', 'ant'), each = 4)
 
 
 # Plots
@@ -261,14 +344,21 @@ ggarrange(catForPlot, spiForPlot, beetForPlot, bugForPlot, hopForPlot, antForPlo
 
 
 
-
-plot(us_devo_geog, ylim = c(25, 50), xlim = c(-100, -66))
-points(nonCoweetaDataset$Longitude, nonCoweetaDataset$Latitude, pch = 16, col = 'red')
+par(mar = c(4, 4, 0, 0), cex.axis = 2)
+plot(us_devo_geog, ylim = c(25, 50), xlim = c(-100, -66), las = 1, xaxt = "n", background = 'white')
+points(dataset2$Longitude, dataset2$Latitude, pch = 16, col = 'red')
 
 # Confirming that there are a range of % developed cover values across all latitudinal bands
-plot(nonCoweetaDataset$dev, nonCoweetaDataset$Latitude, pch = 16, col = 'red', xlab = '% developed cover', ylab = 'Latitude')
-cor(nonCoweetaDataset$Latitude, nonCoweetaDataset$dev)
+par(mar = c(6, 7, 1, 1), mgp = c(4, 1, 0))
+plot(siteSummary$dev, siteSummary$Latitude, pch = 16, col = viridis(101)[floor(siteSummary$dev)+1], xlab = '% developed cover', ylab = 'Latitude', cex.lab = 3, cex.axis = 2, cex = 2, las = 1)
+cor(siteSummary$Latitude, siteSummary$dev)
 
 
 
+bluemono = colorRampPalette(c("#084594", "#2171B5", "#4292C6", "#6BAED6", "#9ECAE1", "#C6DBEF", "#DEEBF7", "#F7FBFF"))
+
+plot(siteSummary$dev, siteSummary$propCat, 
+     col = bluemono(100)[round(100*(max(siteSummary$Latitude) - siteSummary$Latitude)/(max(siteSummary$Latitude) - min(siteSummary$Latitude)))], 
+     cex = log10(siteSummary$nSurvs), xlab = "% developed cover", 
+     ylab = "Prop. caterpillars", pch = 16)
 
