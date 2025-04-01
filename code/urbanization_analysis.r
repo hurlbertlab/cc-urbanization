@@ -324,19 +324,6 @@ hopperImage = readPNG('images/leafhopper.png')
 truebugImage = readPNG('images/truebugs.png')
 
 
-plot1 = intplotOriginLatitudeName + 
-  theme_bw() +
-  annotation_raster(caterpillar, ymin = .041, ymax= .052,xmin = 39, xmax = 43.4) +
-  theme(axis.title = element_text(size = 15),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 15),
-        axis.title.x = element_text(margin = margin(t = 6)), 
-        axis.title.y = element_text(margin = margin(l = 12), vjust = 2),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-  labs(tag = "A") +
-  theme(plot.tag = element_text(size = 20))
-
 catDevPlot = interact_plot(cat.Dev.Latitude, pred = dev, modx = Latitude,
               y.label = "Prop. of surveys with caterpillars",
               x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
