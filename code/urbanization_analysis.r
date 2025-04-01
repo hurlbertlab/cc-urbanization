@@ -118,7 +118,7 @@ can_devo_geog = project(canada_devo_1km, crs(us_devo_geog))
 can_devo_albers = project(canada_devo_1km, crs(us_devo_1km))
 
 can_forest_geog = project(canada_forest_1km, crs(us_devo_geog))
-us_forest_geog = project(us_forest_1km, crs(us_devo3_geog))
+us_forest_geog = project(us_forest_1km, crs(us_devo_geog))
 
 
 
