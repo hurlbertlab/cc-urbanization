@@ -187,7 +187,7 @@ us_devo_df = as.data.frame(us_devo_crop, xy = TRUE)
 ggplot() +
   geom_raster(data = us_devo_df, aes(x = x, y = y, fill = `NLCD Land Cover Class`)) + 
   scale_fill_gradientn(colors = viridis(10)) + 
-  geom_sf(data = sites_sf, aes(color = "red"), size = 2)
+  geom_sf(data = sites_sf, col = "magenta", size = 2.5)
   
 
 # (5) Join landcover data to arthropod data
@@ -377,31 +377,31 @@ beetForPlot = interact_plot(beet.For.Latitude, pred = forest, modx = Latitude,
                             x.lab = "% Forest cover", cex.lab = 2, vary.lty = FALSE,
                             colors = c('darkgreen', 'green', 'lightgreen'), line.thickness = 2) +
   #ylim(0.15, 0.26) +
-  annotation_raster(beetleImage, ymin = .21, ymax = .24, xmin = 0, xmax = 40)
+  annotation_raster(beetleImage, ymin = .295, ymax = .315, xmin = 0, xmax = 40)
 
 bugForPlot = interact_plot(bug.For.Latitude, pred = forest, modx = Latitude,
                            y.label = "Prop. of surveys with true bugs",
                            x.lab = "% Forest cover", cex.lab = 2, vary.lty = FALSE,
                            colors = c('darkgreen', 'green', 'lightgreen'), line.thickness = 2) +
-  annotation_raster(truebugImage, ymin = .025, ymax = .045, xmin = 0, xmax = 40)
+  annotation_raster(truebugImage, ymin = .03, ymax = .05, xmin = 0, xmax = 40)
 
 spiForPlot = interact_plot(spi.For.Latitude, pred = forest, modx = Latitude,
                            y.label = "Prop. of surveys with spiders",
                            x.lab = "% Forest cover", cex.lab = 2, vary.lty = FALSE,
                            colors = c('darkgreen', 'green', 'lightgreen'), line.thickness = 2) +
-  annotation_raster(spiderImage, ymin = .28, ymax = .35, xmin = 0, xmax = 40)
+  annotation_raster(spiderImage, ymin = .31, ymax = .38, xmin = 0, xmax = 40)
 
 hopForPlot = interact_plot(hop.For.Latitude, pred = forest, modx = Latitude,
                            y.label = "Prop. of surveys with hoppers",
                            x.lab = "% Forest cover", cex.lab = 2, vary.lty = FALSE,
                            colors = c('darkgreen', 'green', 'lightgreen'), line.thickness = 2) +
-  annotation_raster(hopperImage, ymin = .05, ymax = .075, xmin = 0, xmax = 40)
+  annotation_raster(hopperImage, ymin = .06, ymax = .085, xmin = 0, xmax = 40)
 
 antForPlot = interact_plot(ant.For.Latitude, pred = forest, modx = Latitude,
                            y.label = "Prop. of surveys with ants",
                            x.lab = "% Forest cover", cex.lab = 2, vary.lty = FALSE,
                            colors = c('darkgreen', 'green', 'lightgreen'), line.thickness = 2) +
-  annotation_raster(antImage, ymin = .11, ymax = .125, xmin = 5, xmax = 45)
+  annotation_raster(antImage, ymin = .135, ymax = .15, xmin = 5, xmax = 45)
 
 ggarrange(catForPlot, spiForPlot, beetForPlot, bugForPlot, hopForPlot, antForPlot, 
           ncol=3, nrow=2, common.legend = TRUE, legend="bottom")
