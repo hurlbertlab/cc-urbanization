@@ -58,7 +58,7 @@ goodData = fullDataset %>%
             hopper = ifelse(sum(Group == 'leafhopper', na.rm = TRUE) > 0, 1, 0),
             ant = ifelse(sum(Group == 'ant', na.rm = TRUE) > 0, 1, 0))
     
-goodDataBS = fullDataset %>%
+goodDataBS = fullDataset %>%  # This would not have up to 50 in each set
   filter(Name %in% goodSites$Name,
          julianday %in% julianWindow,
          WetLeaves == 0,
@@ -72,7 +72,7 @@ goodDataBS = fullDataset %>%
             hopper = ifelse(sum(Group == 'leafhopper', na.rm = TRUE) > 0, 1, 0),
             ant = ifelse(sum(Group == 'ant', na.rm = TRUE) > 0, 1, 0))
 
-goodDataVis = fullDataset %>%
+goodDataVis = fullDataset %>% # This would not have up to 50 in each set
   filter(Name %in% goodSites$Name,
          julianday %in% julianWindow,
          WetLeaves == 0,
