@@ -411,7 +411,6 @@ ggarrange(catForPlot, spiForPlot, beetForPlot, bugForPlot, hopForPlot, antForPlo
 
 
 
-
 par(mar = c(4, 4, 0, 0), cex.axis = 2)
 plot(us_devo_geog, ylim = c(25, 50), xlim = c(-100, -66), las = 1, xaxt = "n", background = 'white')
 points(dataset$Longitude, dataset$Latitude, pch = 16, col = 'red')
@@ -432,7 +431,89 @@ plot(siteSummary$dev, siteSummary$propCat,
 
 
 
-# (7) Analysis restricted to a single tree species, Acer rubrum, the most widespread species in the dataset
+# (7) -------------- SIMPER SLOP ANALAYSIS -----------------------------------------------
+# read more at: https://cran.r-project.org/web/packages/interactions/vignettes/interactions.html
+
+# Urban cover
+
+simDev_caterpillar <- sim_slopes(cat.Dev.Latitude, pred = dev, modx = Latitude,
+                                 johnson_neyman = FALSE, digits = 4)
+
+simDev_beetle <-sim_slopes(beet.Dev.Latitude, pred = dev, modx = Latitude,
+                           johnson_neyman = FALSE, digits = 4)
+
+simDev_spider <-sim_slopes(spi.Dev.Latitude, pred = dev, modx = Latitude,
+                           johnson_neyman = FALSE, digits = 4)
+
+simDev_hopper <-sim_slopes(hop.Dev.Latitude, pred = dev, modx = Latitude,
+                           johnson_neyman = FALSE, digits = 4)
+
+simDev_ant <-sim_slopes(ant.Dev.Latitude, pred = dev, modx = Latitude,
+                        johnson_neyman = FALSE, digits = 4)
+
+simDev_truebug <-sim_slopes(ant.Dev.Latitude, pred = dev, modx = Latitude,
+                            johnson_neyman = FALSE, digits = 4)
+
+# Forest
+simFor_caterpillar <- sim_slopes(cat.For.Latitude, pred = forest, modx = Latitude,
+                                 johnson_neyman = FALSE, digits = 4)
+
+simFor_beetle <-sim_slopes(beet.For.Latitude, pred = forest, modx = Latitude,
+                           johnson_neyman = FALSE, digits = 4)
+
+simFor_spider <-sim_slopes(spi.For.Latitude, pred = forest, modx = Latitude,
+                           johnson_neyman = FALSE, digits = 4)
+
+simFor_hopper <-sim_slopes(hop.For.Latitude, pred = forest, modx = Latitude,
+                           johnson_neyman = FALSE, digits = 4)
+
+simFor_ant <-sim_slopes(ant.For.Latitude, pred = forest, modx = Latitude,
+                        johnson_neyman = FALSE, digits = 4)
+
+simFor_truebug <-sim_slopes(ant.For.Latitude, pred = forest, modx = Latitude,
+                            johnson_neyman = FALSE, digits = 4)
+
+
+For_sims = data.frame(rbind(simFor_caterpillar$slopes %>% mutate(Group = "caterpillar"), 
+                            simFor_beetle$slopes %>% mutate(Group = "beetle"), 
+                            simFor_spider$slopes %>% mutate(Group = "spider"),
+                            simFor_ant$slopes %>% mutate(Group = "ant"), 
+                            simFor_hopper$slopes %>% mutate(Group = "hopper"), 
+                            simFor_truebug$slopes %>% mutate(Group = "truebug")))
+
+Dev_sims = data.frame(rbind(simDev_caterpillar$slopes %>% mutate(Group = "caterpillar"), 
+                            simDev_hopper$slopes %>% mutate(Group = "hopper"), 
+                            simDev_beetle$slopes %>% mutate(Group = "beetle"), 
+                            simDev_truebug$slopes %>% mutate(Group = "truebug"),
+                            simDev_ant$slopes %>% mutate(Group = "ant"), 
+                            simDev_spider$slopes %>% mutate(Group = "spider"))) %>% 
+            mutate(Group = factor(Group, levels = c("caterpillar", "beetle", "ant",
+                                             "hopper", "truebug", "spider")))
+
+
+
+
+ggplot(Dev_sims, aes(x = Est., 
+               y = Value.of.Latitude, 
+               xmin = X2.5., 
+               xmax = X97.5., 
+               )) +
+  geom_point(size = 3) +
+  geom_errorbarh(width = 0.2, size = 1) +   # horizontal error bars
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red", linewidth = 0.2)+
+  facet_wrap(~ Group, scales = "free_x") + # separate panel for each group
+  labs(
+    x = "Estimated effect of urban cover",
+    y = "Latitude",
+    title = "Effect of Urban Cover on Arthropod Groups by Latitude",
+    subtitle = "Points = estimates. Estimate bars (=95% CI) touching the red dashed line are not statistically significant."
+  ) +
+  guides(color = "none")+
+  theme_bw()
+ 
+
+
+# (8) Analysis restricted to a single tree species, Acer rubrum, the most widespread species in the dataset
 
 minSurveysACRU = 10
 
