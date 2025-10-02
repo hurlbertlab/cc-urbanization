@@ -13,6 +13,7 @@ library(png)
 library(maps)
 library(viridisLite)
 library(vioplot)
+library(tibble)
 
 
 # (1) Read in latest Caterpillars Count! raw dataset from the caterpillars-analysis-public repo
@@ -291,6 +292,7 @@ ant.For.Latitude = glm(ant ~ forest + Latitude + forest*Latitude + ObservationMe
                        data = dataset, family = "binomial")
 
 
+
 # GLM output
 
 devOutput = data.frame(rbind(summary(cat.Dev.Latitude)$coefficients, 
@@ -431,7 +433,7 @@ plot(siteSummary$dev, siteSummary$propCat,
 
 
 
-# (7) -------------- SIMPER SLOP ANALAYSIS -----------------------------------------------
+# (7.1) -------------- SIMPER SLOP ANALAYSIS -----------------------------------------------
 # read more at: https://cran.r-project.org/web/packages/interactions/vignettes/interactions.html
 
 # Urban cover
@@ -498,19 +500,137 @@ ggplot(Dev_sims, aes(x = Est.,
                xmin = X2.5., 
                xmax = X97.5., 
                )) +
-  geom_point(size = 3) +
-  geom_errorbarh(width = 0.2, size = 1) +   # horizontal error bars
-  geom_vline(xintercept = 0, linetype = "dashed", color = "red", linewidth = 0.2)+
+  geom_point(size = 3, aes(colour = Est.)) +
+  geom_errorbarh(width = 0.2, size = 1, aes(colour = Est.)) +   # horizontal error bars
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.2)+
+  scale_color_gradientn(
+    colours = c("#084594", "#2171B5", "#4292C6", "#9ECAE1"),
+  ) +
   facet_wrap(~ Group, scales = "free_x") + # separate panel for each group
   labs(
     x = "Estimated effect of urban cover",
     y = "Latitude",
     title = "Effect of Urban Cover on Arthropod Groups by Latitude",
-    subtitle = "Points = estimates. Estimate bars (=95% CI) touching the red dashed line are not statistically significant."
+    subtitle = "Points = estimates. Estimate bars (=95% CI) touching the dashed line are not statistically significant."
   ) +
   guides(color = "none")+
+  scale_y_continuous(limits = c(32, 44))+
   theme_bw()
  
+
+
+
+# (7.2) -------------- SIMPER SLOP ANALAYSIS -----------------------------------------------
+# read more at: https://cran.r-project.org/web/packages/interactions/vignettes/interactions.html
+
+groups <- seq(min(dataset$Latitude), max(dataset$Latitude), length.out = 9)
+mod.x = groups[-c(1,2, length(groups), length(groups)-1)]
+
+# Urban cover
+
+simDev_5caterpillar <- sim_slopes(cat.Dev.Latitude, pred = dev, modx = Latitude,modx.values = mod.x,
+                                  johnson_neyman = FALSE, digits = 4)
+
+simDev_5beetle <-sim_slopes(beet.Dev.Latitude, pred = dev, modx = Latitude,modx.values = mod.x,
+                            johnson_neyman = FALSE, digits = 4)
+
+simDev_5spider <-sim_slopes(spi.Dev.Latitude, pred = dev, modx = Latitude,modx.values = mod.x,
+                            johnson_neyman = FALSE, digits = 4)
+
+simDev_5hopper <-sim_slopes(hop.Dev.Latitude, pred = dev, modx = Latitude,modx.values = mod.x,
+                            johnson_neyman = FALSE, digits = 4)
+
+simDev_5ant <-sim_slopes(ant.Dev.Latitude, pred = dev, modx = Latitude,modx.values = mod.x,
+                         johnson_neyman = FALSE, digits = 4)
+
+simDev_5truebug <-sim_slopes(ant.Dev.Latitude, pred = dev, modx = Latitude,modx.values = mod.x,
+                             johnson_neyman = FALSE, digits = 4)
+
+# Forest
+simFor_5caterpillar <- sim_slopes(cat.For.Latitude, pred = forest, modx = Latitude,modx.values = mod.x,
+                                  johnson_neyman = FALSE, digits = 4)
+
+simFor_5beetle <-sim_slopes(beet.For.Latitude, pred = forest, modx = Latitude,modx.values = mod.x,
+                            johnson_neyman = FALSE, digits = 4)
+
+simFor_5spider <-sim_slopes(spi.For.Latitude, pred = forest, modx = Latitude,modx.values = mod.x,
+                            johnson_neyman = FALSE, digits = 4)
+
+simFor_5hopper <-sim_slopes(hop.For.Latitude, pred = forest, modx = Latitude,modx.values = mod.x,
+                            johnson_neyman = FALSE, digits = 4)
+
+simFor_5ant <-sim_slopes(ant.For.Latitude, pred = forest, modx = Latitude,modx.values = mod.x,
+                         johnson_neyman = FALSE, digits = 4)
+
+simFor_5truebug <-sim_slopes(ant.For.Latitude, pred = forest, modx = Latitude,modx.values = mod.x,
+                             johnson_neyman = FALSE, digits = 4)
+
+
+For_sims5 = data.frame(rbind(simFor_5caterpillar$slopes %>% mutate(Group = "caterpillar"), 
+                             simFor_5beetle$slopes %>% mutate(Group = "beetle"), 
+                             simFor_5spider$slopes %>% mutate(Group = "spider"),
+                             simFor_5ant$slopes %>% mutate(Group = "ant"), 
+                             simFor_5hopper$slopes %>% mutate(Group = "hopper"), 
+                             simFor_5truebug$slopes %>% mutate(Group = "truebug")))
+
+Dev_sims5 = data.frame(rbind(simDev_5caterpillar$slopes %>% mutate(Group = "caterpillar"), 
+                             simDev_5hopper$slopes %>% mutate(Group = "hopper"), 
+                             simDev_5beetle$slopes %>% mutate(Group = "beetle"), 
+                             simDev_5truebug$slopes %>% mutate(Group = "truebug"),
+                             simDev_5ant$slopes %>% mutate(Group = "ant"), 
+                             simDev_5spider$slopes %>% mutate(Group = "spider"))) %>% 
+  mutate(Group = factor(Group, levels = c("caterpillar", "beetle", "ant",
+                                          "hopper", "truebug", "spider")))
+
+
+
+
+ggplot(Dev_sims5, aes(x = Est., 
+                      y = Value.of.Latitude, 
+                      xmin = X2.5., 
+                      xmax = X97.5.)) +
+  geom_point(size = 2, aes(colour = Est.)) +
+  geom_errorbarh(width = 0.02, size = 1, aes(colour = Est.)) +   # horizontal error bars
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.2)+
+  scale_color_gradientn(
+    colours = c("red", "#424242", "green"),
+  ) +
+  facet_wrap(~ Group, scales = "free_x") + # separate panel for each group
+  labs(
+    x = "Estimated effect of urban cover",
+    y = "Latitude",
+    title = "Effect of Urban Cover on Arthropod Groups by Latitude",
+    subtitle = "Points = estimates. Estimate bars (=95% CI) touching the dashed line are not statistically significant."
+  ) +
+  guides(color = "none")+
+  scale_y_continuous(limits = c(34, 45))+
+  scale_x_continuous(limits = c(min(Dev_sims$X2.5.), max(Dev_sims$X97.5.)))+
+  theme_bw()
+
+
+
+# Forest cover %
+ggplot(For_sims5, aes(x = Est., 
+                      y = Value.of.Latitude, 
+                      xmin = X2.5., 
+                      xmax = X97.5.)) +
+  geom_point(size = 2, aes(colour = Est.)) +
+  geom_errorbarh(width = 0.02, size = 1, aes(colour = Est.)) +   # horizontal error bars
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.2)+
+  scale_color_gradientn(
+    colours = c("red", "#424242", "green"),
+  ) +
+  facet_wrap(~ Group, scales = "free_x") + # separate panel for each group
+  labs(
+    x = "Estimated effect of Forest cover",
+    y = "Latitude",
+    title = "Effect of Forest Cover on Arthropod Groups by Latitude",
+    subtitle = "Points = estimates. Estimate bars (=95% CI) touching the dashed line are not statistically significant."
+  ) +
+  guides(color = "none")+
+  scale_y_continuous(limits = c(34, 45))+
+  scale_x_continuous(limits = c(min(For_sims5$X2.5.), max(For_sims5$X97.5.)))+
+  theme_bw()
 
 
 # (8) Analysis restricted to a single tree species, Acer rubrum, the most widespread species in the dataset
