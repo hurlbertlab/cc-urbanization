@@ -522,6 +522,7 @@ ggplot(Dev_sims, aes(x = Est.,
 
 # (7.2) -------------- SIMPER SLOP ANALAYSIS -----------------------------------------------
 # read more at: https://cran.r-project.org/web/packages/interactions/vignettes/interactions.html
+# Running this on 5 latitudinal gradient levels
 
 groups <- seq(min(dataset$Latitude), max(dataset$Latitude), length.out = 9)
 mod.x = groups[-c(1,2, length(groups), length(groups)-1)]
@@ -566,12 +567,6 @@ simFor_5truebug <-sim_slopes(ant.For.Latitude, pred = forest, modx = Latitude,mo
                              johnson_neyman = FALSE, digits = 4)
 
 
-For_sims5 = data.frame(rbind(simFor_5caterpillar$slopes %>% mutate(Group = "caterpillar"), 
-                             simFor_5beetle$slopes %>% mutate(Group = "beetle"), 
-                             simFor_5spider$slopes %>% mutate(Group = "spider"),
-                             simFor_5ant$slopes %>% mutate(Group = "ant"), 
-                             simFor_5hopper$slopes %>% mutate(Group = "hopper"), 
-                             simFor_5truebug$slopes %>% mutate(Group = "truebug")))
 
 Dev_sims5 = data.frame(rbind(simDev_5caterpillar$slopes %>% mutate(Group = "caterpillar"), 
                              simDev_5hopper$slopes %>% mutate(Group = "hopper"), 
@@ -579,10 +574,8 @@ Dev_sims5 = data.frame(rbind(simDev_5caterpillar$slopes %>% mutate(Group = "cate
                              simDev_5truebug$slopes %>% mutate(Group = "truebug"),
                              simDev_5ant$slopes %>% mutate(Group = "ant"), 
                              simDev_5spider$slopes %>% mutate(Group = "spider"))) %>% 
-  mutate(Group = factor(Group, levels = c("caterpillar", "beetle", "ant",
-                                          "hopper", "truebug", "spider")))
-
-
+mutate(Group = factor(Group, levels = c("caterpillar", "beetle", "ant",
+                                        "hopper", "truebug", "spider")))
 
 
 ggplot(Dev_sims5, aes(x = Est., 
@@ -595,7 +588,7 @@ ggplot(Dev_sims5, aes(x = Est.,
   scale_color_gradientn(
     colours = c("red", "#424242", "green"),
   ) +
-  facet_wrap(~ Group, scales = "free_x") + # separate panel for each group
+  facet_wrap(~ Group, scales = "free_x") +  
   labs(
     x = "Estimated effect of urban cover",
     y = "Latitude",
@@ -609,6 +602,16 @@ ggplot(Dev_sims5, aes(x = Est.,
 
 
 
+
+For_sims5 = data.frame(rbind(simFor_5caterpillar$slopes %>% mutate(Group = "caterpillar"), 
+                             simFor_5beetle$slopes %>% mutate(Group = "beetle"), 
+                             simFor_5spider$slopes %>% mutate(Group = "spider"),
+                             simFor_5ant$slopes %>% mutate(Group = "ant"), 
+                             simFor_5hopper$slopes %>% mutate(Group = "hopper"), 
+                             simFor_5truebug$slopes %>% mutate(Group = "truebug")))%>% 
+  mutate(Group = factor(Group, levels = c("caterpillar", "hopper", "beetle",
+                                          "truebug", "ant", "spider")))
+
 # Forest cover %
 ggplot(For_sims5, aes(x = Est., 
                       y = Value.of.Latitude, 
@@ -620,7 +623,7 @@ ggplot(For_sims5, aes(x = Est.,
   scale_color_gradientn(
     colours = c("red", "#424242", "green"),
   ) +
-  facet_wrap(~ Group, scales = "free_x") + # separate panel for each group
+  facet_wrap(~ Group, scales = "free_x", nrow = 3, ncol = 2) + # separate panel for each group
   labs(
     x = "Estimated effect of Forest cover",
     y = "Latitude",
@@ -633,7 +636,99 @@ ggplot(For_sims5, aes(x = Est.,
   theme_bw()
 
 
-# (8) Analysis restricted to a single tree species, Acer rubrum, the most widespread species in the dataset
+
+# (8)Test for linearity across latitudinal gradient
+
+
+# Hopper
+
+test.hop.Dev.Latitude<- interact_plot(hop.Dev.Latitude, pred = dev, 
+                                 modx = Latitude,linearity.check = TRUE,
+              y.label = "Prop. of surveys with hoppers",
+              x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+              colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)  
+
+test5.hop.Dev.Latitude<- interact_plot(hop.Dev.Latitude, pred = dev, modx = Latitude,
+                           linearity.check = TRUE, modx.values =  mod.x,
+              y.label = "Prop. of surveys with hoppers",
+              x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+              line.thickness = 2)  
+
+# Caterpillar
+test.cat.Dev.Latitude <- interact_plot(cat.Dev.Latitude, pred = dev, modx = Latitude,
+                                       linearity.check = TRUE,
+              y.label = "Prop. of surveys with caterpillars",
+              x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+              colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)  
+
+test5.cat.Dev.Latitude <- interact_plot(cat.Dev.Latitude, pred = dev, modx = Latitude,
+                    linearity.check = TRUE, modx.values =  mod.x,
+                    y.label = "Prop. of surveys with caterpillars",
+                    x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+                 line.thickness = 2) 
+# Ants
+
+test.ant.Dev.Latitude <- interact_plot(ant.Dev.Latitude, pred = dev, modx = Latitude,
+                                       linearity.check = TRUE,
+              y.label = "Prop. of surveys with ant",
+              x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+              colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)  
+
+
+test5.ant.Dev.Latitude <- interact_plot(ant.Dev.Latitude, pred = dev, modx = Latitude,
+              linearity.check = TRUE,modx.values =  mod.x,
+              y.label = "Prop. of surveys with ant",
+              x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+              line.thickness = 2)  
+
+ # Spider
+
+test.spi.Dev.Latitude <- interact_plot(spi.Dev.Latitude, pred = dev, modx = Latitude,
+            linearity.check = TRUE,
+            y.label = "Prop. of surveys with spider",
+            x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+            colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)  
+
+
+test5.spi.Dev.Latitude <- interact_plot(spi.Dev.Latitude, pred = dev, modx = Latitude,
+            linearity.check = TRUE, modx.values =  mod.x,
+            y.label = "Prop. of surveys with spider",
+            x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,line.thickness = 2)  
+
+
+# True bugs
+
+
+test.bug.Dev.Latitude <- interact_plot(bug.Dev.Latitude, pred = dev, modx = Latitude,
+                                       linearity.check = TRUE,
+                                       y.label = "Prop. of surveys with truebug",
+                                       x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+                                       colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)  
+
+
+test5.bug.Dev.Latitude <- interact_plot(bug.Dev.Latitude, pred = dev, modx = Latitude,
+                                        linearity.check = TRUE, modx.values =  mod.x,
+                                        y.label = "Prop. of surveys with spider",
+                                        x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,line.thickness = 2)  
+
+
+# Beetle
+
+
+test.beet.Dev.Latitude <- interact_plot(beet.Dev.Latitude, pred = dev, modx = Latitude,
+                          linearity.check = TRUE,
+                          y.label = "Prop. of surveys with beetle",
+                          x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+                          colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)  
+
+
+test5.beet.Dev.Latitude <- interact_plot(beet.Dev.Latitude, pred = dev, modx = Latitude,
+                              linearity.check = TRUE, modx.values =  mod.x,
+                              y.label = "Prop. of surveys with beetle",
+                              x.lab = "% developed cover", cex.lab = 2, 
+                              vary.lty = FALSE,line.thickness = 2)  
+  
+# (9) Analysis restricted to a single tree species, Acer rubrum, the most widespread species in the dataset
 
 minSurveysACRU = 10
 

@@ -160,14 +160,19 @@ RsquareAdj(part.prop.rda)$adj.r.squared
 anova.cca(part.prop.rda, step = 999) # good!
 anova.cca(part.prop.rda, step = 999, by = "axis")
 anova.cca(part.prop.rda, step = 999, by= 'terms')
-
+anova.cca(part.prop.rda, step = 999, by= 'margin')
 ordiplot(part.prop.rda, scaling = 2, 
          main = "Arthropod Urbanization RDA - Scaling 2")
 
+# Since we are interested in how species are responding to the urbanization gradient across sites,
+# we use the scaling = "species" argument.
 
-scores(part.prop.rda, display = "species", choices = 1:2)
-scores(part.prop.rda, display = "sites")
-scores(part.prop.rda, display = "bp", choices = 1:3)  # "bp" = biplot arrows
+# If the question was, 'how does sites differ from each other across urbanization gradient, 
+# based on species composition?', we should use scaling = "sites" argument.
+scores(part.prop.rda, display = "species", choices = 1:2, scaling = "species")
+scores(part.prop.rda, display = "sites", scaling = "species")
+scores(part.prop.rda, display = "bp", choices = 1:3, 
+       scaling = "species")  # "bp" = biplot arrows
 
 
 
