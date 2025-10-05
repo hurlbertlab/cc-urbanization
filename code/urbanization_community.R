@@ -122,7 +122,7 @@ length(prop.pca$Location)
 
 
 ### using a RDA
-
+# Read more: https://sites.google.com/site/mb3gustame/constrained-analyses/redundancy-analysis
 # We would constrain the arthropod composition by the environmental variable (and maybe covary by latitude)
 
 prop.num <- prop.num %>% as.data.frame()
@@ -149,20 +149,36 @@ summary(part.prop.rda)
 
 
 
-part.prop.rda <- rda(
-  prop.num ~ Latitude * dev + forest + Condition(ObservationMethod + Longitude),
+part.prop.rda <-rda(
+  prop.num ~ Latitude*dev + forest*Latitude + Condition(ObservationMethod),
   data = cbind(site.z, Observ))
+
 
 summary(part.prop.rda)
 
 RsquareAdj(part.prop.rda)$adj.r.squared
 # Test whether the model is statistically significant
+
+
 anova.cca(part.prop.rda, step = 999) # good!
 anova.cca(part.prop.rda, step = 999, by = "axis")
 anova.cca(part.prop.rda, step = 999, by= 'terms')
-anova.cca(part.prop.rda, step = 999, by= 'margin')
+
+
+anova.cca(part.prop.rda, step = 999, by= 'margin') 
+# "by = Margin" Tests each term after accounting for all other terms 
+#- i.e., its unique effect, also called the partial effect.
+# Each term is evaluated as if it were the last term, controlling for everything else.
+
+# Main effects (Latitude, dev, forest) disappear in marginal testing because the interactions   
+# account for much of the variation associated with those predictors.
+
 ordiplot(part.prop.rda, scaling = 2, 
          main = "Arthropod Urbanization RDA - Scaling 2")
+vif.cca(part.prop.rda) # All vif are less than 3.3, so statistically it makes sense to leave 
+# all predictors in the model. Ecologically, it makes sense that some species may be responding
+# greater or lesser to urbanization or forestry (i.e, response to both effect are non-equidistant)
+
 
 # Since we are interested in how species are responding to the urbanization gradient across sites,
 # we use the scaling = "species" argument.
@@ -193,7 +209,8 @@ rda_axis <- scores(part.prop.rda, display = "bp", choices = 1:3) %>%
 
 
 
-
+# other analysis you may skip
+# Begin....
 
 arth_urban_cor <- envfit(prop.num_ilogit, site.z, permutations = 999 ) 
 arth_urban_cor
@@ -202,21 +219,12 @@ scores(arth_urban_cor, display = "vectors")
 
 
 
-site_scores <- scores(mod, display = "sites")
+
 correlations <- cor(prop.num_ilogit, site_score)  # correlation with RDA1 and RDA2
 head(correlations)
 
 
-# make an pRDA for each species and calculate its adjusted R squared.
-species_var <- apply(prop.num, 2, function(sp) {
-  mod_sp <- rda(sp ~ Latitude * dev + forest + Condition(ObservationMethod + Longitude),
-                data = cbind(site.z, Observ))
-  RsquareAdj(mod_sp)$adj.r.squared
-})
-species_var <- sort(species_var, decreasing = TRUE)
-
-
-
+#..... END!
 
 
 
@@ -582,3 +590,207 @@ ggplot() +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "black")+
   annotation_raster(hopperImage, ymin = -1.2, ymax = -0.6, xmin = -1.1, xmax = -0.4)
+
+
+
+
+# How does site differ based on arthropod composition response to urbanization?
+# what arthropod groups are most associated with sites based on urbanization level and latitude
+
+scores(part.prop.rda, display = "species", choices = 1:2, scaling = "sites")
+scores(part.prop.rda, display = "sites", scaling = "sites")
+scores(part.prop.rda, display = "bp", choices = 1:3, 
+       scaling = "sites")  # "bp" = biplot arrows
+
+
+# site = scale 1; species = scale 2; no scaling preference = scale 3
+
+
+species_score3 <- scores(part.prop.rda, display = "species", 
+                         choices = 1:2, scaling = 3) %>% 
+  as.data.frame()
+site_score3 <- scores(part.prop.rda, 
+                     display = "sites",
+                     choices = 1:2, scaling = 3) %>% 
+  as.data.frame()
+
+site_score.sites3  <- cbind(prop_data [,c("Name", "Region", "Longitude", 
+                                         "Latitude", "dev", "forest")], site_score3)
+
+rda_axis3 <- scores(part.prop.rda, display = "bp", choices = 1:3, scaling = 3) %>% 
+  as.data.frame()
+
+ggplot() +
+  geom_segment(data = rda_axis3,
+               aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+               arrow = arrow(length = unit(0.3, "cm")), 
+               color = "darkblue",
+               size = 1, alpha = .5) +
+  geom_text(data = site_score.sites3, 
+            aes(x = RDA1, y = RDA2, label = Region, colour = dev), 
+            # color = "blue", 
+            size = 3) + 
+  geom_text(data = species_score3, 
+            aes(x = RDA1, y = RDA2, label = rownames(species_score3)), 
+            color = "black") + 
+  geom_text(data = rda_axis3, 
+            aes(x = RDA1, y = RDA2, label = rownames(rda_axis3)), 
+            color = "darkblue", vjust = -0.5, hjust = 0.1, size =5) +
+  scale_color_gradientn(
+    colours = c("green", "yellow", "red")) +
+  theme(
+    text = element_text(family = "Times New Roman", size = 20)
+  ) + 
+  labs(x = "RDA1", y = "RDA2", title = "Scaling = 3") +
+  theme_minimal() +
+  guides(
+    color = guide_legend(title = "Urban cover"), 
+    fill = "none"  
+  )+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black")
+
+
+
+
+####################################################################################
+
+
+
+species_score1 <- scores(part.prop.rda, display = "species", 
+                         choices = 1:2, scaling = 1) %>% 
+  as.data.frame()
+site_score1 <- scores(part.prop.rda, 
+                      display = "sites",
+                      choices = 1:2, scaling = 1) %>% 
+  as.data.frame()
+
+site_score.sites1  <- cbind(prop_data [,c("Name", "Region", "Longitude", 
+                                          "Latitude", "dev", "forest")], site_score1)
+
+rda_axis1 <- scores(part.prop.rda, display = "bp", choices = 1:3, scaling = 1) %>% 
+  as.data.frame()
+
+ggplot() +
+  geom_segment(data = rda_axis1,
+               aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+               arrow = arrow(length = unit(0.3, "cm")), 
+               color = "darkblue",
+               size = 1, alpha = .5) +
+  geom_text(data = site_score.sites1, 
+            aes(x = RDA1, y = RDA2, label = Region, colour = dev), 
+            # color = "blue", 
+            size = 3) + 
+  geom_text(data = species_score1, 
+            aes(x = RDA1, y = RDA2, label = rownames(species_score1)), 
+            color = "black") + 
+  geom_text(data = rda_axis1, 
+            aes(x = RDA1, y = RDA2, label = rownames(rda_axis1)), 
+            color = "darkblue", vjust = -0.5, hjust = 0.1, size =5) +
+  scale_color_gradientn(
+    colours = c("green", "yellow", "red")) +
+  theme(
+    text = element_text(family = "Times New Roman", size = 20)
+  ) + 
+  labs(x = "RDA1", y = "RDA2", title = "Scaling = 1") +
+  theme_minimal() +
+  guides(
+    color = guide_legend(title = "Urban cover"), 
+    fill = "none"  
+  )+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black")
+
+
+
+#Does local urbanization influence arthropod community composition independently of where the 
+# sites are located and how they were sampled?
+
+
+
+part.prop.rda2 <- rda(
+  prop.num ~ dev  +forest + Condition(ObservationMethod + Latitude),
+  data = cbind(site.z, Observ))
+
+summary(part.prop.rda2)
+
+RsquareAdj(part.prop.rda2)$adj.r.squared
+# Test whether the model is statistically significant
+anova.cca(part.prop.rda2, step = 999) # good!
+anova.cca(part.prop.rda2, step = 999, by = "axis")
+anova.cca(part.prop.rda2, step = 999, by= 'terms')
+anova.cca(part.prop.rda2, step = 999, by= 'margin')
+ordiplot(part.prop.rda2, scaling = 2, 
+         main = "Arthropod Urbanization RDA - Scaling 2")
+
+
+
+
+
+part.prop.rda.df <- rda(
+  prop.num ~ dev * forest + Condition(ObservationMethod + Latitude),
+  data = cbind(site.z, Observ))
+
+summary(part.prop.rda.df)
+RsquareAdj(part.prop.rda.df)$adj.r.squared
+
+anova.cca(part.prop.rda.df, step = 999) # good!
+anova.cca(part.prop.rda.df, step = 999, by = "axis")
+anova.cca(part.prop.rda.df, step = 999, by= 'terms')
+anova.cca(part.prop.rda.df, step = 999, by= 'margin')
+ordiplot(part.prop.rda.df, scaling = 2, 
+         main = "Arthropod Urbanization RDA - Scaling 2")
+vif.cca(part.prop.rda.df)
+
+
+
+part.prop.rda.df$CCA$v
+
+
+
+species_score.df <- scores(part.prop.rda.df, 
+                           display = "species",
+                           choices = 1:2) %>% 
+  as.data.frame()
+site_score.df <- scores(part.prop.rda.df, 
+                        display = "sites",
+                        choices = 1:2) %>% 
+  as.data.frame()
+
+site_score.sites.df  <- cbind(prop_data [,c("Name", "Region", "Longitude", 
+                                            "Latitude", "dev", "forest")], site_score.df)
+
+rda_axis.df <- scores(part.prop.rda.df, display = "bp", choices = 1:2) %>% 
+  as.data.frame()
+
+
+
+
+ggplot() +
+  geom_segment(data = rda_axis.df,
+               aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+               arrow = arrow(length = unit(0.3, "cm")), 
+               color = "darkblue",
+               size = 1, alpha = .5) +
+  geom_point(data = site_score.sites.df, 
+             aes(x = RDA1, y = RDA2, 
+                 color = dev, fill = dev, alpha = 0.5), 
+             shape = 21, size = 4) +
+  
+  geom_text(data = part.prop.rda.df$CCA$v, 
+            aes(x = RDA1, y = RDA2, label = rownames(part.prop.rda.df$CCA$v)), 
+            color = "black") +
+  geom_text(data = rda_axis.df, 
+            aes(x = RDA1, y = RDA2, label = rownames(rda_axis.df)), 
+            color = "darkblue", vjust = -0.5, hjust = 0.1, size =5) +
+  scale_fill_gradientn(
+    colours = c("green", "yellow", "red"),
+    name = "Development"
+  ) +
+  labs(x = "RDA1", y = "RDA2") +
+  guides(color = "none", shape = "none", alpha = "none",
+         fill = guide_colorbar(title = "% Development")) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black")+
+  theme_minimal()
+
