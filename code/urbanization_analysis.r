@@ -637,6 +637,11 @@ ggplot(For_sims5, aes(x = Est.,
 
 
 
+
+
+
+
+
 # (8)Test for linearity across latitudinal gradient
 
 
