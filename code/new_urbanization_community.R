@@ -19,6 +19,10 @@ anova.cca(part.prop.rda.LD, step = 999, by= 'margin')
 vif.cca(part.prop.rda.LD) # Below 1.1
 
 
+vpart.prop.LD <- varpart(prop.num_ilogit, site.z %>%select(-forest),  Observ)
+vpart.prop.LD
+
+
 species_score.ld <- scores(part.prop.rda.LD, 
                         display = "species",
                         choices = 1:2) %>% 
@@ -115,31 +119,11 @@ species_score.d <- scores(part.prop.rda.D,
 
 species_score.d$Group <- rownames(species_score.d)
 
-################################################################
+species_score.d= remove_rownames(species_score.d) %>% 
+  mutate(Rank = rownames(species_score.d)) %>% as.data.frame()
 
- 
-ggplot() +
-  geom_segment(data = rda_axis.ld,
-               aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
-               arrow = arrow(length = unit(0.3, "cm")), 
-               color = "darkblue",
-               size = 1, alpha = .5)+
-  geom_text(data = left_join(species_score.d, arthropod_ranks, by = "Group"), 
-            aes(x = RDA1, y = RDA2, label = Group, colour = FeedingGuild ))+ 
-  theme(
-    text = element_text(family = "Times New Roman", size = 20)
-  ) + labs(x = "RDA1", y = "RDA2")+
-  theme_minimal()+
-  guides(
-    color = "none",   
-    shape = "none", 
-    fill = "none"   
-  )+  
-  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "black")+
-  geom_text(data = rda_axis.ld, 
-            aes(x = RDA1, y = RDA2, label = rownames(rda_axis.ld)), 
-            color = "black", vjust = -0.5, hjust = 0.1, size =5) 
+
+################################################################
 
 ###########################################################
 
@@ -184,7 +168,7 @@ left_join(species_score.d, arthropod_ranks, by = "Group") %>%
 
 #################################################################
 
-rda_sp.matrix <-species_score.ld %>% 
+rda_sp.matrix <-species_score.ld %>%  # Lat * dev model
   remove_rownames()
 
 rda_sp.matrix <- as.data.frame(rda_sp.matrix)
@@ -319,22 +303,28 @@ ggplot(testtt, aes(x = Est.,
 
 
 
-testsimDev_5caterpillar <- sim_slopes(cat.Dev.Latitude, pred = dev, modx = Latitude,modx.values = seq(34, 44, by = 0.2),
+testsimDev_5caterpillar <- sim_slopes(cat.Dev.Latitude, pred = dev, 
+                                      modx = Latitude,modx.values = seq(34, 44, by = 1),
                                   johnson_neyman = FALSE, digits = 4)
 
-testsimDev_5beetle <-sim_slopes(beet.Dev.Latitude, pred = dev, modx = Latitude,modx.values = seq(34, 44, by = 0.2),
+testsimDev_5beetle <-sim_slopes(beet.Dev.Latitude, pred = dev, 
+                                modx = Latitude,modx.values = seq(34, 44, by = 1),
                             johnson_neyman = FALSE, digits = 4)
 
-testsimDev_5spider <-sim_slopes(spi.Dev.Latitude, pred = dev, modx = Latitude,modx.values = seq(34, 44, by = 0.2),
+testsimDev_5spider <-sim_slopes(spi.Dev.Latitude, pred = dev, 
+                                modx = Latitude,modx.values = seq(34, 44, by = 1),
                             johnson_neyman = FALSE, digits = 4)
 
-testsimDev_5hopper <-sim_slopes(hop.Dev.Latitude, pred = dev, modx = Latitude,modx.values = seq(34, 44, by = 0.2),
+testsimDev_5hopper <-sim_slopes(hop.Dev.Latitude, pred = dev, 
+                                modx = Latitude,modx.values = seq(34, 44, by = 1),
                             johnson_neyman = FALSE, digits = 4)
 
-testsimDev_5ant <-sim_slopes(ant.Dev.Latitude, pred = dev, modx = Latitude,modx.values = seq(34, 44, by = 0.2),
+testsimDev_5ant <-sim_slopes(ant.Dev.Latitude, pred = dev, 
+                             modx = Latitude,modx.values = seq(34, 44, by = 1),
                          johnson_neyman = FALSE, digits = 4)
 
-testsimDev_5truebug <-sim_slopes(ant.Dev.Latitude, pred = dev, modx = Latitude,modx.values = seq(34, 44, by = 0.2),
+testsimDev_5truebug <-sim_slopes(ant.Dev.Latitude, pred = dev, 
+                                 modx = Latitude,modx.values = seq(34, 44, by = 1),
                              johnson_neyman = FALSE, digits = 4)
 
 
@@ -368,9 +358,224 @@ ggplot(testDev_sims5, aes(x = Est.,
     subtitle = "Points = estimates. Estimate bars (=95% CI) touching the dashed line are not statistically significant."
   ) +
   guides(color = "none")+
-  scale_y_continuous(limits = c(34, 45))+
-  scale_x_continuous(limits = c(min(Dev_sims$X2.5.), max(Dev_sims$X97.5.)))+
+  scale_y_continuous(limits = c(33, 45))+
+  scale_x_continuous(limits = c(min(testDev_sims5$X2.5.), max(testDev_sims5$X97.5.)))+
   theme_bw()
 
 
 
+
+
+testsimFor_5caterpillar <- sim_slopes(cat.For.Latitude, pred = forest, 
+                                      modx = Latitude,modx.values = seq(34, 44, by = 1),
+                                      johnson_neyman = FALSE, digits = 4)
+
+testsimFor_5beetle <-sim_slopes(beet.For.Latitude, pred = forest, 
+                                modx = Latitude,modx.values = seq(34, 44, by = 1),
+                                johnson_neyman = FALSE, digits = 4)
+
+testsimFor_5spider <-sim_slopes(spi.For.Latitude, pred = forest, 
+                                modx = Latitude,modx.values = seq(34, 44, by = 1),
+                                johnson_neyman = FALSE, digits = 4)
+
+testsimFor_5hopper <-sim_slopes(hop.For.Latitude, pred = forest, 
+                                modx = Latitude,modx.values = seq(34, 44, by = 1),
+                                johnson_neyman = FALSE, digits = 4)
+
+testsimFor_5ant <-sim_slopes(ant.For.Latitude, pred = forest, 
+                             modx = Latitude,modx.values = seq(34, 44, by = 1),
+                             johnson_neyman = FALSE, digits = 4)
+
+testsimFor_5truebug <-sim_slopes(ant.For.Latitude, pred = forest, 
+                                 modx = Latitude,modx.values = seq(34, 44, by = 1),
+                                 johnson_neyman = FALSE, digits = 4)
+
+
+testFor_sims5 = data.frame(rbind(testsimFor_5caterpillar$slopes %>% mutate(Group = "caterpillar"), 
+                                 testsimFor_5hopper$slopes %>% mutate(Group = "hopper"), 
+                                 testsimFor_5beetle$slopes %>% mutate(Group = "beetle"), 
+                                 testsimFor_5truebug$slopes %>% mutate(Group = "truebug"),
+                                 testsimFor_5ant$slopes %>% mutate(Group = "ant"), 
+                                 testsimFor_5spider$slopes %>% mutate(Group = "spider"))) %>% 
+  mutate(Group = factor(Group, levels = c("caterpillar", "beetle", "ant",
+                                          "hopper", "truebug", "spider")))
+
+
+ggplot(testFor_sims5, aes(x = Est., 
+                          y = Value.of.Latitude, 
+                          xmin = X2.5., 
+                          xmax = X97.5.)) +
+  
+  geom_errorbarh(width = 0, size =1, aes(colour = Est.), alpha = 0.5) +   # horizontal error bars
+  geom_point(size = 1, color = "black", alpha = 0.3,) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.2)+
+  scale_color_gradientn(
+    colours = c("red", "darkblue", "green"),
+  ) +
+  facet_wrap(~ Group, scales = "free_x") +  
+  labs(
+    x = "Estimated effect of Forest cover",
+    y = "Latitude",
+    title = "Effect of Urban Cover on Arthropod Groups by Latitude",
+    subtitle = "Points = estimates. Estimate bars (=95% CI) touching the dashed line are not statistically significant."
+  ) +
+  guides(color = "none")+
+  scale_y_continuous(limits = c(34, 45))+
+ scale_x_continuous(limits = c(min(testFor_sims5$X2.5.), max(testFor_sims5$X97.5.)))+
+  theme_bw()
+
+
+
+
+###########################################################################################
+
+########### ----------------- Combined-------------------------------------------------
+
+
+testsimDev_6caterpillar <- sim_slopes(cat.Dev.Latitude, pred = dev, 
+                                      modx = Latitude,modx.values = seq(34.2, 44.2, by = 1),
+                                      johnson_neyman = FALSE, digits = 4)
+
+testsimDev_6beetle <-sim_slopes(beet.Dev.Latitude, pred = dev, 
+                                modx = Latitude,modx.values = seq(34.2, 44.2, by = 1),
+                                johnson_neyman = FALSE, digits = 4)
+
+testsimDev_6spider <-sim_slopes(spi.Dev.Latitude, pred = dev, 
+                                modx = Latitude,modx.values = seq(34.2, 44.2, by = 1),
+                                johnson_neyman = FALSE, digits = 4)
+
+testsimDev_6hopper <-sim_slopes(hop.Dev.Latitude, pred = dev, 
+                                modx = Latitude,modx.values = seq(34.2, 44.2, by = 1),
+                                johnson_neyman = FALSE, digits = 4)
+
+testsimDev_6ant <-sim_slopes(ant.Dev.Latitude, pred = dev, 
+                             modx = Latitude,modx.values = seq(34.2, 44.2, by = 1),
+                             johnson_neyman = FALSE, digits = 4)
+
+testsimDev_6truebug <-sim_slopes(ant.Dev.Latitude, pred = dev, 
+                                 modx = Latitude,modx.values = seq(34.2, 44.2, by = 1),
+                                 johnson_neyman = FALSE, digits = 4)
+
+
+
+testDev_sims6 = data.frame(rbind(testsimDev_6caterpillar$slopes %>% mutate(Group = "caterpillar"), 
+                                 testsimDev_6hopper$slopes %>% mutate(Group = "hopper"), 
+                                 testsimDev_6beetle$slopes %>% mutate(Group = "beetle"), 
+                                 testsimDev_6truebug$slopes %>% mutate(Group = "truebug"),
+                                 testsimDev_6ant$slopes %>% mutate(Group = "ant"), 
+                                 testsimDev_6spider$slopes %>% mutate(Group = "spider"))) %>% 
+  mutate(Group = factor(Group, levels = c("caterpillar", "beetle", "ant",
+                                          "hopper", "truebug", "spider")))
+
+
+testDev_sims7 = testDev_sims6 %>% 
+  mutate(Est. = 0-Est.,
+         X2.5. = 0- X2.5.,
+         X97.5. = 0 - X97.5.) %>% 
+  mutate(Cover = "Urban cover")
+
+
+ggplot(testDev_sims7, aes(x = Est., 
+                          y = Value.of.Latitude, 
+                          xmin = X2.5., 
+                          xmax = X97.5.)) +
+  geom_errorbarh(width = 0, size =1, color = "blue", alpha = 0.5) +   # horizontal error bars
+  geom_point(size = 1, color = "blue", alpha = 0.3,) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.2)+
+  facet_wrap(~ Group, scales = "free_x") +  
+  labs(
+    x = "Estimated effect of Forest cover",
+    y = "Latitude",
+    title = "Effect of Urban Cover on Arthropod Groups by Latitude",
+    subtitle = "Points = estimates. Estimate bars (=95% CI) touching the dashed line are not statistically significant."
+  ) +
+  guides(color = "none")+
+  scale_y_continuous(limits = c(34, 45))+
+  scale_x_continuous(limits = c(max(testDev_sims7$X2.5.), min(testDev_sims7$X97.5.)))+
+  theme_bw()
+
+
+
+Dev.For = rbind(testDev_sims6%>% mutate(Cover = "Urban cover"),
+                testFor_sims5%>% 
+                  mutate(Est. = 0-Est.,
+                         X2.5. = 0- X2.5.,
+                         X97.5. = 0 - X97.5.) %>% mutate(Cover = "Forest cover"))
+
+
+
+ggplot(Dev.For, aes(x = Est., 
+                          y = Value.of.Latitude, 
+                          xmin = X2.5., 
+                          xmax = X97.5.)) +
+  geom_errorbarh(width = 0, size =1.1, aes(colour = Cover), alpha = 0.5) +   # horizontal error bars
+  geom_point(size = 1, aes(colour = Cover), alpha = 0.3,) +
+  geom_vline(xintercept = 0,  color = "black", linewidth = 0.2)+
+  coord_flip()+
+  facet_wrap(~ Group, scales = "free_x") +  
+  scale_colour_manual(values = c("Forest cover" = "green", 
+                                 "Urban cover"= "blue"))+
+  labs(
+    x = "Estimated effect",
+    y = "Latitude"
+  ) +
+  guides(color = "none")+
+  scale_y_continuous(limits = c(34, 45))+
+  scale_x_continuous(limits = c(min(Dev.For$X2.5. -0.005), max(Dev.For$X97.5.)))+
+  theme_bw()
+
+
+
+
+
+ggplot(Dev.For, aes(x = Value.of.Latitude, y = Est.)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5., fill = Cover),
+              alpha = 0.05, colour = NA) +
+  geom_line(aes(colour = Cover), size = 1) +
+  scale_colour_manual(values = c("Forest cover" = "green", "Urban cover" = "blue")) +
+  scale_fill_manual(values = c("Forest cover" = "green", "Urban cover" = "blue")) +
+  facet_wrap(~ Group, scales = "free_y") +
+  labs(x = "Latitude", y = "Estimated effect") +
+  geom_hline(yintercept = 0, color = "black", linewidth = 0.2) +
+  theme_bw()
+
+
+# add background colour to differentiate response direction
+ggplot(Dev.For, aes(x = Value.of.Latitude, y = Est.)) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0),
+            fill = "mistyrose", alpha = 0.03) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 0, ymax = Inf),
+            fill = "honeydew", alpha = 0.05) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5., fill = Cover),
+              alpha = 0.05, colour = NA) +
+  geom_line(aes(colour = Cover), size = 1) +
+  scale_colour_manual(values = c("Forest cover" = "green", "Urban cover" = "blue")) +
+  scale_fill_manual(values = c("Forest cover" = "green", "Urban cover" = "blue")) +
+  facet_wrap(~ Group, scales = "free_y") +
+  labs(x = "Latitude", y = "Estimated effect of landcover change") +
+  geom_hline(yintercept = 0, color = "black", linewidth = 0.2) +
+  theme_bw()
+
+
+##############3
+
+
+Dev.For.2 <- rbind(testFor_sims5 %>% mutate(Cover = "Forest cover"),
+                   testDev_sims5 %>% mutate(Cover = "Urban cover")) %>% as.data.frame()
+
+
+ggplot(Dev.For.2, aes(x = Value.of.Latitude, y = Est.)) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0),
+            fill = "#E6F0FF", alpha = 0.03) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 0, ymax = Inf),
+            fill = "#E6F4E6", alpha = 0.05) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5., fill = Cover),
+              alpha = 0.05, colour = NA) +
+  geom_line(aes(colour = Cover), size = 1) +
+  scale_colour_manual(values = c("Forest cover" = "green", "Urban cover" = "blue")) +
+  scale_fill_manual(values = c("Forest cover" = "green", "Urban cover" = "blue")) +
+  facet_wrap(~ Group, scales = "free_y") +
+  labs(x = "Latitude", y = "Estimated effect of landcover change") +
+  geom_hline(yintercept = 0, color = "black", linewidth = 0.2) +
+  theme_bw()
+ 
