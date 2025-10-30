@@ -3,6 +3,13 @@ library(FactoMineR)
 require(vegan)
 require(tidyverse)
 
+
+
+ddddd =read.csv("https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/refs/heads/master/data/fullDataset_2025-07-28.csv")
+
+# fullDataset = read.csv("https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/refs/heads/master/data/fullDataset_2025-07-28.csv")
+
+
 proportion <-fullDataset %>%
   filter(Name %in% goodSites$Name,
          julianday %in% julianWindow,

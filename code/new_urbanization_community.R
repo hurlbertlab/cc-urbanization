@@ -59,7 +59,7 @@ ggplot() +
             aes(x = RDA1, y = RDA2, label = rownames(rda_axis.ld)), 
             color = "darkblue", vjust = -0.5, hjust = 0.1, size =5) +
   scale_fill_gradientn(
-    colours = c("green", "yellow", "red"),
+    colours = c("green", "lightyellow", "skyblue"),
     name = "Development"
   ) +
   labs(x = "RDA1", y = "RDA2") +
@@ -482,7 +482,9 @@ ggplot(testDev_sims7, aes(x = Est.,
   geom_errorbarh(width = 0, size =1, color = "blue", alpha = 0.5) +   # horizontal error bars
   geom_point(size = 1, color = "blue", alpha = 0.3,) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.2)+
-  facet_wrap(~ Group, scales = "free_x") +  
+  facet_wrap(~ Group, 
+             scales = "free_x"
+             ) +  
   labs(
     x = "Estimated effect of Forest cover",
     y = "Latitude",
@@ -491,8 +493,9 @@ ggplot(testDev_sims7, aes(x = Est.,
   ) +
   guides(color = "none")+
   scale_y_continuous(limits = c(34, 45))+
-  scale_x_continuous(limits = c(max(testDev_sims7$X2.5.), min(testDev_sims7$X97.5.)))+
+  #scale_x_continuous(limits = c(max(testDev_sims7$X2.5.), min(testDev_sims7$X97.5.)))+
   theme_bw()
+
 
 
 
@@ -578,4 +581,39 @@ ggplot(Dev.For.2, aes(x = Value.of.Latitude, y = Est.)) +
   labs(x = "Latitude", y = "Estimated effect of landcover change") +
   geom_hline(yintercept = 0, color = "black", linewidth = 0.2) +
   theme_bw()
+
+
+
+
+
+
+
+
+
+ggplot(testDev_sims5, aes(x = Est., 
+                          y = Value.of.Latitude, 
+                          xmin = X2.5., 
+                          xmax = X97.5.)) +
+  geom_rect(aes(xmin = 0, xmax = Inf, ymin = -Inf, ymax = Inf),
+            fill = "mistyrose", alpha = 0.025) +
+  
+  # Your main layers
+  #geom_errorbarh(width = 0, size =1, color = "blue", alpha = 0.5) +
+  geom_line(size = 1, color = "blue", alpha = 0.7) +
+  geom_ribbon(aes(xmin = X2.5., xmax = X97.5.),
+              alpha = 0.05, colour = NA) +
+  geom_vline(xintercept = 0,  color = "black", linewidth = 0.3) +
+  
+  facet_wrap(~ Group, scales = "free_y") +
+  labs(
+    x = "Estimated effect",
+    y = "Latitude",
+    title = "Effect of Urbanization on Arthropod Groups",
+    subtitle = "Red = + Response; White = - Response"
+  ) +
+  guides(color = "none") +
+ # scale_y_continuous(limits = c(34, 45)) +
+  theme_bw()+
+  coord_flip()
+
  
