@@ -88,9 +88,15 @@ MaxArthropod = JuliSiteData %>%
 
 # Return only the maximum value of weekly caterpillar prop. of occurrence for each year and it corresponding Julian week
 
+
+JuliSiteData_uniqueCaterpillar <- JuliSiteData %>%
+  group_by(Name, ObservationMethod, Year, Caterpillar) %>% # deals with potential duplicates
+  summarise(julianweek = mean(julianweek), .groups = "drop")
+
+
 MaxJulCaterpillar = MaxArthropod %>% 
   select(Name, ObservationMethod, Year, Caterpillar) %>% 
-  inner_join(JuliSiteData_unique, 
+  inner_join(JuliSiteData_uniqueCaterpillar, 
              by = c("Name", "ObservationMethod", 
                     "Year",
                     "Caterpillar"
@@ -99,11 +105,6 @@ MaxJulCaterpillar = MaxArthropod %>%
   rename("MaxJulWeek" = "julianweek",
          "MaxCaterpillar" = "Caterpillar"
          )
-
-
-JuliSiteData_unique <- JuliSiteData %>%
-  group_by(Name, ObservationMethod, Year, Caterpillar) %>%
-  summarise(julianweek = mean(julianweek), .groups = "drop")
 
 
 AbnormCaterpillar =  MaxJulCaterpillar %>% # note that you are joining by the summary statistics.
@@ -118,16 +119,19 @@ AbnormCaterpillar =  MaxJulCaterpillar %>% # note that you are joining by the su
 
 
 
-
-
-
 # Spider  data: 
 
 # Return only the maximum value of weekly caterpillar prop. of occurrence for each year and it corresponding Julian week
 
+
+JuliSiteData_uniqueSpider <- JuliSiteData %>%
+  group_by(Name, ObservationMethod, Year, Spider) %>%  
+  summarise(julianweek = mean(julianweek), .groups = "drop")
+
+
 MaxJulSpider = MaxArthropod %>% 
   select(Name, ObservationMethod, Year, Spider) %>% 
-  inner_join(JuliSiteData, 
+  inner_join(JuliSiteData_uniqueSpider, 
              by = c("Name", "ObservationMethod", "Year", "Spider")) %>% 
   select(Name, ObservationMethod, Year, julianweek, Spider) %>% 
   rename("MaxJulWeek" = "julianweek",
@@ -174,21 +178,5 @@ AbnormAnt =  MaxJulAnt %>%
 
 
 
-
-
-library(prism)
-library(daymetr)
-library(terra)
-sites <- daymetr_sites()
-head(sites)
-
-tile_path <- tempdir() 
-
-download_daymet_tiles(
-  tiles = 11935,
-  start = 1980,
-  end = 1980,
-  param = c("tmin", "tmax"),
-  path = tile_path
-)
+ 
 
