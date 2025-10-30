@@ -5,6 +5,8 @@
   Pheno_julianWindow = 140:213
   minSurvYears = 3
   
+  
+  # What sites have been surveying arthropods for three or more years?
 fullDataset %>%
     filter(julianday %in% Pheno_julianWindow,
            Longitude > -100,
@@ -17,6 +19,12 @@ fullDataset %>%
            nYears >= minSurvYears) %>%
     arrange(desc(nYears)) %>% as.data.frame()
 
+
+# take the full data and 
+# 2 . do necessary filtering,
+# 3. Convert abundance data to 1 and 0 (presence and absence)
+# summaries data within a given week into proportion of positive data per number of survey in that week
+# Also keep information on the number of weekly survey
 
 Julian_Arthropod = fullDataset %>%
   filter(julianday %in% Pheno_julianWindow,
@@ -51,7 +59,7 @@ Julian_Arthropod = fullDataset %>%
     surveyNum       = n_distinct(ID)) 
 
 
-
+# good weeks of survey stays. 
 goodsurv = Julian_Arthropod %>% 
   filter(surveyNum >=  10)  # each site/year/week should have at least 10 surveys.
 
@@ -65,7 +73,7 @@ Site.julian = Julian_Arthropod %>%
 
 JuliandData = inner_join(Julian_Arthropod, Site.julian, by = c("Name", "ObservationMethod", "Year"))
 
-siteyear =  JuliandData %>% 
+siteyear =  JuliandData %>% # Good sites with 3 or more years of survey
   group_by(Name, ObservationMethod) %>% 
   summarise(nYear= n_distinct(Year)) %>% 
   filter(nYear >= 3)
@@ -155,9 +163,13 @@ AbnormSpider =  MaxJulSpider %>%
 
 # Return only the maximum value of weekly ant prop. of occurrence for each year and it corresponding Julian week
 
+JuliSiteData_uniqueAnt<- JuliSiteData %>%
+  group_by(Name, ObservationMethod, Year, Ant) %>%  
+  summarise(julianweek = mean(julianweek), .groups = "drop")
+
 MaxJulAnt = MaxArthropod %>% 
   select(Name, ObservationMethod, Year, Ant) %>% 
-  left_join(JuliSiteData, 
+  left_join(JuliSiteData_uniqueAnt, 
              by = c("Name", "ObservationMethod", "Year", "Ant")) %>% 
   select(Name, ObservationMethod, Year, julianweek, Ant) %>% 
   rename("MaxJulWeek" = "julianweek",
