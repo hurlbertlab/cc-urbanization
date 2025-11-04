@@ -1,9 +1,12 @@
- 
+library(tidyverse)
+library(daymetr)
   
   
   minSurveys = 50
   Pheno_julianWindow = 140:213
   minSurvYears = 3
+  yearException = 2025 # because we do not yet have 2025 data for temperature
+  TempDayWindow = 110:213   # Adjust
   
   
   # What sites have been surveying arthropods for three or more years?
@@ -11,7 +14,8 @@ fullDataset %>%
     filter(julianday %in% Pheno_julianWindow,
            Longitude > -100,
            WetLeaves == 0,
-           !Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK')) %>%
+           !Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK'),
+           !Year %in% yearException) %>%
     group_by(Name, ObservationMethod) %>%
     summarize(nSurvs = n_distinct(ID),
               nYears = n_distinct(Year)) %>%
@@ -31,9 +35,7 @@ Julian_Arthropod = fullDataset %>%
          Longitude > -100,
          WetLeaves == 0,
          !Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK'),
-         Group %in% c('caterpillar', 'spider', 'ant', 'leafhopper', 'beetle', 
-                      'truebugs', 'fly', 'grasshopper', 
-                      'daddylonglegs', 'aphid')) %>% 
+         !Year %in% yearException) %>% 
   group_by(Name, ID, ObservationMethod, Year, julianweek) %>%
   summarize(
     caterpillar   = ifelse(sum(Group == 'caterpillar', na.rm = TRUE) > 0, 1, 0),
@@ -64,14 +66,14 @@ goodsurv = Julian_Arthropod %>%
   filter(surveyNum >=  10)  # each site/year/week should have at least 10 surveys.
 
 
-Site.julian = Julian_Arthropod %>% 
-  inner_join(goodsurv, by = c("Name", "ObservationMethod", "Year", "julianweek", "surveyNum")) %>% 
+Site.julian = goodsurv %>% 
   group_by(Name, ObservationMethod, Year) %>% 
   summarise(nJulianWeek= n_distinct(julianweek)) %>% 
   filter(nJulianWeek >= 5)
 
 
-JuliandData = inner_join(Julian_Arthropod, Site.julian, by = c("Name", "ObservationMethod", "Year"))
+JuliandData = inner_join(goodsurv, Site.julian, 
+                         by = c("Name", "ObservationMethod", "Year"))
 
 siteyear =  JuliandData %>% # Good sites with 3 or more years of survey
   group_by(Name, ObservationMethod) %>% 
@@ -82,48 +84,55 @@ siteyear =  JuliandData %>% # Good sites with 3 or more years of survey
 JuliSiteData = inner_join(JuliandData, siteyear,
                           by = c("Name", "ObservationMethod"))
 
+JuliSiteData %>% 
+  group_by(Name, ObservationMethod) %>% 
+  summarise(nYear = n_distinct(Year)) # all good!
 
 
 
 # Return only the maximum value of arthropod group for each year
 MaxArthropod = JuliSiteData %>% 
-  group_by(Name, ObservationMethod, Year) %>% 
-  summarise(across(where(is.numeric)  & !c(julianweek, surveyNum, nJulianWeek, nYear),
+  group_by(Name, ObservationMethod, Year, nJulianWeek, nYear) %>% 
+  summarise(across(where(is.numeric)  & !c(julianweek, surveyNum),
                    ~ max(.x, na.rm = TRUE), .names = "{col}")) 
 
-
-# Caterpillars data: 
-
-# Return only the maximum value of weekly caterpillar prop. of occurrence for each year and it corresponding Julian week
+ 
 
 
-JuliSiteData_uniqueCaterpillar <- JuliSiteData %>%
-  group_by(Name, ObservationMethod, Year, Caterpillar) %>% # deals with potential duplicates
-  summarise(julianweek = mean(julianweek), .groups = "drop")
 
+###################################################################################
+# Caterpillar Data
 
-MaxJulCaterpillar = MaxArthropod %>% 
-  select(Name, ObservationMethod, Year, Caterpillar) %>% 
-  inner_join(JuliSiteData_uniqueCaterpillar, 
-             by = c("Name", "ObservationMethod", 
-                    "Year",
-                    "Caterpillar"
-                    )) %>% 
+JuliSiteData_Caterpillar= left_join(MaxArthropod, 
+                                    JuliSiteData %>% select(Name, ObservationMethod, 
+                                                            Year, julianweek, Caterpillar),
+                                    by = c("Name", "ObservationMethod", "Year", "Caterpillar")) %>% 
   select(Name, ObservationMethod, Year, julianweek, Caterpillar) %>% 
-  rename("MaxJulWeek" = "julianweek",
-         "MaxCaterpillar" = "Caterpillar"
-         )
+  rename(maxjulianweek = julianweek,
+         maxOcc = Caterpillar)
+
+# left_join(MaxArthropod, 
+#          JuliSiteData %>% select(Name, ObservationMethod, Year, julianweek, Caterpillar),
+#          by = c("Name", "ObservationMethod", "Year", "Caterpillar")) %>% 
+#  group_by(Name, ObservationMethod, Year) %>% 
+#  summarise(count = n()) %>% 
+#  arrange(desc(count)) %>% # there are four duplication, which is due to bi-modal peaks within a site/year
+#  filter(count > 1)
+
+AbnormCaterpillar= JuliSiteData_Caterpillar %>%  # site/year/occurrence max
+  left_join(JuliSiteData_Caterpillar %>% 
+  group_by(Name, ObservationMethod) %>% 
+  summarise(MeanJulWeek = mean(maxjulianweek),  #site mean julWeek
+            MeanOccurence = mean(maxOcc))) %>%  # site mean occurrence
+  mutate(AnomalJulWeek = abs(maxjulianweek  - MeanJulWeek),
+         AnomalOccurence = abs(maxOcc  - MeanOccurence))
+
+ 
 
 
-AbnormCaterpillar =  MaxJulCaterpillar %>% # note that you are joining by the summary statistics.
-  left_join(MaxJulCaterpillar %>%          # So, no confusion here!
-              group_by(Name, ObservationMethod) %>% 
-              summarise(meanJul = mean(MaxJulWeek),
-                        meanOccurence = mean(MaxCaterpillar)), 
-            by = c("Name", "ObservationMethod")) %>% 
-  mutate(AnomalJulWeek = abs(MaxJulWeek - meanJul),
-         AnomalOccurence = abs(MaxCaterpillar  - meanOccurence))
 
+
+ 
 
 
 
@@ -131,64 +140,216 @@ AbnormCaterpillar =  MaxJulCaterpillar %>% # note that you are joining by the su
 
 # Return only the maximum value of weekly caterpillar prop. of occurrence for each year and it corresponding Julian week
 
-
-JuliSiteData_uniqueSpider <- JuliSiteData %>%
-  group_by(Name, ObservationMethod, Year, Spider) %>%  
-  summarise(julianweek = mean(julianweek), .groups = "drop")
-
-
-MaxJulSpider = MaxArthropod %>% 
-  select(Name, ObservationMethod, Year, Spider) %>% 
-  inner_join(JuliSiteData_uniqueSpider, 
-             by = c("Name", "ObservationMethod", "Year", "Spider")) %>% 
+JuliSiteData_Spider= left_join(MaxArthropod, 
+                                    JuliSiteData %>% select(Name, ObservationMethod, 
+                                                            Year, julianweek, Spider),
+                                    by = c("Name", "ObservationMethod", "Year", "Spider")) %>% 
   select(Name, ObservationMethod, Year, julianweek, Spider) %>% 
-  rename("MaxJulWeek" = "julianweek",
-         "MaxSpider" = "Spider")
+  rename(maxjulianweek = julianweek,
+         maxOcc = Spider)
 
-
-
-AbnormSpider =  MaxJulSpider %>%  
-  left_join(MaxJulSpider %>%          
+AbnormSpider= JuliSiteData_Spider %>%  # site/year/occurrence max
+  left_join(JuliSiteData_Spider %>% 
               group_by(Name, ObservationMethod) %>% 
-              summarise(meanJul = mean(MaxJulWeek),
-                        meanOccurence = mean(MaxSpider)), 
-            by = c("Name", "ObservationMethod")) %>% 
-  mutate(AnomalJulWeek = abs(MaxJulWeek - meanJul),
-         AnomalOccurence = abs(MaxSpider  - meanOccurence))
-
-
-
+              summarise(MeanJulWeek = mean(maxjulianweek),  #site mean julWeek
+                        MeanOccurence = mean(maxOcc))) %>%  # site mean occurrence
+  mutate(AnomalJulWeek = abs(maxjulianweek  - MeanJulWeek),
+         AnomalOccurence = abs(maxOcc  - MeanOccurence))
 
 # Ant  data: 
 
 # Return only the maximum value of weekly ant prop. of occurrence for each year and it corresponding Julian week
 
-JuliSiteData_uniqueAnt<- JuliSiteData %>%
-  group_by(Name, ObservationMethod, Year, Ant) %>%  
-  summarise(julianweek = mean(julianweek), .groups = "drop")
-
-MaxJulAnt = MaxArthropod %>% 
-  select(Name, ObservationMethod, Year, Ant) %>% 
-  left_join(JuliSiteData_uniqueAnt, 
-             by = c("Name", "ObservationMethod", "Year", "Ant")) %>% 
+JuliSiteData_Ant= left_join(MaxArthropod, 
+                               JuliSiteData %>% select(Name, ObservationMethod, 
+                                                       Year, julianweek, Ant),
+                               by = c("Name", "ObservationMethod", "Year", "Ant")) %>% 
   select(Name, ObservationMethod, Year, julianweek, Ant) %>% 
-  rename("MaxJulWeek" = "julianweek",
-         "MaxAnt" = "Ant")
+  rename(maxjulianweek = julianweek,
+         maxOcc = Ant)
 
-
-
-AbnormAnt =  MaxJulAnt %>%  
-  left_join(MaxJulAnt %>%          
+AbnormAnt= JuliSiteData_Ant %>%  # site/year/occurrence max
+  left_join(JuliSiteData_Ant %>% 
               group_by(Name, ObservationMethod) %>% 
-              summarise(meanJul = mean(MaxJulWeek),
-                        meanOccurence = mean(MaxAnt)), 
-            by = c("Name", "ObservationMethod")) %>% 
-  mutate(AnomalJulWeek = abs(MaxJulWeek - meanJul),
-         AnomalOccurence = abs(MaxAnt  - meanOccurence))
+              summarise(MeanJulWeek = mean(maxjulianweek),  #site mean julWeek
+                        MeanOccurence = mean(maxOcc))) %>%  # site mean occurrence
+  mutate(AnomalJulWeek = abs(maxjulianweek  - MeanJulWeek),
+         AnomalOccurence = abs(maxOcc  - MeanOccurence))
 
 
 
+
+
+
+# #####################    Temperature data retrieval
 
 
  
 
+
+ 
+
+GoodSiteYear = JuliSiteData[, c("Name","Year")] %>% 
+  group_by(Name, Year) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n))
+
+GoodSiteYearLatLon = left_join(GoodSiteYear, 
+                               fullDataset %>% select(Name, Year, Latitude, Longitude), 
+                               by = c("Name", "Year")) %>%  # sites is from a different R script
+  group_by(Name, Latitude, Longitude) %>% 
+  summarise(nYears = n_distinct(Year)) %>% 
+  select(-nYears) # really do not need it now
+
+write.csv(GoodSiteYearLatLon %>% 
+            rename(
+  "site" = "Name",
+  "lat" = "Latitude",
+  "lon" = "Longitude"),
+          file = "Data/PhenoAnomalySites.csv",
+  row.names = FALSE)
+
+
+
+   TempSiteData = download_daymet_batch(file_location ="Data/PhenoAnomalySites.csv",
+                                     start = min(GoodSiteYear$Year),
+                                     end = 2024, # this is the most recent available in daymetr
+                                     internal = TRUE)
+ 
+
+
+# The TempSiteData is a list of list. check TempSiteData[[1]]$ 
+# so this function would extract the information and add the site information 
+
+TempSiteData_clean <- lapply(TempSiteData, function(x) {
+  x$data %>% mutate(site = x$site,
+                    Latidue = x$latitude,
+                    Longitude = x$longitude)
+})
+
+AllTempData <- bind_rows(TempSiteData_clean)
+
+
+
+
+anomalPheno = rbind(AbnormAnt %>% mutate(Group =  "Ant"),
+                    AbnormSpider %>% mutate(Group = "Spider"),
+                    AbnormCaterpillar %>% mutate(Group = "Caterpillar")) %>% 
+  as.data.frame()
+ 
+
+
+
+
+
+# join temperature anomaly to phonology anomaly
+
+TempArthropodAnomal = AllTempData %>% 
+  filter(yday %in% TempDayWindow) %>% 
+  group_by(site, year) %>% 
+  summarise(meanTmin = mean(tmin..deg.c.),
+            meanTmax = mean(tmax..deg.c.),
+            meanPreci = mean(prcp..mm.day.)) %>% 
+  left_join(
+AllTempData %>% 
+  filter(yday %in% TempDayWindow) %>% 
+  group_by(site) %>% 
+  summarise(AllmeanTmin = mean(tmin..deg.c.),
+            AllmeanTmax = mean(tmax..deg.c.),
+            AllmeanPreci = mean(prcp..mm.day.)),
+by = c("site")) %>% 
+  mutate(AnomalTmin = abs(meanTmin - AllmeanTmin),
+         AnomalTmax = abs(meanTmax - AllmeanTmax),
+         AnomalPreci = abs(meanPreci - AllmeanPreci))%>% 
+  right_join(anomalPheno %>%  filter(Year != "2025"), # because daymetr has no 2025 yet.
+             by = c("site" = "Name", "year" = "Year")) 
+
+
+
+
+
+
+xx = AllTempData %>% 
+  filter(yday %in% TempDayWindow) %>% 
+  group_by(site, year) %>% 
+  summarise(meanTmin = mean(tmin..deg.c.),
+            meanTmax = mean(tmax..deg.c.),
+            meanPreci = mean(prcp..mm.day.)) %>% 
+  left_join(
+    AllTempData %>% 
+      filter(yday %in% TempDayWindow) %>% 
+      group_by(site) %>% 
+      summarise(AllmeanTmin = mean(tmin..deg.c.),
+                AllmeanTmax = mean(tmax..deg.c.),
+                AllmeanPreci = mean(prcp..mm.day.)),
+    by = c("site")) %>% 
+  mutate(AnomalTmin = abs(meanTmin - AllmeanTmin),
+         AnomalTmax = abs(meanTmax - AllmeanTmax),
+         AnomalPreci = abs(meanPreci - AllmeanPreci))%>% 
+  right_join(anomalPheno, 
+             by = c("site" = "Name", "year" = "Year")) 
+
+
+
+
+
+
+
+# Maximum Temperature Anomality
+
+TempArthropodAnomal %>% 
+  ggplot(aes(y = AnomalOccurence, x = AnomalTmax, )) +
+  geom_point(alpha = 0.6, color = "darkblue") +  
+  geom_smooth(method = "lm", se = TRUE, color = "red", 
+              fill = "pink", linewidth = 1) +   
+  labs(
+    title = "Anomality in Maximum Daily Temperature",
+    x = "Temperature anomaly",
+    y = "Occurence anomaly"
+  ) +
+  facet_wrap(~Group)+
+  theme_minimal(base_size = 13)
+
+
+TempArthropodAnomal %>% 
+  ggplot(aes(y = AnomalJulWeek, x = AnomalTmax, )) +
+  geom_point(alpha = 0.6, color = "darkblue") +  
+  geom_smooth(method = "lm", se = TRUE, color = "red", 
+              fill = "pink", linewidth = 1) +   
+  labs(
+    title = "Anomality in Daily Maximum Temperature",
+    x = "Temperature Anomaly",
+    y = "Peak Julian Week anomaly"
+  ) +
+  facet_wrap(~Group)+
+  theme_minimal(base_size = 13)
+
+# Minimum Temperature Anomality
+
+TempArthropodAnomal %>% 
+  ggplot(aes(y = AnomalOccurence, x = AnomalTmin, )) +
+  geom_point(alpha = 0.6, color = "darkblue") +  
+  geom_smooth(method = "lm", se = TRUE, color = "red", 
+              fill = "pink", linewidth = 1) +   
+  labs(
+    title = "Anomality in Daily Minimum Temperature",
+    x = "Temperature Anomaly",
+    y = "Occurence anomaly"
+  ) +
+  facet_wrap(~Group)+
+  theme_minimal(base_size = 13)
+
+
+
+TempArthropodAnomal %>% 
+  ggplot(aes(y = AnomalJulWeek, x = AnomalTmin, )) +
+  geom_point(alpha = 0.6, color = "darkblue") +  
+  geom_smooth(method = "lm", se = TRUE, color = "red", 
+              fill = "pink", linewidth = 1) +   
+  labs(
+    title = "Anomality in Minimum Daily temperature",
+    x = "Temperature Anomaly",
+    y = "Peak Julian Week anomaly"
+  ) +
+  facet_wrap(~Group,  scales = "free_y")+
+  theme_minimal(base_size = 13)

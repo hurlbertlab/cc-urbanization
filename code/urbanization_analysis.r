@@ -337,7 +337,7 @@ beetDevPlot = interact_plot(beet.Dev.Latitude, pred = dev, modx = Latitude,
                         x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
                         colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) +
   #ylim(0.12, 0.26) +
-  annotation_raster(beetleImage, ymin = .3, ymax = .325, xmin = 60, xmax = 100) 
+  annotation_raster(beetleImage, ymin = .288, ymax = .31, xmin = 60, xmax = 100) 
 
 bugDevPlot = interact_plot(bug.Dev.Latitude, pred = dev, modx = Latitude,
                         y.label = "Prop. of surveys with true bugs",
@@ -349,19 +349,19 @@ spiDevPlot = interact_plot(spi.Dev.Latitude, pred = dev, modx = Latitude,
                         y.label = "Prop. of surveys with spiders",
                         x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
                         colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) +
-  annotation_raster(spiderImage, ymin = .32, ymax = .37, xmin = 60, xmax = 100)
+  annotation_raster(spiderImage, ymin = .30, ymax = .36, xmin = 60, xmax = 100)
 
 hopDevPlot = interact_plot(hop.Dev.Latitude, pred = dev, modx = Latitude,
                         y.label = "Prop. of surveys with hoppers",
                         x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
                         colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) +
-  annotation_raster(hopperImage, ymin = .06, ymax = .09, xmin = 60, xmax = 100)
+  annotation_raster(hopperImage, ymin = .065, ymax = .095, xmin = 60, xmax = 100)
 
 antDevPlot = interact_plot(ant.Dev.Latitude, pred = dev, modx = Latitude,
                         y.label = "Prop. of surveys with ants",
                         x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
                         colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) +
-  annotation_raster(antImage, ymin = .13, ymax = .15, xmin = 60, xmax = 100)
+  annotation_raster(antImage, ymin = .14, ymax = .16, xmin = 60, xmax = 100)
 
 ggarrange(catDevPlot, spiDevPlot, beetDevPlot, bugDevPlot, hopDevPlot, antDevPlot, 
           ncol=3, nrow=2, common.legend = TRUE, legend="bottom")
