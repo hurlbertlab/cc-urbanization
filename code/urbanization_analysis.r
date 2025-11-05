@@ -242,6 +242,27 @@ mtext(c('hopper', 'true bug', 'caterpillar', 'spider', 'ant', 'beetle'), 1,
 
 legend('topleft', legend = c('Beat sheet', 'Visual'), pch = 15, pt.cex = 4, cex = 1.5, col = c('gray90', 'gray30'))
 
+# Compare survey method across urbanization gradient and Latitude
+
+
+prop_dataset %>%
+  ggplot(aes(x = ObservationMethod, y = dev, fill = ObservationMethod)) +
+  geom_jitter(width = 0.15, alpha = 0.6, size = 3, color = "black") +
+  geom_violin(trim = TRUE, alpha = 0.3) +
+  geom_boxplot(width = 0.1, outlier.shape = NA, alpha = 0.7) +
+  theme_minimal() +
+  labs(x = "Observation Method", y = "% Development", 
+       subtitle = "Urban site use more Beat Sheet")
+
+prop_dataset %>%
+  ggplot(aes(x = ObservationMethod, y = Latitude, fill = ObservationMethod)) +
+  geom_jitter(width = 0.15, alpha = 0.6, size = 3, color = "black") +
+  geom_violin(trim = TRUE, alpha = 0.3) +
+  scale_fill_manual(values = c("red", "yellow"))+
+  geom_boxplot(width = 0.1, outlier.shape = NA, alpha = 0.7) +
+  theme_minimal() +
+  labs(x = "Observation Method", y = "Latitude",
+       subtitle = "Site observers preference for observation method dooes not differ with latitude")
 
 
 # (6) glms examining presence as a function of % developed or forest cover, latitude, and interaction

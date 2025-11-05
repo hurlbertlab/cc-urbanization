@@ -210,22 +210,138 @@ prop_dataset %>%
                          "Longitude", "Latitude", "dev", "forest", "Trials"),
                names_to = "Group",
                values_to = "Occurence") %>% 
-ggplot(aes(x = dev, y = Occurence)) +
+ggplot(aes(x = dev, y = Occurence, z = ObservationMethod)) +
+  geom_point(aes(colour = ObservationMethod))+
   geom_smooth(
     method = "glm",
     method.args = list(family = binomial),
-    aes(weight = Trials),
-    se = TRUE,
-    color = "blue"
+    aes(weight = Trials, colour = ObservationMethod ),
+    se = TRUE
   )+
   facet_wrap(~Group,  scales = "free_y")+
   theme_bw()
 
 
+# long format data
+
+prop_dataset_LONG = prop_dataset %>% 
+  pivot_longer(cols = -c("Name", "ObservationMethod", "Region", 
+                         "Longitude", "Latitude", "dev", "forest", "Trials"),
+               names_to = "Group",
+               values_to = "Occurence")  
+
+# Caterpillar predictions
+prop.cat.Dev.pred = predict(prop.cat.Dev, 
+                            newdata = prop_dataset_LONG %>% 
+                              filter(Group == "caterpillar_prop"), 
+                            type = "response") %>% as.data.frame()%>% 
+  setNames("Predicted") %>% 
+  cbind(prop_dataset_LONG %>% 
+          filter(Group == "caterpillar_prop"))
+
+# Spiders
+prop.spi.Dev.pred = predict(prop.spi.Dev, 
+                            newdata = prop_dataset_LONG %>% 
+                              filter(Group == "spider_prop"), 
+                            type = "response") %>% as.data.frame()%>% 
+  setNames("Predicted") %>% 
+  cbind(prop_dataset_LONG %>% 
+          filter(Group == "spider_prop"))
+
+# Beetles
+prop.bet.Dev.pred = predict(prop.bet.Dev, 
+                            newdata = prop_dataset_LONG %>% 
+                              filter(Group == "beetle_prop"), 
+                            type = "response") %>% as.data.frame()%>% 
+  setNames("Predicted") %>% 
+  cbind(prop_dataset_LONG %>% 
+          filter(Group == "beetle_prop"))
+
+# True bugs
+prop.bug.Dev.pred = predict(prop.bug.Dev, 
+                            newdata = prop_dataset_LONG %>% 
+                              filter(Group == "truebug_prop"), 
+                            type = "response") %>% as.data.frame()%>% 
+  setNames("Predicted") %>% 
+  cbind(prop_dataset_LONG %>% 
+          filter(Group == "truebug_prop"))
 
 
+# Leaf hopper
+prop.hop.Dev.pred = predict(prop.hop.Dev, 
+                            newdata = prop_dataset_LONG %>% 
+                              filter(Group == "hopper_prop"), 
+                            type = "response") %>% as.data.frame()%>% 
+  setNames("Predicted") %>% 
+  cbind(prop_dataset_LONG %>% 
+          filter(Group == "hopper_prop"))
 
 
+# ant
+prop.ant.Dev.pred = predict(prop.ant.Dev, 
+                            newdata = prop_dataset_LONG %>% 
+                              filter(Group == "ant_prop"), 
+                            type = "response") %>% as.data.frame()%>% 
+  setNames("Predicted") %>% 
+  cbind(prop_dataset_LONG %>% 
+          filter(Group == "ant_prop"))
+
+
+# Grasshopper
+prop.grasshopper.Dev.pred = predict(prop.grasshopper.Dev, 
+                            newdata = prop_dataset_LONG %>% 
+                              filter(Group == "grasshopper_prop"), 
+                            type = "response") %>% as.data.frame()%>% 
+  setNames("Predicted") %>% 
+  cbind(prop_dataset_LONG %>% 
+          filter(Group == "grasshopper_prop"))
+
+
+# fly 
+prop.fly.Dev.pred = predict(prop.fly.Dev, 
+                                    newdata = prop_dataset_LONG %>% 
+                                      filter(Group == "fly_prop"), 
+                                    type = "response") %>% as.data.frame()%>% 
+  setNames("Predicted") %>% 
+  cbind(prop_dataset_LONG %>% 
+          filter(Group == "fly_prop"))
+
+# daddylonglegs 
+prop.daddylonglegs.Dev.pred = predict(prop.daddylonglegs.Dev, 
+                            newdata = prop_dataset_LONG %>% 
+                              filter(Group == "daddylonglegs_prop"), 
+                            type = "response") %>% as.data.frame()%>% 
+  setNames("Predicted") %>% 
+  cbind(prop_dataset_LONG %>% 
+          filter(Group == "daddylonglegs_prop"))
+
+prop_dataset.prediction = rbind(prop.cat.Dev.pred,
+                                prop.spi.Dev.pred,
+                                prop.bet.Dev.pred,
+                                prop.bet.Dev.pred,
+                                prop.bug.Dev.pred,
+                                prop.hop.Dev.pred,
+                                prop.ant.Dev.pred,
+                                prop.grasshopper.Dev.pred,
+                                prop.fly.Dev.pred,
+                                prop.daddylonglegs.Dev.pred) %>% 
+                                data.frame()
+
+
+prop_dataset.prediction %>%
+  ggplot() +
+  geom_point( aes(Occurence, x = dev) ) +
+  geom_smooth(aes(y = Predicted, x = dev))+
+  facet_wrap(~Group,  scales = "free_y")+
+  theme_bw()
+
+
+prop_dataset.prediction %>%
+  ggplot() +
+  geom_point( aes(Occurence, x = Latitude) ) +
+  geom_smooth(aes(y = Predicted, x = Latitude), color = "steelblue")+
+  facet_wrap(~Group,  scales = "free_y")+
+  theme_bw()
 
 # Question 2
 
