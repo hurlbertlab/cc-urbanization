@@ -1,6 +1,7 @@
 library(tidyverse)
 library(daymetr)
-  
+library(geosphere)
+require(vegan)
   
   minSurveys = 50
   Pheno_julianWindow = 140:213
@@ -210,12 +211,12 @@ write.csv(GoodSiteYearLatLon %>%
   row.names = FALSE)
 
 
-
-   TempSiteData = download_daymet_batch(file_location ="Data/PhenoAnomalySites.csv",
-                                     start = min(GoodSiteYear$Year),
-                                     end = 2024, # this is the most recent available in daymetr
-                                     internal = TRUE)
- 
+# 
+#    TempSiteData = download_daymet_batch(file_location ="Data/PhenoAnomalySites.csv",
+#                                      start = min(GoodSiteYear$Year),
+#                                      end = 2024, # this is the most recent available in daymetr
+#                                      internal = TRUE)
+#  
 
 
 # The TempSiteData is a list of list. check TempSiteData[[1]]$ 
@@ -262,44 +263,16 @@ by = c("site")) %>%
          AnomalTmax = abs(meanTmax - AllmeanTmax),
          AnomalPreci = abs(meanPreci - AllmeanPreci))%>% 
   right_join(anomalPheno %>%  filter(Year != "2025"), # because daymetr has no 2025 yet.
-             by = c("site" = "Name", "year" = "Year")) 
+             by = c("site" = "Name", "year" = "Year")) %>% 
+  left_join(GoodSiteYearLatLon, by = c("site" = "Name")) 
 
-
-
-
-
-
-xx = AllTempData %>% 
-  filter(yday %in% TempDayWindow) %>% 
-  group_by(site, year) %>% 
-  summarise(meanTmin = mean(tmin..deg.c.),
-            meanTmax = mean(tmax..deg.c.),
-            meanPreci = mean(prcp..mm.day.)) %>% 
-  left_join(
-    AllTempData %>% 
-      filter(yday %in% TempDayWindow) %>% 
-      group_by(site) %>% 
-      summarise(AllmeanTmin = mean(tmin..deg.c.),
-                AllmeanTmax = mean(tmax..deg.c.),
-                AllmeanPreci = mean(prcp..mm.day.)),
-    by = c("site")) %>% 
-  mutate(AnomalTmin = abs(meanTmin - AllmeanTmin),
-         AnomalTmax = abs(meanTmax - AllmeanTmax),
-         AnomalPreci = abs(meanPreci - AllmeanPreci))%>% 
-  right_join(anomalPheno, 
-             by = c("site" = "Name", "year" = "Year")) 
-
-
-
-
-
-
+ 
 
 # Maximum Temperature Anomality
 
 TempArthropodAnomal %>% 
   ggplot(aes(y = AnomalOccurence, x = AnomalTmax, )) +
-  geom_point(alpha = 0.6, color = "darkblue") +  
+  geom_point(alpha = 0.6,  aes(colour = Latitude)) +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
   labs(
@@ -313,7 +286,7 @@ TempArthropodAnomal %>%
 
 TempArthropodAnomal %>% 
   ggplot(aes(y = AnomalJulWeek, x = AnomalTmax, )) +
-  geom_point(alpha = 0.6, color = "darkblue") +  
+  geom_point(alpha = 0.6,  aes(colour = Latitude)) +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
   labs(
@@ -328,7 +301,7 @@ TempArthropodAnomal %>%
 
 TempArthropodAnomal %>% 
   ggplot(aes(y = AnomalOccurence, x = AnomalTmin, )) +
-  geom_point(alpha = 0.6, color = "darkblue") +  
+  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
   labs(
@@ -343,7 +316,7 @@ TempArthropodAnomal %>%
 
 TempArthropodAnomal %>% 
   ggplot(aes(y = AnomalJulWeek, x = AnomalTmin, )) +
-  geom_point(alpha = 0.6, color = "darkblue") +  
+  geom_point(alpha = 0.6,  aes(colour = Latitude)) +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
   labs(
@@ -353,3 +326,42 @@ TempArthropodAnomal %>%
   ) +
   facet_wrap(~Group,  scales = "free_y")+
   theme_minimal(base_size = 13)
+
+
+
+
+# is Pnenological anomality spatially autocorrelated?
+
+
+
+pheno_CV = TempArthropodAnomal %>% select(site, ObservationMethod,
+                               Latitude, Longitude, year, maxjulianweek, maxOcc, Group) %>% 
+  group_by(site,  Latitude, Longitude, ObservationMethod, Group) %>% 
+  summarise(cv_maxjulianweek  = sd(maxjulianweek)/mean(maxjulianweek),
+          cv_maxOcc = sd(maxOcc)/mean(maxOcc)) %>% as.data.frame()
+
+
+# Investigate if the CV for each site is auto-correlated spatially
+
+pheno_LatLonDist = dist(pheno_CV[,c("Latitude", "Longitude")],
+                    method = "euclidean")
+
+pheno_hellinger <- decostand(pheno_CV$cv_maxjulianweek,
+                            method = "hellinger")
+
+phenoHel_dist <- dist(pheno_hellinger, method = "euclidean")
+ 
+phenoLatLon <- pheno_CV[, c("Longitude", "Latitude")]
+
+phenogeo_dist <- distm(phenoLatLon, fun = distHaversine)
+phenogeo_dist <- as.dist(phenogeo_dist)
+
+
+pheno_mantel <- mantel(phenoHel_dist, phenogeo_dist, 
+                      method = "pearson", permutations = 999)
+
+
+
+
+
+

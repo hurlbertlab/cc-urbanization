@@ -1,4 +1,7 @@
 library(ggrepel)
+library(lme4)
+
+
 
 # Developed cover models
 cat.Dev = glm(caterpillar ~ dev +  ObservationMethod, 
@@ -211,7 +214,7 @@ prop_dataset %>%
                names_to = "Group",
                values_to = "Occurence") %>% 
 ggplot(aes(x = dev, y = Occurence, z = ObservationMethod)) +
-  geom_point(aes(colour = ObservationMethod))+
+  geom_point(aes(colour = ObservationMethod, size = Trials, alpha = 0.2))+
   geom_smooth(
     method = "glm",
     method.args = list(family = binomial),
@@ -465,5 +468,247 @@ prop.devLatOutput$Group = rep(c('Caterpillar', 'Spider', 'Beetle',
                                  'Fly', 'Grasshopper', 'Daddylonglegs'), each = 5)
 
 rownames(prop.devLatOutput) = NULL
+
+###########################################################################################
+
+# - trying interaction effect in multilevel model with interaction in fixed effects
+
+prop_datasetScaled = prop_dataset %>%
+  mutate(
+    dev_sc = scale(dev),
+    forest_sc = scale(forest),
+    Latitude_sc = scale(Latitude),
+    ObservationMethod = factor(ObservationMethod))
+
+
+
+
+prop.cat.DevLat = glm(caterpillar_prop ~ dev * Latitude  + ObservationMethod, 
+                      data = prop_dataset, weights = Trials,  family = "binomial")
+
+catDevPlotM = interact_plot(
+  prop.cat.DevLat,
+  pred = dev,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Prop. of surveys with caterpillar",
+  x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+
+prop.bug.DevLat.mixed <- glmer(
+  truebug_prop ~ scale(dev) * scale(Latitude) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
+bugDevPlotM = interact_plot(
+  prop.bug.DevLat.mixed,
+  pred = dev,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Prop. of surveys with truebug",
+  x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+
+
+prop.spi.DevLat.mixed <- glmer(
+  spider_prop ~ scale(dev) * scale(Latitude) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial
+)
+
+
+spiDevPlotM = interact_plot(
+  prop.spi.DevLat.mixed,
+  pred = dev,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Prop. of surveys with spider",
+  x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+
+prop.bet.DevLat= glm(beetle_prop ~ dev * Latitude + ObservationMethod, 
+                     data = prop_dataset, weights = Trials,  family = "binomial")
+
+prop.bet.DevLat.mixed <- glmer(
+  beetle_prop ~ scale(dev) * scale(Latitude) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial
+)
+
+
+betDevPlotM = interact_plot(
+  prop.bet.DevLat.mixed,
+  pred = dev,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Prop. of surveys with beetle",
+  x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+ 
+
+
+prop.grasshopper.DevLat.mixed <- glmer(
+  grasshopper_prop ~ scale(dev) * scale(Latitude) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial
+)
+
+graDevPlotM = interact_plot(
+  prop.grasshopper.DevLat.mixed,
+  pred = dev,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Prop. of surveys with grasshopper",
+  x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+
+
+prop.ant.DevLat.mixed <- glmer(
+  ant_prop ~ scale(dev) * scale(Latitude) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
+antDevPlotM = interact_plot(
+  prop.ant.DevLat.mixed,
+  pred = dev,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Prop. of surveys with ant",
+  x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+
+
+prop.fly.DevLat.mixed = glmer(
+  fly_prop ~ scale(dev) * scale(Latitude) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial
+)
+
+flyDevPlotM = interact_plot(
+  prop.fly.DevLat.mixed,
+  pred = dev,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Prop. of surveys with fly",
+  x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+
+
+prop.hop.DevLat = glm(hopper_prop ~ dev * Latitude + ObservationMethod, 
+                              data = prop_dataset, weights = Trials,  family = "binomial")
+
+hopDevPlotM = interact_plot(
+  prop.hop.DevLat,
+  pred = dev,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Prop. of surveys with hopper",
+  x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+
+
+prop.daddylonglegs.DevLat.mixed = glmer(
+  daddylonglegs_prop ~ scale(dev) * scale(Latitude) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial
+)
+
+daddylonglegsDevPlotM = interact_plot(
+  prop.daddylonglegs.DevLat.mixed,
+  pred = dev,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Prop. of surveys with daddylonglegs",
+  x.lab = "% developed cover", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+
+ggarrange(catDevPlotM, spiDevPlotM, betDevPlotM, bugDevPlotM, hopDevPlotM, antDevPlotM, 
+          flyDevPlotM, graDevPlotM, daddylonglegsDevPlotM,
+          ncol=3, nrow=3, common.legend = TRUE, legend="bottom")
+##########################################################################################
+
+
+
+prop.cat.Dev = glm(caterpillar_prop ~ dev + ObservationMethod, 
+                      data = prop_dataset, weights = Trials,  family = "binomial")
+
+prop.bug.Dev.mixed <- glmer(
+  truebug_prop ~ scale(dev) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
+prop.spi.Dev.mixed <- glmer(
+  spider_prop ~ scale(dev) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
+
+prop.hop.Dev.mixed <- glmer(
+  hopper_prop ~ scale(dev) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
+prop.fly.Dev.mixed = glmer(
+  fly_prop ~ scale(dev) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
+
+prop.daddylonglegs.Dev.mixed = glmer(
+  daddylonglegs_prop ~ scale(dev) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
+
+prop.ant.Dev.mixed = glmer(
+  ant_prop ~ scale(dev) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
+prop.grasshopper.Dev.mixed <- glmer(
+  grasshopper_prop ~ scale(dev) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial
+)
+
+
+prop.bet.Dev.mixed <- glmer(
+  beetle_prop ~ scale(dev) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
 
 
