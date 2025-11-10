@@ -1,6 +1,6 @@
 library(ggrepel)
 library(lme4)
-
+library(pscl)
 
 
 # Developed cover models
@@ -657,6 +657,17 @@ ggarrange(catDevPlotM, spiDevPlotM, betDevPlotM, bugDevPlotM, hopDevPlotM, antDe
 prop.cat.Dev = glm(caterpillar_prop ~ dev + ObservationMethod, 
                       data = prop_dataset, weights = Trials,  family = "binomial")
 
+
+caterpillar_prop.mixed <- glmer(
+  caterpillar_prop ~ scale(dev) + (1 | ObservationMethod ),
+  data = prop_dataset,
+  weights = Trials,
+  family = binomial)
+
+summary(caterpillar_prop.mixed)
+
+
+
 prop.bug.Dev.mixed <- glmer(
   truebug_prop ~ scale(dev) + (1 | ObservationMethod ),
   data = prop_dataset,
@@ -711,4 +722,56 @@ prop.bet.Dev.mixed <- glmer(
   family = binomial)
 
 
+##########################################################################
 
+
+# ------  compare the r-squred of development cover and forest cover models
+
+
+
+
+# Collect pseudo R² for development models
+dev_r2 <- data.frame(
+  Group = c('caterpillar', 'spider', 'beetle', 'leafhopper', 'truebugs', 'ant'),
+  R2 = c(
+    pscl::pR2(cat.Dev)['McFadden'],
+    pscl::pR2(spi.Dev)['McFadden'],
+    pscl::pR2(beet.Dev)['McFadden'],
+    pscl::pR2(hop.Dev)['McFadden'],
+    pscl::pR2(bug.Dev)['McFadden'],
+    pscl::pR2(ant.Dev)['McFadden']
+  ),
+  ModelType = 'Development'
+)
+
+# Collect pseudo R² for forest models
+for_r2 <- data.frame(
+  Group = c('caterpillar', 'spider', 'beetle', 'leafhopper', 'truebugs', 'ant'),
+  R2 = c(
+    pscl::pR2(cat.For)['McFadden'],
+    pscl::pR2(spi.For)['McFadden'],
+    pscl::pR2(beet.For)['McFadden'],
+    pscl::pR2(hop.For)['McFadden'],
+    pscl::pR2(bug.For)['McFadden'],
+    pscl::pR2(ant.For)['McFadden']
+  ),
+  ModelType = 'Forest'
+)
+
+# Combine both
+r2_all <- rbind(dev_r2, for_r2)
+r2_all = r2_all %>% 
+  pivot_wider(names_from = ModelType, 
+              values_from = R2)
+
+
+ggplot(r2_all, aes(y = Development, x = Forest)) +
+  geom_point(size = 3, color = "blue") +
+  geom_abline(intercept = 0, slope = 1, color = "black") +
+  geom_text_repel(aes(label = Group), size = 3.5, max.overlaps = Inf) +  
+  coord_equal() +
+  labs(
+    y = "R2 of Urban Development",
+    x = "R2 of Forest Cover"
+  ) +
+  theme_bw()

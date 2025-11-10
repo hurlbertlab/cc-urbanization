@@ -107,7 +107,8 @@ MaxArthropod = JuliSiteData %>%
 JuliSiteData_Caterpillar= left_join(MaxArthropod, 
                                     JuliSiteData %>% select(Name, ObservationMethod, 
                                                             Year, julianweek, Caterpillar),
-                                    by = c("Name", "ObservationMethod", "Year", "Caterpillar")) %>% 
+                                    by = c("Name", "ObservationMethod", "Year",
+                                           "Caterpillar")) %>% 
   select(Name, ObservationMethod, Year, julianweek, Caterpillar) %>% 
   rename(maxjulianweek = julianweek,
          maxOcc = Caterpillar)
@@ -125,8 +126,8 @@ AbnormCaterpillar= JuliSiteData_Caterpillar %>%  # site/year/occurrence max
   group_by(Name, ObservationMethod) %>% 
   summarise(MeanJulWeek = mean(maxjulianweek),  #site mean julWeek
             MeanOccurence = mean(maxOcc))) %>%  # site mean occurrence
-  mutate(AnomalJulWeek = abs(maxjulianweek  - MeanJulWeek),
-         AnomalOccurence = abs(maxOcc  - MeanOccurence))
+  mutate(AnomalJulWeek = maxjulianweek  - MeanJulWeek,
+         AnomalOccurence = maxOcc  - MeanOccurence)
 
  
 
@@ -154,8 +155,8 @@ AbnormSpider= JuliSiteData_Spider %>%  # site/year/occurrence max
               group_by(Name, ObservationMethod) %>% 
               summarise(MeanJulWeek = mean(maxjulianweek),  #site mean julWeek
                         MeanOccurence = mean(maxOcc))) %>%  # site mean occurrence
-  mutate(AnomalJulWeek = abs(maxjulianweek  - MeanJulWeek),
-         AnomalOccurence = abs(maxOcc  - MeanOccurence))
+  mutate(AnomalJulWeek = maxjulianweek  - MeanJulWeek,
+         AnomalOccurence = maxOcc  - MeanOccurence)
 
 # Ant  data: 
 
@@ -174,8 +175,8 @@ AbnormAnt= JuliSiteData_Ant %>%  # site/year/occurrence max
               group_by(Name, ObservationMethod) %>% 
               summarise(MeanJulWeek = mean(maxjulianweek),  #site mean julWeek
                         MeanOccurence = mean(maxOcc))) %>%  # site mean occurrence
-  mutate(AnomalJulWeek = abs(maxjulianweek  - MeanJulWeek),
-         AnomalOccurence = abs(maxOcc  - MeanOccurence))
+  mutate(AnomalJulWeek = maxjulianweek  - MeanJulWeek,
+         AnomalOccurence = maxOcc  - MeanOccurence)
 
 
 
@@ -259,9 +260,9 @@ AllTempData %>%
             AllmeanTmax = mean(tmax..deg.c.),
             AllmeanPreci = mean(prcp..mm.day.)),
 by = c("site")) %>% 
-  mutate(AnomalTmin = abs(meanTmin - AllmeanTmin),
-         AnomalTmax = abs(meanTmax - AllmeanTmax),
-         AnomalPreci = abs(meanPreci - AllmeanPreci))%>% 
+  mutate(AnomalTmin = meanTmin - AllmeanTmin,
+         AnomalTmax = meanTmax - AllmeanTmax,
+         AnomalPreci = meanPreci - AllmeanPreci)%>% 
   right_join(anomalPheno %>%  filter(Year != "2025"), # because daymetr has no 2025 yet.
              by = c("site" = "Name", "year" = "Year")) %>% 
   left_join(GoodSiteYearLatLon, by = c("site" = "Name")) 
@@ -330,7 +331,30 @@ TempArthropodAnomal %>%
 
 
 
-# is Pnenological anomality spatially autocorrelated?
+catJulTminLat= lm(AnomalOccurence ~ AnomalTmin * scale(Latitude), 
+               data = TempArthropodAnomal %>% 
+                 filter(Group == "Caterpillar"))
+summary(catJulTminLat)
+
+interact_plot(
+  catJulTminLat,
+  pred = AnomalTmin,
+  modx = Latitude,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Peak  anomaly",
+  x.lab =  "Temperature Anomaly", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2) 
+
+
+
+catJulTmaxLat= lm(AnomalJulWeek~ AnomalTmax, data = TempArthropodAnomal %>% 
+                    filter(Group == "Caterpillar"))
+summary(catJulTmaxLat)  
+
+
+
+# is Phenomenological anomality spatially auto-correlated?
 
 
 
@@ -343,13 +367,15 @@ pheno_CV = TempArthropodAnomal %>% select(site, ObservationMethod,
 
 # Investigate if the CV for each site is auto-correlated spatially
 
-pheno_LatLonDist = dist(pheno_CV[,c("Latitude", "Longitude")],
+pheno_LatLonDist = dist(pheno_CV %>% 
+                          filter(Group == "Caterpillar") %>% 
+                          select(Latitude, Longitude),
                     method = "euclidean")
 
-pheno_hellinger <- decostand(pheno_CV$cv_maxjulianweek,
-                            method = "hellinger")
 
-phenoHel_dist <- dist(pheno_hellinger, method = "euclidean")
+phenoHel_dist <- dist(pheno_CV%>% 
+                               filter(Group == "Caterpillar") %>% 
+                               select (cv_maxjulianweek), method = "euclidean")
  
 phenoLatLon <- pheno_CV[, c("Longitude", "Latitude")]
 
