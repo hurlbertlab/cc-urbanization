@@ -176,6 +176,8 @@ US_sites$forest = us_forest$`NLCD Land Cover Class`
 
 sites = rbind(US_sites, CAN_sites)
 
+# write.csv(sites, "C:\\Users\\osawe\\Documents\\Git\\BIOL465\\siteUrbanization.csv")
+# Keep local copy of the urbanization data for future purpose
 
 sites_sf <- st_as_sf(sites[sites$Name %in% goodSites$Name, ], 
                      coords = c("Longitude", "Latitude"), crs = 4326) %>%

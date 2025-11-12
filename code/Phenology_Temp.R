@@ -2,6 +2,8 @@ library(tidyverse)
 library(daymetr)
 library(geosphere)
 require(vegan)
+library(ggrepel)
+library(ggpubr)
   
   minSurveys = 50
   Pheno_julianWindow = 140:213
@@ -265,23 +267,37 @@ by = c("site")) %>%
          AnomalPreci = meanPreci - AllmeanPreci)%>% 
   right_join(anomalPheno %>%  filter(Year != "2025"), # because daymetr has no 2025 yet.
              by = c("site" = "Name", "year" = "Year")) %>% 
-  left_join(GoodSiteYearLatLon, by = c("site" = "Name")) 
+  left_join(GoodSiteYearLatLon, by = c("site" = "Name")) %>% 
+  left_join(sites %>% select(Name, dev, forest), by = c( "site" = "Name")) %>% 
+  mutate(Group = factor(Group, levels =c("Caterpillar",
+                                         "Ant",
+                                         "Spider")))
 
  
 
 # Maximum Temperature Anomality
 
+
 TempArthropodAnomal %>% 
-  ggplot(aes(y = AnomalOccurence, x = AnomalTmax, )) +
-  geom_point(alpha = 0.6,  aes(colour = Latitude)) +  
+  ggplot(aes(y = AnomalOccurence, x = AnomalTmax)) +
+  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +   
+  stat_regline_equation(
+    aes(label = paste(..eq.label..,  sep = "~~~")),
+    label.x = -1.5,
+    label.y = -0.3,
+    color = "red",
+    size = 3
+  ) +
   labs(
     title = "Anomality in Maximum Daily Temperature",
     x = "Temperature anomaly",
-    y = "Occurence anomaly"
+    y = "Occurrence anomaly"
   ) +
-  facet_wrap(~Group)+
+  facet_wrap(~Group) +
   theme_minimal(base_size = 13)
 
 
@@ -290,6 +306,15 @@ TempArthropodAnomal %>%
   geom_point(alpha = 0.6,  aes(colour = Latitude)) +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +   
+  stat_regline_equation(
+    aes(label = paste(..eq.label..,  sep = "~~~")),
+    label.x = -1.5,
+    label.y = -35,
+    color = "red",
+    size = 3
+  ) +
   labs(
     title = "Anomality in Daily Maximum Temperature",
     x = "Temperature Anomaly",
@@ -305,6 +330,15 @@ TempArthropodAnomal %>%
   geom_point(alpha = 0.6, aes(colour = Latitude)) +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  stat_regline_equation(
+    aes(label = paste(..eq.label..,  sep = "~~~")),
+    label.x = -1.5,
+    label.y = -0.3,
+    color = "red",
+    size = 3
+  ) +
   labs(
     title = "Anomality in Daily Minimum Temperature",
     x = "Temperature Anomaly",
@@ -316,22 +350,32 @@ TempArthropodAnomal %>%
 
 
 TempArthropodAnomal %>% 
-  ggplot(aes(y = AnomalJulWeek, x = AnomalTmin, )) +
-  geom_point(alpha = 0.6,  aes(colour = Latitude)) +  
+  ggplot(aes(y = AnomalJulWeek, x = AnomalTmin)) +
+  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
-  labs(
-    title = "Anomality in Minimum Daily temperature",
-    x = "Temperature Anomaly",
-    y = "Peak Julian Week anomaly"
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  stat_regline_equation(
+    aes(label = paste(..eq.label..,  sep = "~~~")),
+    label.x = -1.5,
+    label.y = -35,
+    color = "red",
+    size = 3
   ) +
-  facet_wrap(~Group,  scales = "free_y")+
+  labs(
+    title = "Anomality in Minimum Daily Temperature",
+    x = "Temperature Anomaly",
+    y = "Peak Julian Week Anomaly"
+  ) +
+  facet_wrap(~Group) +
   theme_minimal(base_size = 13)
 
 
 
 
-catJulTminLat= lm(AnomalOccurence ~ AnomalTmin * scale(Latitude), 
+
+catJulTminLat= lm(AnomalJulWeek ~ AnomalTmin , 
                data = TempArthropodAnomal %>% 
                  filter(Group == "Caterpillar"))
 summary(catJulTminLat)
@@ -348,46 +392,162 @@ interact_plot(
 
 
 
-catJulTmaxLat= lm(AnomalJulWeek~ AnomalTmax, data = TempArthropodAnomal %>% 
+
+
+catJulTminDev= lm(AnomalJulWeek ~ AnomalTmin * dev , # no interaction effect
+                  data = TempArthropodAnomal %>% 
                     filter(Group == "Caterpillar"))
-summary(catJulTmaxLat)  
+
+catJulTmaxDev= lm(AnomalJulWeek ~ AnomalTmax * dev , # no interaction effect
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Caterpillar"))
+
+catOccTminDev= lm(AnomalOccurence ~ AnomalTmin * dev , # no interaction effect
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Caterpillar"))
+
+catOccTmaxDev= lm(AnomalOccurence ~ AnomalTmax * dev , # no interaction effect
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Caterpillar"))
+
+antJulTminDev= lm(AnomalJulWeek ~ AnomalTmin * dev , # p = 0.08
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Ant"))
+
+antJulTmaxDev= lm(AnomalJulWeek ~ AnomalTmax * dev , # no interaction effect
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Ant"))
+
+antOccTminDev= lm(AnomalOccurence ~ AnomalTmin * dev , #  p = 0.09
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Ant"))
+
+antOccTmaxDev= lm(AnomalOccurence ~ AnomalTmax * dev , # no interaction effect
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Ant"))
 
 
 
+spiJulTminDev= lm(AnomalJulWeek ~ AnomalTmin * dev , 
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Spider"))
+
+spiJulTmaxDev= lm(AnomalJulWeek ~ AnomalTmax * dev ,  
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Spider"))
+
+spiOccTminDev= lm(AnomalOccurence ~ AnomalTmin * dev ,  # no interaction effect
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Spider"))
+
+spiOccTmaxDev= lm(AnomalOccurence ~ AnomalTmax * dev , # no interaction effect
+                  data = TempArthropodAnomal %>% 
+                    filter(Group == "Spider"))
+
+
+
+phenoTempDevOutput = data.frame(rbind(summary(catJulTminDev)$coefficients, 
+                                      summary(catJulTmaxDev)$coefficients, 
+                                      summary(catOccTminDev)$coefficients,
+                                      summary(catOccTmaxDev)$coefficients, 
+                                      summary(antJulTminDev)$coefficients, 
+                                      summary(antJulTmaxDev)$coefficients, 
+                                      summary(antOccTminDev)$coefficients,
+                                      summary(antOccTmaxDev)$coefficients, 
+                                      summary(spiJulTminDev)$coefficients, 
+                                      summary(spiJulTmaxDev)$coefficients, 
+                                      summary(spiOccTminDev)$coefficients,
+                                      summary(spiOccTmaxDev)$coefficients))
+phenoTempDevOutput$term = rep(c('Intercept', 'AnomalTmin', 'dev', 'AnomalTmax:dev',
+                            'Intercept', 'AnomalTmax', 'dev', 'AnomalTmax:dev'), times = 6)
+
+
+
+
+
+spiJulTminDevPlot= interact_plot(
+  spiJulTminDev,
+  pred = AnomalTmin,
+  modx = dev,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Julian week",
+  x.lab =  "Min. Temperature", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)+
+  annotation_raster(spiderImage, ymin = 5, ymax = 10, xmin = .2, xmax = .8)
+
+
+
+spiJulTmaxDevPlot= interact_plot(
+  spiJulTmaxDev,
+  pred = AnomalTmax,
+  modx = dev,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "Julian week",
+  x.lab =  "Max. Temperature", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)+
+  annotation_raster(spiderImage, ymin = 5, ymax = 10, xmin = .2, xmax = .8)
+
+
+antJulTminDevPlot= interact_plot(
+  antJulTminDev,
+  pred = AnomalTmin,
+  modx = dev,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label =  "Julian week",
+  x.lab =  "Min. Temperature", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)+
+  annotation_raster(antImage, ymin = 5, ymax = 12, xmin = .2, xmax = .9)
+
+
+antOccTminDevPlot= interact_plot(
+  antOccTminDev,
+  pred = AnomalTmin,
+  modx = dev,
+  plot.points = FALSE,
+  interval = FALSE,
+  y.label = "% Occurence",
+  x.lab =  "Min. Temperature", cex.lab = 2, vary.lty = FALSE,
+  colors = c('darkblue', 'blue', 'powderblue'), line.thickness = 2)+
+  annotation_raster(antImage, ymin = .05, ymax = 0.01, xmin = -.9, xmax = -.2)
+
+
+
+
+
+
+
+
+annotate_figure(
+  ggarrange(
+    antJulTminDevPlot, antOccTminDevPlot,
+    spiJulTminDevPlot, spiJulTmaxDevPlot,
+    ncol = 2, nrow = 2,
+    common.legend = TRUE, legend = "bottom"
+  ),
+  top = text_grob(
+    "Significant (P < 0.1) effect of interaction with % urban development",
+    face = "bold", size = 12
+  )
+)
 # is Phenomenological anomality spatially auto-correlated?
 
 
 
-pheno_CV = TempArthropodAnomal %>% select(site, ObservationMethod,
-                               Latitude, Longitude, year, maxjulianweek, maxOcc, Group) %>% 
-  group_by(site,  Latitude, Longitude, ObservationMethod, Group) %>% 
-  summarise(cv_maxjulianweek  = sd(maxjulianweek)/mean(maxjulianweek),
-          cv_maxOcc = sd(maxOcc)/mean(maxOcc)) %>% as.data.frame()
-
-
 # Investigate if the CV for each site is auto-correlated spatially
 
-pheno_LatLonDist = dist(pheno_CV %>% 
-                          filter(Group == "Caterpillar") %>% 
-                          select(Latitude, Longitude),
-                    method = "euclidean")
 
-
-phenoHel_dist <- dist(pheno_CV%>% 
-                               filter(Group == "Caterpillar") %>% 
-                               select (cv_maxjulianweek), method = "euclidean")
- 
-phenoLatLon <- pheno_CV[, c("Longitude", "Latitude")]
-
-phenogeo_dist <- distm(phenoLatLon, fun = distHaversine)
-phenogeo_dist <- as.dist(phenogeo_dist)
-
-
-pheno_mantel <- mantel(phenoHel_dist, phenogeo_dist, 
-                      method = "pearson", permutations = 999)
-
-
-
+ggplot(TempArthropodAnomal, aes(x = "", y = dev)) +
+  geom_boxplot(outlier.shape = NA) +   
+  geom_jitter(width = 0.1, alpha = 0.4, color = "blue") +  
+  labs(
+    title = "Distribution of dev",
+    y = "dev",
+    x = ""
+  ) +
+  theme_minimal(base_size = 13)
 
 
 
