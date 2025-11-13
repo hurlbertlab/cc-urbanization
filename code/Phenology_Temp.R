@@ -4,12 +4,13 @@ library(geosphere)
 require(vegan)
 library(ggrepel)
 library(ggpubr)
+library(interactions)
   
   minSurveys = 50
   Pheno_julianWindow = 140:213
   minSurvYears = 3
   yearException = 2025 # because we do not yet have 2025 data for temperature
-  TempDayWindow = 110:213   # Adjust
+  TempDayWindow = 90:180   # Adjust
   
   
   # What sites have been surveying arthropods for three or more years?
@@ -410,7 +411,7 @@ catOccTmaxDev= lm(AnomalOccurence ~ AnomalTmax * dev , # no interaction effect
                   data = TempArthropodAnomal %>% 
                     filter(Group == "Caterpillar"))
 
-antJulTminDev= lm(AnomalJulWeek ~ AnomalTmin * dev , # p = 0.08
+antJulTminDev= lm(AnomalJulWeek ~ AnomalTmin * dev , # no interaction effect
                   data = TempArthropodAnomal %>% 
                     filter(Group == "Ant"))
 
@@ -418,7 +419,7 @@ antJulTmaxDev= lm(AnomalJulWeek ~ AnomalTmax * dev , # no interaction effect
                   data = TempArthropodAnomal %>% 
                     filter(Group == "Ant"))
 
-antOccTminDev= lm(AnomalOccurence ~ AnomalTmin * dev , #  p = 0.09
+antOccTminDev= lm(AnomalOccurence ~ AnomalTmin * dev , # no interaction effect
                   data = TempArthropodAnomal %>% 
                     filter(Group == "Ant"))
 

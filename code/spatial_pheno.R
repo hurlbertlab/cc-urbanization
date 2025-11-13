@@ -238,3 +238,5 @@ spatialPheno %>%
   labs( title = "Ant", subtitle = "Peak Julian Period across site")+
   theme_minimal()
 
+
+# write.csv(sites, file = "data/urbanDev_forest.csv")
