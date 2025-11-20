@@ -1,3 +1,4 @@
+# Load library ----
 library(tidyverse)
 library(daymetr)
 library(geosphere)
@@ -5,12 +6,16 @@ require(vegan)
 library(ggrepel)
 library(ggpubr)
 library(interactions)
-  
+
+
+# -- Define data inclusion criteria-----
   minSurveys = 50
   Pheno_julianWindow = 140:213
-  minSurvYears = 3
+  minSurvYears = 3 # min number of years of survey at a site.
+  min.nSurvWeekYearSite = 10 # minimum number of survey in a week, at a year, at a site.
   yearException = 2025 # because we do not yet have 2025 data for temperature
   TempDayWindow = 90:180   # Adjust
+  min.nJulianWeekYearSite = 5
   
   
   # What sites have been surveying arthropods for three or more years?
@@ -67,13 +72,13 @@ Julian_Arthropod = fullDataset %>%
 
 # good weeks of survey stays. 
 goodsurv = Julian_Arthropod %>% 
-  filter(surveyNum >=  10)  # each site/year/week should have at least 10 surveys.
+  filter(surveyNum >=  min.nSurvWeekYearSite)  # each site/year/week should have at least 10 surveys.
 
 
 Site.julian = goodsurv %>% 
   group_by(Name, ObservationMethod, Year) %>% 
   summarise(nJulianWeek= n_distinct(julianweek)) %>% 
-  filter(nJulianWeek >= 5)
+  filter(nJulianWeek >= min.nJulianWeekYearSite) # must 5 or more weeks of survey
 
 
 JuliandData = inner_join(goodsurv, Site.julian, 
@@ -82,7 +87,7 @@ JuliandData = inner_join(goodsurv, Site.julian,
 siteyear =  JuliandData %>% # Good sites with 3 or more years of survey
   group_by(Name, ObservationMethod) %>% 
   summarise(nYear= n_distinct(Year)) %>% 
-  filter(nYear >= 3)
+  filter(nYear >= minSurvYears)
 
 
 JuliSiteData = inner_join(JuliandData, siteyear,
@@ -104,8 +109,8 @@ MaxArthropod = JuliSiteData %>%
 
 
 
-###################################################################################
-# Caterpillar Data
+
+## Caterpillar Data----
 
 JuliSiteData_Caterpillar= left_join(MaxArthropod, 
                                     JuliSiteData %>% select(Name, ObservationMethod, 
@@ -141,7 +146,7 @@ AbnormCaterpillar= JuliSiteData_Caterpillar %>%  # site/year/occurrence max
 
 
 
-# Spider  data: 
+# Spider  data: ----
 
 # Return only the maximum value of weekly caterpillar prop. of occurrence for each year and it corresponding Julian week
 
@@ -161,7 +166,7 @@ AbnormSpider= JuliSiteData_Spider %>%  # site/year/occurrence max
   mutate(AnomalJulWeek = maxjulianweek  - MeanJulWeek,
          AnomalOccurence = maxOcc  - MeanOccurence)
 
-# Ant  data: 
+# Ant  data: ----
 
 # Return only the maximum value of weekly ant prop. of occurrence for each year and it corresponding Julian week
 
@@ -186,7 +191,7 @@ AbnormAnt= JuliSiteData_Ant %>%  # site/year/occurrence max
 
 
 
-# #####################    Temperature data retrieval
+#  Temperature data retrieval----
 
 
  
@@ -247,7 +252,7 @@ anomalPheno = rbind(AbnormAnt %>% mutate(Group =  "Ant"),
 
 
 
-# join temperature anomaly to phonology anomaly
+# Join temperature anomaly to phonology anomaly-----
 
 TempArthropodAnomal = AllTempData %>% 
   filter(yday %in% TempDayWindow) %>% 
@@ -393,7 +398,7 @@ interact_plot(
 
 
 
-
+### -- testing interaction effects -----
 
 catJulTminDev= lm(AnomalJulWeek ~ AnomalTmin * dev , # no interaction effect
                   data = TempArthropodAnomal %>% 
@@ -552,3 +557,339 @@ ggplot(TempArthropodAnomal, aes(x = "", y = dev)) +
 
 
 
+
+
+# CENTROIDS  (instead of peak occurrence)----
+
+
+#
+CaterpillarCentroid= JuliSiteData %>%
+  group_by(Name, ObservationMethod, Year, nJulianWeek, nYear) %>%
+  mutate(across(
+    .cols = where(is.numeric) & !matches("^(julianweek|surveyNum)$"),
+    .fns = ~ cumsum(replace_na(.x, 0)),
+    .names = "{.col}"
+  )) %>% 
+  select(c(1:4), "Caterpillar") %>% 
+  group_by(Name, ObservationMethod, Year, nJulianWeek, nYear) %>%
+  mutate(Sum = max(Caterpillar),
+         CentroidOcc = 0.5 * Sum) %>%
+  filter(Caterpillar >= CentroidOcc) %>%
+  slice_min(order_by = julianweek) %>%  #tells R which variable to use to determine the “minimum”
+  rename("CentroidJulianWeek" = "julianweek") %>% 
+  select(Name, ObservationMethod, nYear, nJulianWeek, Year, 
+         CentroidJulianWeek, CentroidOcc, Sum)
+
+AbnormCaterpillarCentroid = CaterpillarCentroid%>% 
+  left_join(AntCentroid %>% 
+              group_by(Name, ObservationMethod) %>% 
+              summarise(meanCentroidJulWeek = mean(CentroidJulianWeek))) %>% 
+  mutate(abnormalCentroid = CentroidJulianWeek  - meanCentroidJulWeek)
+
+
+
+#
+AntCentroid= JuliSiteData %>%
+  group_by(Name, ObservationMethod, Year, nJulianWeek, nYear) %>%
+  mutate(across(
+    .cols = where(is.numeric) & !matches("^(julianweek|surveyNum)$"),
+    .fns = ~ cumsum(replace_na(.x, 0)),
+    .names = "{.col}"
+  )) %>% 
+  select(c(1:4), "Ant") %>% 
+  group_by(Name, ObservationMethod, Year, nJulianWeek, nYear) %>%
+  mutate(Sum = max(Ant),
+         CentroidOcc = 0.5 * Sum) %>%
+  filter(Ant >= CentroidOcc) %>%
+  slice_min(order_by = julianweek) %>%   
+  rename("CentroidJulianWeek" = "julianweek") %>% 
+  select(Name, ObservationMethod, nYear, nJulianWeek, Year, 
+         CentroidJulianWeek, CentroidOcc, Sum) 
+
+AbnormAntCentroid = AntCentroid%>% 
+  left_join(AntCentroid %>% 
+              group_by(Name, ObservationMethod) %>% 
+              summarise(meanCentroidJulWeek = mean(CentroidJulianWeek))) %>% 
+  mutate(abnormalCentroid = CentroidJulianWeek  - meanCentroidJulWeek)
+
+
+SpiderCentroid= JuliSiteData %>%
+  group_by(Name, ObservationMethod, Year, nJulianWeek, nYear) %>%
+  mutate(across(
+    .cols = where(is.numeric) & !matches("^(julianweek|surveyNum)$"),
+    .fns = ~ cumsum(replace_na(.x, 0)),
+    .names = "{.col}"
+  )) %>% 
+  select(c(1:4), "Spider") %>% 
+  group_by(Name, ObservationMethod, Year, nJulianWeek, nYear) %>%
+  mutate(Sum = max(Spider),
+         CentroidOcc = 0.5 * Sum) %>%
+  filter(Spider >= CentroidOcc) %>%
+  slice_min(order_by = julianweek) %>%   
+  rename("CentroidJulianWeek" = "julianweek") %>% 
+  select(Name, ObservationMethod, nYear, nJulianWeek, Year, 
+         CentroidJulianWeek, CentroidOcc, Sum)
+
+AbnormSpiderCentroid = SpiderCentroid%>% 
+  left_join(AntCentroid %>% 
+              group_by(Name, ObservationMethod) %>% 
+              summarise(meanCentroidJulWeek = mean(CentroidJulianWeek))) %>% 
+  mutate(abnormalCentroid = CentroidJulianWeek  - meanCentroidJulWeek)
+
+
+
+anomalPhenoCentroid = rbind(AbnormAntCentroid %>% mutate(Group =  "Ant"),
+                            AbnormSpiderCentroid %>% mutate(Group = "Spider"),
+                            AbnormCaterpillarCentroid %>% mutate(Group = "Caterpillar")) %>% 
+  as.data.frame()
+
+## -- Combine centroids with Temperature----
+TempAnomalPhenoCentroid = AllTempData %>% 
+  filter(yday %in% TempDayWindow) %>% 
+  group_by(site, year) %>% 
+  summarise(meanTmin = mean(tmin..deg.c.),
+            meanTmax = mean(tmax..deg.c.),
+            meanPreci = mean(prcp..mm.day.)) %>% 
+  left_join(
+    AllTempData %>% 
+      filter(yday %in% TempDayWindow) %>% 
+      group_by(site) %>% 
+      summarise(AllmeanTmin = mean(tmin..deg.c.),
+                AllmeanTmax = mean(tmax..deg.c.),
+                AllmeanPreci = mean(prcp..mm.day.)),
+    by = c("site")) %>% 
+  mutate(AnomalTmin = meanTmin - AllmeanTmin,
+         AnomalTmax = meanTmax - AllmeanTmax,
+         AnomalPreci = meanPreci - AllmeanPreci)%>% 
+  right_join(anomalPhenoCentroid %>%  filter(Year != "2025"), # because daymetr has no 2025 yet.
+             by = c("site" = "Name", "year" = "Year")) %>% 
+  left_join(GoodSiteYearLatLon, by = c("site" = "Name")) %>% 
+  left_join(sites %>% select(Name, dev, forest), by = c( "site" = "Name")) %>% 
+  mutate(Group = factor(Group, levels =c("Caterpillar",
+                                         "Ant",
+                                         "Spider"))) %>% 
+  mutate(SiteObserv = paste(site, ObservationMethod, sep = "_"))
+
+# Arthropod images
+catImage = readPNG('images/caterpillar.png')
+antImage = readPNG('images/ant.png')
+beetleImage = readPNG('images/beetle.png')
+spiderImage = readPNG('images/spider.png')
+hopperImage = readPNG('images/leafhopper.png')
+truebugImage = readPNG('images/truebugs.png')
+
+TempAnomalPhenoCentroid %>% 
+  ggplot(aes(y = abnormalCentroid, x = AnomalTmax)) +
+  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
+  geom_smooth(method = "lm", se = TRUE, color = "red", 
+              fill = "pink", linewidth = 1) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +   
+  stat_regline_equation(
+    aes(label = paste(..eq.label..,  sep = "~~~")),
+    label.x = -1.5,
+    label.y = -10.3,
+    color = "red",
+    size = 3
+  ) +
+  labs(
+    x = "Maximum Daily Temperature anomaly (Degree Celcius)",
+    y = "Timing anomaly (Days)"
+  ) +
+  facet_wrap(~Group) +
+  theme_minimal(base_size = 13) 
+
+
+TempAnomalPhenoCentroid %>% 
+  ggplot(aes(y = abnormalCentroid, x = AnomalTmax)) +
+  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
+  geom_smooth(method = "lm", se = TRUE, color = "red", 
+              fill = "pink", linewidth = 1) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  labs(
+    x = "Maximum Daily Temperature anomaly (Degree Celcius)",
+    y = "Timing anomaly (Days)") +
+  facet_wrap(~Group) +
+  theme_bw(base_size = 13)
+
+
+TempAnomalPhenoCentroid %>% 
+  ggplot(aes(y = abnormalCentroid, x = AnomalTmin)) +
+  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
+  geom_smooth(method = "lm", se = TRUE, color = "red", 
+              fill = "pink", linewidth = 1) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  stat_regline_equation(
+    aes(label = paste(..eq.label..,  sep = "~~~")),
+    label.x = -1.5,
+    label.y = -35,
+    color = "red",
+    size = 3
+  ) +
+  labs(
+    title = "Anomality in Minimum Daily Temperature",
+    x = "Temperature Anomaly",
+    y = "Centroid Julian week anomaly"
+  ) +
+  facet_wrap(~Group) +
+  theme_minimal(base_size = 13)
+
+
+
+TempAnomalPhenoCentroid %>% 
+  ggplot(aes(y = abnormalCentroid, x = AnomalTmin)) +
+  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
+  geom_smooth(method = "lm", se = TRUE, color = "red", 
+              fill = "pink", linewidth = 1) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  labs(
+    x = "Minimum Daily Temperature anomaly (Degree Celcius)",
+    y = "Timing anomaly (Days)") +
+  facet_wrap(~Group) +
+  theme_bw(base_size = 13)
+### 
+
+
+
+summary(lm(abnormalCentroid~AnomalTmax, 
+           data = TempAnomalPhenoCentroid %>% filter(Group == "Caterpillar")))
+
+summary(lm(abnormalCentroid~AnomalTmax, 
+           data = TempAnomalPhenoCentroid %>% filter(Group == "Ant")))
+
+summary(lm(abnormalCentroid~AnomalTmax, 
+           data = TempAnomalPhenoCentroid %>% filter(Group == "Spider")))
+
+
+
+summary(lm(abnormalCentroid~AnomalTmin, 
+           data = TempAnomalPhenoCentroid %>% filter(Group == "Caterpillar")))
+
+summary(lm(abnormalCentroid~AnomalTmin, 
+           data = TempAnomalPhenoCentroid %>% filter(Group == "Ant")))
+
+summary(lm(abnormalCentroid~AnomalTmin, 
+           data = TempAnomalPhenoCentroid %>% filter(Group == "Spider")))
+
+
+
+# What if we fit random slopes-intercept to each site -----
+site_labels <- TempAnomalPhenoCentroid %>%
+  filter(Group == "Caterpillar", nYear >= 4) %>%
+  group_by(site) %>%
+  summarise(
+    cx = mean(AnomalTmin, na.rm = TRUE),
+    cy = mean(abnormalCentroid, na.rm = TRUE),
+    lat = round(mean(Latitude, na.rm = TRUE)) 
+  )
+
+TempAnomalPhenoCentroid %>% 
+  filter(Group == "Caterpillar", nYear >= 4) %>% 
+  ggplot(aes(y = abnormalCentroid, 
+             x = AnomalTmin, 
+             colour = Latitude)) +
+  geom_point(alpha = 0.6) +  
+  geom_smooth(method = "lm", se = FALSE, aes(group = site)) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  geom_text(
+    data = site_labels,
+    aes(x = cx, y = cy+1.5, label = lat), # just to lift the label up a little
+    size = 5,
+    inherit.aes = FALSE
+  ) +
+  labs(
+    x = "Minimum Daily Temperature anomaly (Degree Celsius)",
+    y = "Timing anomaly (Days)",
+    title = "Site >= 4 nYears"
+  ) +
+  theme_bw(base_size = 13)
+
+
+
+
+TempAnomalPhenoCentroid %>% 
+  filter(nYear >= 4) %>% 
+  ggplot(aes(y = abnormalCentroid, 
+             x = AnomalTmax, 
+             colour = Latitude)) +
+  geom_point(alpha = 0.4) +  
+  geom_smooth(method = "lm", se = FALSE, aes(group = SiteObserv), alpha = 0.4) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  geom_text(
+    data = TempAnomalPhenoCentroid %>%
+      filter(nYear >= 4) %>%
+      group_by(SiteObserv, Group) %>%
+      summarise(
+        cx = mean(AnomalTmax, na.rm = TRUE),
+        cy = mean(abnormalCentroid, na.rm = TRUE),
+        lat = round(mean(Latitude, na.rm = TRUE)) 
+      ) ,
+    aes(x = cx, y = cy+1, label = lat), # just to lift the text up a little
+    size = 5,
+    inherit.aes = FALSE
+  ) +
+  labs(
+    x = "Maximum Daily Temperature anomaly (Degree Celsius)",
+    y = "Centroid timing anomaly (Days)",
+    title = "Site >= 4 nYears"
+  ) +
+  facet_wrap(~Group)+
+  theme_bw(base_size = 13)
+
+
+TempAnomalPhenoCentroid %>% 
+  filter(nYear >= 4) %>% 
+  ggplot(aes(y = abnormalCentroid, 
+             x = AnomalTmin, 
+             colour = Latitude)) +
+  geom_point(alpha = 0.4) +  
+  geom_smooth(method = "lm", se = FALSE, aes(group = SiteObserv), alpha = 0.4) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  geom_text(
+    data = TempAnomalPhenoCentroid %>%
+      filter(nYear >= 4) %>%
+      group_by(SiteObserv, Group) %>%
+      summarise(
+        cx = mean(AnomalTmin, na.rm = TRUE),
+        cy = mean(abnormalCentroid, na.rm = TRUE),
+        lat = round(mean(Latitude, na.rm = TRUE)) 
+      ) ,
+    aes(x = cx, y = cy+1, label = lat), # just to lift the text up a little
+    size = 5,
+    inherit.aes = FALSE
+  ) +
+  labs(
+    x = "Minimum Daily Temperature anomaly (Degree Celsius)",
+    y = "Centroid timing anomaly (Days)",
+    title = "Site >= 4 nYears"
+  ) +
+  facet_wrap(~Group)+
+  theme_bw(base_size = 13)
+
+## Fitting random effect  for every siteObserv----
+
+library(nlme)
+
+summary(lme(
+  abnormalCentroid ~ AnomalTmin,
+  random = ~ AnomalTmin | SiteObserv,
+  data = TempAnomalPhenoCentroid %>% 
+    filter(Group == "Caterpillar")
+))
+
+summary(lme( # summary estimates change every time it is run due to the autocorrelation accounted for
+  abnormalCentroid ~ AnomalTmin,
+  random = ~ AnomalTmin | SiteObserv,
+  correlation = corExp(form = ~ Latitude_j | SiteObserv),
+  data = TempAnomalPhenoCentroid %>% 
+    mutate( # Jitter so nlme dosen't have zero distance problem for siteObserv with same coordinate
+      Latitude_j = Latitude + runif(n(), -1e-4, 1e-4),
+      Longitude_j = Longitude + runif(n(), -1e-4, 1e-4)
+    ) %>% 
+    filter(Group == "Caterpillar")))

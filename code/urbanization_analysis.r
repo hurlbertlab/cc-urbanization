@@ -16,7 +16,7 @@ library(vioplot)
 library(tibble)
 
 
-# (1) Read in latest Caterpillars Count! raw dataset from the caterpillars-analysis-public repo
+# (1) Read in latest Caterpillars Count! raw dataset from the caterpillars-analysis-public repo----
 data_repo <- "https://github.com/hurlbertlab/caterpillars-analysis-public/tree/master/data"
 webpage <- read_html(data_repo)
 repo_links <- unique(html_attr(html_nodes(webpage, "a"), "href"))
@@ -29,7 +29,8 @@ github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-analys
 fullDataset = read.csv(paste0(github_raw, latest_file), header = TRUE, quote = '\"', fill = TRUE)
 
 
-# (2) Filter dataset to sites east of 100W with a minimum of 40 branch surveys during June and July (juliandays 152-213)
+# (2) Filter dataset ----
+# to sites east of 100W with a minimum of 40 branch surveys during June and July (juliandays 152-213)
 minSurveys = 50
 julianWindow = 152:213
 
@@ -101,7 +102,7 @@ goodDataACRU = fullDataset %>%
             hopper = ifelse(sum(Group == 'leafhopper', na.rm = TRUE) > 0, 1, 0),
             ant = ifelse(sum(Group == 'ant', na.rm = TRUE) > 0, 1, 0))
 
-# (4) Read in maps and Landcover data
+# (4) Read in maps and Landcover data----
 #     Sources: NLCD
 #              Canada Land Cover 2020
 
@@ -267,7 +268,7 @@ prop_dataset %>%
        subtitle = "Site observers preference for observation method dooes not differ with latitude")
 
 
-# (6) glms examining presence as a function of % developed or forest cover, latitude, and interaction
+# (6) ......glms examining presence as a function of % developed or forest cover, latitude, and interaction
 
 
 
@@ -499,6 +500,10 @@ simFor_truebug <-sim_slopes(ant.For.Latitude, pred = forest, modx = Latitude,
                             johnson_neyman = FALSE, digits = 4)
 
 
+johnson_neyman(beet.Dev.Latitude, pred = dev, modx = Latitude,
+               alpha = 0.05, control.fdr = TRUE)
+
+sim_slopes(beet.For.Latitude, pred = forest, modx = Latitude, cond.int = TRUE)
 For_sims = data.frame(rbind(simFor_caterpillar$slopes %>% mutate(Group = "caterpillar"), 
                             simFor_beetle$slopes %>% mutate(Group = "beetle"), 
                             simFor_spider$slopes %>% mutate(Group = "spider"),

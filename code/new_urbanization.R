@@ -213,7 +213,7 @@ prop_dataset %>%
                          "Longitude", "Latitude", "dev", "forest", "Trials"),
                names_to = "Group",
                values_to = "Occurence") %>% 
-ggplot(aes(x = dev, y = Occurence, z = ObservationMethod)) +
+ggplot(aes(x = dev, y = Occurence)) +
   geom_point(aes(colour = ObservationMethod, size = Trials, alpha = 0.2))+
   geom_smooth(
     method = "glm",
@@ -223,6 +223,20 @@ ggplot(aes(x = dev, y = Occurence, z = ObservationMethod)) +
   )+
   facet_wrap(~Group,  scales = "free_y")+
   theme_bw()
+
+
+prop_dataset %>% 
+  filter(caterpillar_prop != "1") %>% 
+  ggplot(aes(x = dev, y = caterpillar_prop, z = ObservationMethod)) +
+  geom_point(aes(colour = Latitude, alpha = 0.2))+
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = binomial),
+    aes(weight = Trials),
+    se = TRUE
+  )+
+  facet_wrap(~ObservationMethod)+
+  theme_classic2()
 
 
 # long format data
