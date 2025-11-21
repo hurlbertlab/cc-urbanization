@@ -581,7 +581,7 @@ CaterpillarCentroid= JuliSiteData %>%
          CentroidJulianWeek, CentroidOcc, Sum)
 
 AbnormCaterpillarCentroid = CaterpillarCentroid%>% 
-  left_join(AntCentroid %>% 
+  left_join(CaterpillarCentroid %>% 
               group_by(Name, ObservationMethod) %>% 
               summarise(meanCentroidJulWeek = mean(CentroidJulianWeek))) %>% 
   mutate(abnormalCentroid = CentroidJulianWeek  - meanCentroidJulWeek)
@@ -631,7 +631,7 @@ SpiderCentroid= JuliSiteData %>%
          CentroidJulianWeek, CentroidOcc, Sum)
 
 AbnormSpiderCentroid = SpiderCentroid%>% 
-  left_join(AntCentroid %>% 
+  left_join(SpiderCentroid %>% 
               group_by(Name, ObservationMethod) %>% 
               summarise(meanCentroidJulWeek = mean(CentroidJulianWeek))) %>% 
   mutate(abnormalCentroid = CentroidJulianWeek  - meanCentroidJulWeek)
@@ -777,36 +777,6 @@ summary(lm(abnormalCentroid~AnomalTmin,
 
 
 # What if we fit random slopes-intercept to each site -----
-site_labels <- TempAnomalPhenoCentroid %>%
-  filter(Group == "Caterpillar", nYear >= 4) %>%
-  group_by(site) %>%
-  summarise(
-    cx = mean(AnomalTmin, na.rm = TRUE),
-    cy = mean(abnormalCentroid, na.rm = TRUE),
-    lat = round(mean(Latitude, na.rm = TRUE)) 
-  )
-
-TempAnomalPhenoCentroid %>% 
-  filter(Group == "Caterpillar", nYear >= 4) %>% 
-  ggplot(aes(y = abnormalCentroid, 
-             x = AnomalTmin, 
-             colour = Latitude)) +
-  geom_point(alpha = 0.6) +  
-  geom_smooth(method = "lm", se = FALSE, aes(group = site)) +   
-  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
-  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
-  geom_text(
-    data = site_labels,
-    aes(x = cx, y = cy+1.5, label = lat), # just to lift the label up a little
-    size = 5,
-    inherit.aes = FALSE
-  ) +
-  labs(
-    x = "Minimum Daily Temperature anomaly (Degree Celsius)",
-    y = "Timing anomaly (Days)",
-    title = "Site >= 4 nYears"
-  ) +
-  theme_bw(base_size = 13)
 
 
 
@@ -820,19 +790,6 @@ TempAnomalPhenoCentroid %>%
   geom_smooth(method = "lm", se = FALSE, aes(group = SiteObserv), alpha = 0.4) +   
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
   geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
-  geom_text(
-    data = TempAnomalPhenoCentroid %>%
-      filter(nYear >= 4) %>%
-      group_by(SiteObserv, Group) %>%
-      summarise(
-        cx = mean(AnomalTmax, na.rm = TRUE),
-        cy = mean(abnormalCentroid, na.rm = TRUE),
-        lat = round(mean(Latitude, na.rm = TRUE)) 
-      ) ,
-    aes(x = cx, y = cy+1, label = lat), # just to lift the text up a little
-    size = 5,
-    inherit.aes = FALSE
-  ) +
   labs(
     x = "Maximum Daily Temperature anomaly (Degree Celsius)",
     y = "Centroid timing anomaly (Days)",
@@ -851,19 +808,19 @@ TempAnomalPhenoCentroid %>%
   geom_smooth(method = "lm", se = FALSE, aes(group = SiteObserv), alpha = 0.4) +   
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
   geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
-  geom_text(
-    data = TempAnomalPhenoCentroid %>%
-      filter(nYear >= 4) %>%
-      group_by(SiteObserv, Group) %>%
-      summarise(
-        cx = mean(AnomalTmin, na.rm = TRUE),
-        cy = mean(abnormalCentroid, na.rm = TRUE),
-        lat = round(mean(Latitude, na.rm = TRUE)) 
-      ) ,
-    aes(x = cx, y = cy+1, label = lat), # just to lift the text up a little
-    size = 5,
-    inherit.aes = FALSE
-  ) +
+  # geom_text(
+  #   data = TempAnomalPhenoCentroid %>%
+  #     filter(nYear >= 4) %>%
+  #     group_by(SiteObserv, Group) %>%
+  #     summarise(
+  #       cx = mean(AnomalTmin, na.rm = TRUE),
+  #       cy = mean(abnormalCentroid, na.rm = TRUE),
+  #       lat = round(mean(Latitude, na.rm = TRUE)) 
+  #     ) ,
+  #   aes(x = cx, y = cy+1, label = lat), # just to lift the text up a little
+  #   size = 5,
+  #   inherit.aes = FALSE
+  # ) +
   labs(
     x = "Minimum Daily Temperature anomaly (Degree Celsius)",
     y = "Centroid timing anomaly (Days)",
