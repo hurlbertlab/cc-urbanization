@@ -273,3 +273,45 @@ plant.nSurv = fullDataset %>%
 
 # some sites observation 
 
+#  Herbivory EDA ----
+
+
+
+fullDataset %>% 
+  filter(!HerbivoryScore %in% c(-128, -1)) %>% 
+  group_by(Name, HerbivoryScore) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count)) %>% data.frame()
+
+
+fullDataset %>% 
+  filter(
+    !HerbivoryScore %in% c(-128, -1),
+    str_detect(Name, "Prairie Ridge|NC Botanical Garden"),
+    Year == 2024
+  ) %>% 
+  group_by(Name, julianweek, HerbivoryScore) %>% 
+  summarise(count = n(), .groups = "drop") %>% 
+  ggplot(aes(y = count, x = julianweek)) +
+  geom_point() +
+  stat_smooth()+
+  facet_grid(Name ~ HerbivoryScore)+
+  theme_bw()
+
+
+
+fullDataset %>% 
+  filter(
+    !HerbivoryScore %in% c(-128, -1),
+    str_detect(Name, regex("prairie", ignore_case = TRUE )),
+    Year == 2017
+  ) %>% 
+  group_by(PlantSpecies, julianweek) %>% 
+  summarise(HerbivoryScore = mean(HerbivoryScore)) %>% 
+  ggplot(aes(y = HerbivoryScore, x = julianweek)) +
+  geom_point() +
+  stat_smooth()+
+  facet_wrap(~PlantSpecies)
+  
+  
+  

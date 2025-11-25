@@ -750,6 +750,31 @@ TempAnomalPhenoCentroid %>%
     y = "Timing anomaly (Days)") +
   facet_wrap(~Group) +
   theme_bw(base_size = 13)
+
+
+
+
+TempAnomalPhenoCentroid %>% 
+  ggplot(aes(y = abnormalCentroid, x = AnomalPreci)) +
+  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
+  geom_smooth(method = "lm", se = TRUE, color = "red", 
+              fill = "pink", linewidth = 1) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  stat_regline_equation(
+    aes(label = paste(..eq.label..,  sep = "~~~")),
+    label.x = -1.5,
+    label.y = -35,
+    color = "red",
+    size = 3
+  ) +
+  labs(
+    title = "Anomality in Precipation",
+    x = "Precipiation Anomaly",
+    y = "Centroid Julian week anomaly"
+  ) +
+  facet_wrap(~Group) +
+  theme_minimal(base_size = 13)
 ### 
 
 
@@ -832,10 +857,24 @@ TempAnomalPhenoCentroid %>%
 ## Fitting random effect  for every siteObserv----
 
 library(nlme)
+library(lme4)
 
 summary(lme(
   abnormalCentroid ~ AnomalTmin,
   random = ~ AnomalTmin | SiteObserv,
+  data = TempAnomalPhenoCentroid %>% 
+    filter(Group == "Caterpillar")
+))
+
+
+
+
+
+
+
+summary(lme( # convergence problem
+  abnormalCentroid ~ AnomalTmax,
+  random = ~ AnomalTmax | SiteObserv,
   data = TempAnomalPhenoCentroid %>% 
     filter(Group == "Caterpillar")
 ))
