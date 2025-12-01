@@ -41,7 +41,7 @@ goodSites = fullDataset %>%
   group_by(Name, ObservationMethod) %>%
   summarize(nSurvs = n_distinct(ID)) %>%
   filter(nSurvs >= minSurveys) %>%
-  arrange(desc(nSurvs))
+  arrange((nSurvs))
 
 # Dataset thru 2024 includes 154 sites with at least 50 surveys in the seasonal window
 
@@ -178,6 +178,7 @@ US_sites$forest = us_forest$`NLCD Land Cover Class`
 sites = rbind(US_sites, CAN_sites)
 
 # write.csv(sites, "C:\\Users\\osawe\\Documents\\Git\\BIOL465\\siteUrbanization.csv")
+# write.csv(sites, file = "data/siteUrbanFor.csv")
 # Keep local copy of the urbanization data for future purpose
 
 sites_sf <- st_as_sf(sites[sites$Name %in% goodSites$Name, ], 
@@ -203,6 +204,19 @@ datasetBS = left_join(goodDataBS, sites, by = 'Name')
 datasetVis = left_join(goodDataVis, sites, by = 'Name')
 
 datasetACRU = left_join(goodDataACRU, sites, by = 'Name')
+
+
+# Ensure each site and observation has at least 50 surveys.
+dataset = dataset %>% 
+  right_join(
+goodData %>% 
+  group_by(Name, ObservationMethod) %>% 
+  summarise(nID = n_distinct(ID)) %>% 
+  arrange(nID) %>% 
+  filter(nID >= minSurveys), by = c("Name","ObservationMethod"))  
+
+
+
 
 
 # Note that 3 historical sites in western NC from Coweeta only surveyed for caterpillars. These sites should be excluded from analyses of other arthropod groups. Perhaps it makes sense even to include them from caterpillar analyses so that results for caterpillars are geographically comparable to other groups

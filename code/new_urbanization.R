@@ -1,6 +1,7 @@
 library(ggrepel)
 library(lme4)
 library(pscl)
+library(tidyverse)
 
 
 # Developed cover models
@@ -99,7 +100,8 @@ prop_fullDataset<- fullDataset %>%
             daddylonglegs_prop = mean(daddylonglegs),
             Trials = n())  
 
-prop_dataset = left_join(prop_fullDataset, sites, by = 'Name')
+prop_dataset = left_join(prop_fullDataset, sites, by = 'Name') %>% 
+  filter(Trials >= 50)
 
 
 
@@ -225,18 +227,6 @@ ggplot(aes(x = dev, y = Occurence)) +
   theme_bw()
 
 
-prop_dataset %>% 
-  filter(caterpillar_prop != "1") %>% 
-  ggplot(aes(x = dev, y = caterpillar_prop, z = ObservationMethod)) +
-  geom_point(aes(colour = Latitude, alpha = 0.2))+
-  geom_smooth(
-    method = "glm",
-    method.args = list(family = binomial),
-    aes(weight = Trials),
-    se = TRUE
-  )+
-  facet_wrap(~ObservationMethod)+
-  theme_classic2()
 
 
 # long format data
@@ -350,8 +340,16 @@ prop_dataset.prediction %>%
   geom_point( aes(Occurence, x = dev) ) +
   geom_smooth(aes(y = Predicted, x = dev))+
   facet_wrap(~Group,  scales = "free_y")+
-  theme_bw()
+  theme_bw()+
+  labs(subtitle = "Here, slope is made from fitting the predicted occurence (% occ ~ dev + Observ), not the observed occurence")
 
+prop_dataset.prediction %>%
+  ggplot() +
+  #geom_point( aes(Occurence, x = dev) ) +
+  geom_smooth(aes(y = Predicted, x = dev))+
+  facet_wrap(~Group,  scales = "free_y")+
+  theme_bw()+
+  labs(subtitle = "Here, slope is made from fitting the predicted occurence (% occ ~ dev + Observ), not the observed occurence")
 
 prop_dataset.prediction %>%
   ggplot() +
@@ -789,3 +787,4 @@ ggplot(r2_all, aes(y = Development, x = Forest)) +
     x = "R2 of Forest Cover"
   ) +
   theme_bw()
+
