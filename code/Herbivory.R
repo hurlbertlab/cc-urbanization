@@ -49,10 +49,7 @@ fullDataset %>%
 
 
 fullDataset %>% 
-  group_by(Name, Code) %>% 
-  summarise(nIDs = n_distinct(ID))
-
-  
+  group_by(Name, ObservationMethod, Code) %>% 
   summarize(caterpillar = ifelse(sum(Group == 'caterpillar', na.rm = TRUE) > 0, 1, 0),
             spider = ifelse(sum(Group == 'spider', na.rm = TRUE) > 0, 1, 0),
             beetle = ifelse(sum(Group == 'beetle', na.rm = TRUE) > 0, 1, 0),
