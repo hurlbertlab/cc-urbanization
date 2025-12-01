@@ -6,7 +6,7 @@ require(vegan)
 library(ggrepel)
 library(ggpubr)
 library(interactions)
-
+library(broom)
 
 # -- Define data inclusion criteria-----
   minSurveys = 50
@@ -868,7 +868,8 @@ summary(lme(
 
 
 
-
+summary(lm(abnormalCentroid ~ AnomalTmin , 
+           data = TempAnomalPhenoCentroid %>% filter(Group == "Caterpillar") ))
 
 
 
@@ -889,3 +890,117 @@ summary(lme( # summary estimates change every time it is run due to the autocorr
       Longitude_j = Longitude + runif(n(), -1e-4, 1e-4)
     ) %>% 
     filter(Group == "Caterpillar")))
+
+
+TempAnomalPhenoCentroid %>% 
+  mutate(abnormalCentroid.Latitude = abnormalCentroid + meanTmin) %>% 
+  filter(nYear >= 4) %>% 
+  ggplot(aes(y = abnormalCentroid.Latitude, 
+             x = AnomalTmin, 
+             colour = Latitude)) +
+  #geom_point(alpha = 0.4) +  
+  geom_smooth(method = "lm", se = FALSE, aes(group = SiteObserv), alpha = 0.4) +   
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  # geom_text(
+  #   data = TempAnomalPhenoCentroid %>%
+  #     filter(nYear >= 4) %>%
+  #     group_by(SiteObserv, Group) %>%
+  #     summarise(
+  #       cx = mean(AnomalTmin, na.rm = TRUE),
+  #       cy = mean(abnormalCentroid, na.rm = TRUE),
+  #       lat = round(mean(Latitude, na.rm = TRUE)) 
+  #     ) ,
+  #   aes(x = cx, y = cy+1, label = lat), # just to lift the text up a little
+  #   size = 5,
+#   inherit.aes = FALSE
+# ) +
+labs(
+  x = "Minimum Daily Temperature anomaly (Degree Celsius)",
+  y = "Centroid timing anomaly (Days)",
+  title = "Site >= 4 nYears"
+) +
+  facet_wrap(~Group)+
+  theme_bw(base_size = 13)
+
+
+TempAnomalPhenoCentroid %>% 
+  filter(Group == "Caterpillar") %>% 
+    select(abnormalCentroid, AnomalTmax, site) %>% 
+  data.frame()
+
+
+
+PhenoTmaxLm = TempAnomalPhenoCentroid %>% 
+  group_by(SiteObserv, Group) %>% 
+  do({
+    model <- lm(abnormalCentroid ~ AnomalTmax, data = .)
+    tidy_mod  <- broom::tidy(model)
+    glance_mod <- broom::glance(model)
+    
+    tibble(
+      Tmax.intercept = tidy_mod$estimate[ tidy_mod$term == "(Intercept)" ],
+      Tmax.slope     = tidy_mod$estimate[ tidy_mod$term == "AnomalTmax" ],
+      Tmax.p_value   = tidy_mod$p.value[ tidy_mod$term == "AnomalTmax" ],
+      Tmax.r_squared = glance_mod$r.squared
+    )
+  }) %>% 
+  ungroup() 
+
+PhenoTminLm = TempAnomalPhenoCentroid %>% 
+  group_by(SiteObserv, Group) %>% 
+  do({
+    model <- lm(abnormalCentroid ~ AnomalTmin, data = .)
+    tidy_mod  <- broom::tidy(model)
+    glance_mod <- broom::glance(model)
+    
+    tibble(
+      Tmin.intercept = tidy_mod$estimate[ tidy_mod$term == "(Intercept)" ],
+      Tmin.slope     = tidy_mod$estimate[ tidy_mod$term == "AnomalTmin" ],
+      Tmin.p_value   = tidy_mod$p.value[ tidy_mod$term == "AnomalTmin" ],
+      Tmin.r_squared = glance_mod$r.squared
+    )
+  }) %>% 
+  ungroup() 
+
+
+ TempPhenoLm = left_join(TempAnomalPhenoCentroid,
+      left_join(PhenoTmaxLm, PhenoTminLm, by = c("SiteObserv", "Group")), 
+  by = c("SiteObserv", "Group"))
+  
+
+ TempPhenoLmSummary =  TempPhenoLm %>% 
+   group_by(SiteObserv, Latitude, Group, Tmin.slope, Tmax.slope) %>%
+   summarise(n = n()) %>% data.frame()
+   
+
+   
+   
+ TempPhenoLmSummary %>% 
+   ggplot(aes(y = abs(Tmin.slope), x = Latitude)) +
+   geom_smooth(method = "lm", se = TRUE, color = "red", 
+               fill = "pink", linewidth = 1) +   
+   stat_regline_equation(
+     aes(label = paste(..eq.label..)),
+     label.x = 35.5,
+     label.y = -0,
+     color = "red",
+     size = 3
+   ) +
+   facet_wrap(~Group) +
+   theme_minimal(base_size = 13)
+   
+   TempPhenoLmSummary %>% 
+     ggplot(aes(y = abs(Tmax.slope), x = Latitude)) +
+     geom_smooth(method = "lm", se = TRUE, color = "red", 
+                 fill = "pink", linewidth = 1) +   
+     stat_regline_equation(
+       aes(label = paste(..eq.label..)),
+       label.x = 35.5,
+       label.y = -20,
+       color = "red",
+       size = 3
+     ) +
+     facet_wrap(~Group) +
+     theme_minimal(base_size = 13)
+ 
