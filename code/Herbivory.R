@@ -1,4 +1,22 @@
-fullDataset
+library(tidyverse)
+library(jsonlite)
+
+### 1. Read in CC! data files
+options(timeout = 300)  
+
+api_url <- "https://api.github.com/repos/hurlbertlab/caterpillars-analysis-public/contents/data"
+files <- fromJSON(api_url)
+
+dataset_file <- files$name[grepl("fullDataset", files$name, ignore.case = TRUE)]
+
+# pick the latest one
+latest_file <- dataset_file[1]
+
+github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/master/data/"
+
+fullDataset <- read.csv(paste0(github_raw, latest_file))
+
+ 
 
 plant = read.csv("data/ccPlants.csv")
 plantOrigin = read.csv("data/plantOrigin.csv") %>% filter(!is.na(plantOrigin))

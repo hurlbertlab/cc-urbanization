@@ -303,6 +303,56 @@ fullDataset %>%
 fullDataset %>% 
   filter(
     !HerbivoryScore %in% c(-128, -1),
+    str_detect(Name, "Prairie Ridge|NC Botanical Garden"),
+  ) %>% 
+  group_by(Name, julianweek, HerbivoryScore) %>% 
+  summarise(count = n(), .groups = "drop") %>% 
+  ggplot(aes(y = count, x = julianweek)) +
+  geom_point() +
+  stat_smooth()+
+  facet_grid(Name ~ HerbivoryScore)+
+  theme_bw()
+
+fullDataset %>% 
+  filter(
+    !HerbivoryScore %in% c(-128, -1),
+    str_detect(Name, "Prairie Ridge|NC Botanical Garden"),
+    Year >= 2021
+  ) %>% 
+  group_by(Name, Year, julianweek, HerbivoryScore) %>% 
+  summarise(count = n(), .groups = "drop") %>% 
+  ggplot(aes(x = julianweek, y = count, color = as.factor(Year), group = Year)) +
+  geom_point(alpha = 0.6) +
+  geom_line() + 
+  facet_grid(Name ~ HerbivoryScore) +
+  theme_bw() +
+  labs(color = "Year")
+
+
+
+fullDataset %>% 
+  filter(
+    !HerbivoryScore %in% c(-128, -1),
+    str_detect(Name, "Prairie Ridge"),
+    Year >= 2024
+  ) %>% 
+  group_by(Name, Code, julianweek) %>% 
+  summarise(nSurv = n_distinct(ID),
+            herb = mean(HerbivoryScore)) %>%
+  ggplot(aes(y = herb, x = julianweek)) +
+  geom_point()+
+  facet_wrap( ~ Code)
+  
+  
+
+
+
+
+
+
+fullDataset %>% 
+  filter(
+    !HerbivoryScore %in% c(-128, -1),
     str_detect(Name, regex("prairie", ignore_case = TRUE )),
     Year == 2017
   ) %>% 
