@@ -680,7 +680,7 @@ truebugImage = readPNG('images/truebugs.png')
 
 TempAnomalPhenoCentroid %>% 
   ggplot(aes(y = abnormalCentroid, x = AnomalTmax)) +
-  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
+  geom_point(alpha = 0.6, color = "black") +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
@@ -690,7 +690,7 @@ TempAnomalPhenoCentroid %>%
     label.x = -1.5,
     label.y = -10.3,
     color = "red",
-    size = 3
+    size = 5
   ) +
   labs(
     x = "Maximum Daily Temperature anomaly (Degree Celcius)",
@@ -716,7 +716,7 @@ TempAnomalPhenoCentroid %>%
 
 TempAnomalPhenoCentroid %>% 
   ggplot(aes(y = abnormalCentroid, x = AnomalTmin)) +
-  geom_point(alpha = 0.6, aes(colour = Latitude)) +  
+  geom_point(alpha = 0.6, color = "black") +  
   geom_smooth(method = "lm", se = TRUE, color = "red", 
               fill = "pink", linewidth = 1) +   
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +    
@@ -724,14 +724,14 @@ TempAnomalPhenoCentroid %>%
   stat_regline_equation(
     aes(label = paste(..eq.label..,  sep = "~~~")),
     label.x = -1.5,
-    label.y = -35,
+    label.y = -25,
     color = "red",
-    size = 3
+    size = 5
   ) +
   labs(
     title = "Anomality in Minimum Daily Temperature",
-    x = "Temperature Anomaly",
-    y = "Centroid Julian week anomaly"
+    x = "Minimum Daily Temperature anomaly (Degree Celcius)",
+    y = "Timing anomaly (Days)"
   ) +
   facet_wrap(~Group) +
   theme_minimal(base_size = 13)
