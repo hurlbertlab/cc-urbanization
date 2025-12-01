@@ -65,4 +65,12 @@ fullDataset %>%
             ant_prop = mean(ant),
             Trials = n())
 
-
+#------------------------------------------------------------
+  
+  
+  dataset %>% 
+    group_by(Name, ObservationMethod) %>% 
+    summarise(n = n_distinct(ID)) %>% 
+    arrange(n) %>% 
+    ungroup() %>% 
+    data.frame()

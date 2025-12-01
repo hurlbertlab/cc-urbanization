@@ -316,7 +316,7 @@ fullDataset %>%
 fullDataset %>% 
   filter(
     !HerbivoryScore %in% c(-128, -1),
-    str_detect(Name, "Prairie Ridge|NC Botanical Garden"),
+    str_detect(Name, "Prairie Ridge|NC Botanical Garden|Eno River State Park"),
     Year >= 2021
   ) %>% 
   group_by(Name, Year, julianweek, HerbivoryScore) %>% 
