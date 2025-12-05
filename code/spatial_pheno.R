@@ -106,7 +106,7 @@ JuliSiteData_AntSpatial= left_join(MaxArthropodSpatial,
   rename(maxjulianweek = julianweek,
          maxOcc = Ant)
 
-
+site.info = read.csv("data/site.info.csv")
 
 spatialPheno = rbind(JuliSiteData_AntSpatial %>% mutate(Group =  "Ant"),
                      JuliSiteData_SpiderSpatial %>% mutate(Group = "Spider"),
@@ -240,3 +240,4 @@ spatialPheno %>%
 
 
 # write.csv(sites, file = "data/urbanDev_forest.csv")
+
