@@ -316,18 +316,38 @@ fullDataset %>%
 fullDataset %>% 
   filter(
     !HerbivoryScore %in% c(-128, -1),
-    str_detect(Name, "Prairie Ridge|NC Botanical Garden|Eno River State Park"),
+    str_detect(Name, "Prairie Ridge|NC Botanical Garden|UNC Chapel Hill Campus"),
     Year >= 2021
   ) %>% 
-  group_by(Name, Year, julianweek, HerbivoryScore) %>% 
-  summarise(count = n(), .groups = "drop") %>% 
-  ggplot(aes(x = julianweek, y = count, color = as.factor(Year), group = Year)) +
-  geom_point(alpha = 0.6) +
-  geom_line() + 
-  facet_grid(Name ~ HerbivoryScore) +
+  group_by(Name, Year, julianweek, ID) %>% 
+  summarise(Herb  = mean(HerbivoryScore)) %>% 
+  group_by(Name, Year, julianweek, Herb) %>% 
+  summarise(Herbcount = n (),
+            nSurv = n_distinct(ID)) %>% 
+  ggplot(aes(x = julianweek, y = Herbcount, color = as.factor(Year), group = Year)) +
+  geom_line(size = 1) + 
+  scale_color_manual(values = c("#4E79A7", "#F28E2B", "#E15759", "darkgrey", "#59A14F"))+
+  facet_grid(Name ~ as.factor(Herb), scales = "free_y") +
   theme_bw() +
   labs(color = "Year")
 
+
+
+
+
+fullDataset %>% 
+  filter(
+    !HerbivoryScore %in% c(-128, -1),
+    str_detect(Name, "Prairie Ridge|NC Botanical Garden|UNC Chapel Hill Campus"),
+    Year >= 2021
+  ) %>% 
+  group_by(Name, Year, julianweek, ID) %>% 
+  summarise(Herb  = mean(HerbivoryScore)) %>% 
+  group_by(Name, Year, julianweek, Herb) %>% 
+  summarise(Herbcount = n (),
+            nSurv = n_distinct(ID)) %>% 
+  pivot_wider(names_from = Herb,
+              values_from = Herbcount)
 
 
 fullDataset %>% 
