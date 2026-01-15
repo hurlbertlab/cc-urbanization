@@ -1,9 +1,26 @@
 # Summary of expert identifications
 
 library(patchwork)
+library(jsonlite)
 
-exp.id = read.csv("data/exp.csv")
-View(exp.id)
+# (1) Read in latest Caterpillars Count! raw dataset from the caterpillars-analysis-public repo----
+options(timeout = 300)  
+
+api_url <- "https://api.github.com/repos/hurlbertlab/caterpillars-analysis-public/contents/data"
+files <- fromJSON(api_url)
+
+dataset_file <- files$name[grepl("fullDataset", files$name, ignore.case = TRUE)]
+
+# pick the latest one
+latest_file <- dataset_file[1]
+
+github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/master/data/"
+
+fullDataset <- read.csv(paste0(github_raw, latest_file))
+
+
+exp.id = read.csv("data/exp.csv") # what generates this data?
+# View(exp.id)
 
 
 fullDataset.ID = left_join(fullDataset %>% 

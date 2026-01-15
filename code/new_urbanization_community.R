@@ -1,4 +1,135 @@
+ 
+library(ggimage)
+library(geosphere)
+library(tidyverse)
+require(vegan)
 
+
+
+
+# (1) Read in latest Caterpillars Count! raw dataset from the caterpillars-analysis-public repo----
+options(timeout = 300)  
+
+api_url <- "https://api.github.com/repos/hurlbertlab/caterpillars-analysis-public/contents/data"
+files <- fromJSON(api_url)
+
+dataset_file <- files$name[grepl("fullDataset", files$name, ignore.case = TRUE)]
+
+# pick the latest one
+latest_file <- dataset_file[1]
+
+github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/master/data/"
+
+fullDataset <- read.csv(paste0(github_raw, latest_file))
+sites = read.csv("data/sites.csv") # you can update the sites from the N_urbanization_analysis script.
+
+goodSites = fullDataset %>%
+  filter(julianday %in% julianWindow,
+         Longitude > -100,
+         WetLeaves == 0) %>%
+  group_by(Name, ObservationMethod) %>%
+  summarize(nSurvs = n_distinct(ID)) %>%
+  filter(nSurvs >= minSurveys) 
+
+
+prop_fullDataset = fullDataset %>%
+  filter(Name %in% goodSites$Name,
+         julianday %in% julianWindow,
+         WetLeaves == 0,
+         !Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK')) %>% 
+  group_by(Name, ID, ObservationMethod) %>%
+  summarize(caterpillar = ifelse(sum(Group == 'caterpillar', na.rm = TRUE) > 0, 1, 0),
+            spider = ifelse(sum(Group == 'spider', na.rm = TRUE) > 0, 1, 0),
+            beetle = ifelse(sum(Group == 'beetle', na.rm = TRUE) > 0, 1, 0),
+            truebug = ifelse(sum(Group == 'truebugs', na.rm = TRUE) > 0, 1, 0),
+            hopper = ifelse(sum(Group == 'leafhopper', na.rm = TRUE) > 0, 1, 0),
+            ant = ifelse(sum(Group == 'ant', na.rm = TRUE) > 0, 1, 0),
+            grasshopper = ifelse(sum(Group == "grasshopper", na.rm = TRUE) > 0, 1, 0),
+            fly = ifelse(sum(Group == "fly", na.rm = TRUE) > 0, 1, 0),
+            daddylonglegs = ifelse(sum(Group == "daddylonglegs", na.rm = TRUE) > 0, 1, 0),
+            nSurv = n_distinct(ID)) %>% 
+  group_by(Name, ObservationMethod) %>% 
+  summarise(caterpillar = mean(caterpillar),
+            spider = mean(spider),
+            beetle = mean(beetle),
+            truebug = mean(truebug),
+            hopper  = mean(hopper),
+            ant = mean(ant),
+            grasshopper = mean(grasshopper),
+            fly = mean(fly),
+            daddylonglegs = mean(daddylonglegs),
+            nSurv = sum(nSurv))  
+
+
+
+prop_dataset = left_join(prop_fullDataset, sites, by = 'Name') %>% 
+  filter(nSurv >= minSurveys)
+
+
+
+# Does plant geographic distance influence arthropod composition? ----
+
+prop_hellinger <- decostand(prop_dataset[,3:11],
+                            method = "hellinger")
+
+propHel_dist <- dist(prop_hellinger, method = "euclidean")
+lat_long_dist <- dist(prop_dataset[,c("Latitude", "Longitude")],
+                      method = "euclidean")
+
+
+coords <- prop_dataset[, c("Longitude", "Latitude")]
+geo_dist <- distm(coords, fun = distHaversine)
+geo_dist <- as.dist(geo_dist)
+
+
+prop_mantel <- mantel(propHel_dist, geo_dist, 
+                      method = "pearson", permutations = 999)
+
+###################################################################################
+
+
+
+prop_dissimilarity <- as.matrix(vegdist(prop_hellinger, method = "euclidean"))
+geo_dist2 <- as.matrix(dist(coords))
+
+prop.dissimilarity_vec <- prop_dissimilarity[lower.tri(prop_dissimilarity)]
+geo_distance_vec <- geo_dist2[lower.tri(geo_dist2)]
+
+
+prop_decay_df <- data.frame(
+  Distance = geo_distance_vec,
+  Dissimilarity = prop.dissimilarity_vec
+)
+
+ggplot(prop_decay_df, aes(x = Distance, y = Dissimilarity)) +
+  geom_point(color = "black", size = 2, alpha = 0.7) +   
+  geom_smooth(method = "lm", color = "red", se = TRUE) +   
+  labs(
+    title = "Relationship between geographic distance and site-level arthropod occurence composition dissimilariy, using presence-absence data",
+    x = "Geographic Distance",
+    y = "Euclidean distance"
+  ) +
+  theme_minimal()
+
+
+summary(lm(Dissimilarity ~ Distance, data = prop_decay_df))
+
+# Note that theoretically, the P-value from using lm() on dissimilarity computation, in this case, cannot be valid. This is because pair-wise correlations are not independent. That is what a mantel test corrects for by doing permutations.
+########################################################################################################################
+
+prop.num <- prop_dataset[,3:11]
+site.info <- prop_dataset[,c(1,2,12:17)]
+
+prop.num <- prop.num %>% as.data.frame()
+
+prop.num_ilogit <- plogis(as.matrix(prop.num)) %>% as.data.frame
+prop.num_ilogit
+
+
+site.z <- scale(prop_dataset[,c( "Latitude", "dev", "forest")]) %>% 
+  as.data.frame()
+
+Observ <- prop_dataset [, c("ObservationMethod","Longitude")]
 
 
 part.prop.rda.LD <-rda(
@@ -32,11 +163,100 @@ site_score.ld <- scores(part.prop.rda.LD,
                      choices = 1:2) %>% 
   as.data.frame()
 
-site_score.sites.ld  <- cbind(prop_data [,c("Name", "Region", "Longitude", 
+site_score.sites.ld  <- cbind(prop_dataset [,c("Name", "Region", "Longitude", 
                                          "Latitude", "dev", "forest")], site_score.ld)
 
-rda_axis.ld <- scores(part.prop.rda.LD, display = "bp", choices = 1:3) %>% 
-  as.data.frame()
+rda_axis.ld <- scores(part.prop.rda.LD, display = "bp", choices = 1:3) %>%
+  as.data.frame() %>%
+  rownames_to_column("term") %>%
+  filter(!grepl(":", term))  %>% # Remove all interaction terms
+  mutate(
+    term = recode(term,
+                  dev = "Development")) 
+ 
+
+### Arthropod images ----
+catImage = readPNG('images/caterpillar.png')
+antImage = readPNG('images/ant.png')
+beetleImage = readPNG('images/beetle.png')
+spiderImage = readPNG('images/spider.png')
+hopperImage = readPNG('images/leafhopper.png')
+truebugImage = readPNG('images/truebugs.png')
+
+# https://www.phylopic.org/images/7174527d-3060-4c78-ab59-c3ccf76075de/opilio-saxatilis
+daddylonglegImage = image_read('images/daddylongleg.png') %>% 
+  image_convert(type = "truecolor") %>% 
+  as.raster()
+
+# https://www.phylopic.org/images/2bec28d1-3d13-4512-8b4d-00cd0fcef6e4/clogmia-albipunctata
+flyImage = image_read('images/fly.png') %>% 
+  image_convert(type = "truecolor") %>% 
+  as.raster()
+
+# https://www.phylopic.org/images/0de35750-d9ba-472a-b4f2-3c630777fcc3/acrididae
+grasshopperImage = image_read('images/grasshopper.png') %>% 
+  image_convert(type = "truecolor") %>% 
+  as.raster()
+
+
+taxa_scores <- part.prop.rda.LD$CCA$v %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("taxon")
+
+taxa_scores <- taxa_scores %>%
+  mutate(image = case_when(
+    taxon == "caterpillar"   ~ "images/caterpillar.png",
+    taxon == "spider"        ~ "images/spider.png",
+    taxon == "beetle"        ~ "images/beetle.png",
+    taxon == "truebug"       ~ "images/truebugs.png",
+    taxon == "hopper"        ~ "images/leafhopper.png",
+    taxon == "ant"           ~ "images/ant.png",
+    taxon == "grasshopper"   ~ "images/grasshopper.png",
+    taxon == "fly"           ~ "images/fly.png",
+    taxon == "daddylonglegs" ~ "images/daddylongleg.png"
+  ))
+
+
+ggplot() +
+  geom_segment(
+    data = rda_axis.ld,
+    aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+    arrow = arrow(length = unit(0.3, "cm")), 
+    color = "black",
+    size = 1, alpha = .5
+  ) +
+  
+  geom_point(
+    data = site_score.sites.ld, 
+    aes(x = RDA1, y = RDA2, fill = dev),
+    shape = 21, size = 4, alpha = 0.5
+  ) +
+  
+  geom_image(
+    data = taxa_scores,
+    aes(x = RDA1, y = RDA2, image = image),
+    size = 0.065   # adjust this for figure scale
+  ) +
+  geom_text(data = rda_axis.ld, 
+            aes(x = RDA1, y = RDA2, 
+                label = term), 
+            color = "black", vjust = -0.5, hjust = 0.1, size =5) +
+  
+  scale_fill_gradientn(
+    colours = c("green", "lightyellow", "blue"),
+    name = "Development"
+  ) +
+  
+  labs(x = "RDA1", y = "RDA2") +
+  guides(color = "none", shape = "none", alpha = "none",
+         fill = guide_colorbar(title = "% Development")) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_minimal()
+
+
+
+
 
 
 
@@ -45,7 +265,7 @@ ggplot() +
   geom_segment(data = rda_axis.ld,
                aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
                arrow = arrow(length = unit(0.3, "cm")), 
-               color = "darkblue",
+               color = "black",
                size = 1, alpha = .5) +
   geom_point(data = site_score.sites.ld, 
              aes(x = RDA1, y = RDA2, 
@@ -56,10 +276,10 @@ ggplot() +
             aes(x = RDA1, y = RDA2, label = rownames(part.prop.rda.LD$CCA$v)), 
             color = "black") +
   geom_text(data = rda_axis.ld, 
-            aes(x = RDA1, y = RDA2, label = rownames(rda_axis.ld)), 
-            color = "darkblue", vjust = -0.5, hjust = 0.1, size =5) +
+            aes(x = RDA1, y = RDA2, label = term), 
+            color = "black", vjust = -0.5, hjust = 0.1, size =5) +
   scale_fill_gradientn(
-    colours = c("green", "lightyellow", "skyblue"),
+    colours = c("green", "lightyellow", "blue"),
     name = "Development"
   ) +
   labs(x = "RDA1", y = "RDA2") +

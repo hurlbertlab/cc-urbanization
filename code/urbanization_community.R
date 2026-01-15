@@ -5,88 +5,68 @@ require(tidyverse)
 
 
 
-ddddd =read.csv("https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/refs/heads/master/data/fullDataset_2025-07-28.csv")
+# (1) Read in latest Caterpillars Count! raw dataset from the caterpillars-analysis-public repo----
+options(timeout = 300)  
 
-# fullDataset = read.csv("https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/refs/heads/master/data/fullDataset_2025-07-28.csv")
+api_url <- "https://api.github.com/repos/hurlbertlab/caterpillars-analysis-public/contents/data"
+files <- fromJSON(api_url)
 
+dataset_file <- files$name[grepl("fullDataset", files$name, ignore.case = TRUE)]
 
-proportion <-fullDataset %>%
-  filter(Name %in% goodSites$Name,
-         julianday %in% julianWindow,
-         WetLeaves == 0,
-         !Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK'),
-         Group %in% c('caterpillar', 'spider', 'ant', 'leafhopper', 'beetle', 
-                      'truebugs', 'fly', 'grasshopper', 
-                      'daddylonglegs', 'aphid')) %>%
-  group_by(Name, ID, ObservationMethod) %>%
-  summarize(
-    caterpillar   = ifelse(sum(Group == 'caterpillar', na.rm = TRUE) > 0, 1, 0),
-    spider        = ifelse(sum(Group == 'spider', na.rm = TRUE) > 0, 1, 0),
-    beetle        = ifelse(sum(Group == 'beetle', na.rm = TRUE) > 0, 1, 0),
-    truebug       = ifelse(sum(Group == 'truebugs', na.rm = TRUE) > 0, 1, 0),
-    hopper        = ifelse(sum(Group == 'leafhopper', na.rm = TRUE) > 0, 1, 0),
-    ant           = ifelse(sum(Group == 'ant', na.rm = TRUE) > 0, 1, 0),
-    fly           = ifelse(sum(Group == 'fly', na.rm = TRUE) > 0, 1, 0),
-    grasshopper   = ifelse(sum(Group == 'grasshopper', na.rm = TRUE) > 0, 1, 0),
-    daddylonglegs = ifelse(sum(Group == 'daddylonglegs', na.rm = TRUE) > 0, 1, 0),
-  #  aphid         =ifelse(sum(Group == 'aphid', na.rm = TRUE) > 0, 1, 0) high I.D misclass
-  ) %>%
+# pick the latest one
+latest_file <- dataset_file[1]
+
+github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/master/data/"
+
+fullDataset <- read.csv(paste0(github_raw, latest_file))
+sites = read.csv("data/sites.csv") # you can update the sites from the N_urbanization_analysis script.
+
+goodSites = fullDataset %>%
+  filter(julianday %in% julianWindow,
+         Longitude > -100,
+         WetLeaves == 0) %>%
   group_by(Name, ObservationMethod) %>%
-  summarise(
-    Caterpillar   = sum(caterpillar)   / n_distinct(ID),
-    Spider        = sum(spider)        / n_distinct(ID),
-    Beetle        = sum(beetle)        / n_distinct(ID),
-    Truebug       = sum(truebug)       / n_distinct(ID),
-    Hopper        = sum(hopper)        / n_distinct(ID),
-    Ant           = sum(ant)           / n_distinct(ID),
-    fly           = sum(fly)           / n_distinct(ID),
-    Grasshopper   = sum(grasshopper)   / n_distinct(ID),
-    Daddylongleg = sum(daddylonglegs) / n_distinct(ID),
-    #Aphid         = sum(aphid)         / n_distinct(ID),
-    surveyNum       = n_distinct(ID)) 
-
-# number of distinct survey IDs for each sites (by observation methods)
-#  Where there is at least one observation of arthropods. 
-
-prop_data <- left_join(proportion, sites, by = "Name")
+  summarize(nSurvs = n_distinct(ID)) %>%
+  filter(nSurvs >= minSurveys) 
 
 
-
-
-
-fullDataset %>%
+prop_fullDataset = fullDataset %>%
   filter(Name %in% goodSites$Name,
          julianday %in% julianWindow,
          WetLeaves == 0,
-         !Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK'),
-         Group %in% c('caterpillar', 'spider', 'ant', 'leafhopper', 'beetle', 
-                      'truebugs', 'fly', 'grasshopper', 
-                      'daddylonglegs', 'aphid')) %>%
-  group_by(ID) %>%
-  summarize(
-    caterpillar   = ifelse(sum(Group == 'caterpillar', na.rm = TRUE) > 0, 1, 0),
-    spider        = ifelse(sum(Group == 'spider', na.rm = TRUE) > 0, 1, 0),
-    beetle        = ifelse(sum(Group == 'beetle', na.rm = TRUE) > 0, 1, 0),
-    truebug       = ifelse(sum(Group == 'truebugs', na.rm = TRUE) > 0, 1, 0),
-    hopper        = ifelse(sum(Group == 'leafhopper', na.rm = TRUE) > 0, 1, 0),
-    ant           = ifelse(sum(Group == 'ant', na.rm = TRUE) > 0, 1, 0),
-    fly           = ifelse(sum(Group == 'fly', na.rm = TRUE) > 0, 1, 0),
-    grasshopper   = ifelse(sum(Group == 'grasshopper', na.rm = TRUE) > 0, 1, 0),
-    daddylonglegs = ifelse(sum(Group == 'daddylonglegs', na.rm = TRUE) > 0, 1, 0),
-    aphid         = ifelse(sum(Group == 'aphid', na.rm = TRUE) > 0, 1, 0),
-    other         = ifelse(sum(Group == "other", na.rm = TRUE) > 0, 1, 0),
-    Psocodea      = ifelse(sum(Group == "Psocodea", na.rm = TRUE) > 0, 1, 0),
-    Trichoptera   = ifelse(sum(Group ==  "Trichoptera", na.rm = TRUE) > 0, 1, 0),
-    moths         = ifelse(sum(Group ==  "moths", na.rm = TRUE) > 0, 1, 0),
-    bee           = ifelse(sum(Group ==  "bee", na.rm = TRUE) > 0, 1, 0)) %>% str()
+         !Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK')) %>% 
+  group_by(Name, ID, ObservationMethod) %>%
+  summarize(caterpillar = ifelse(sum(Group == 'caterpillar', na.rm = TRUE) > 0, 1, 0),
+            spider = ifelse(sum(Group == 'spider', na.rm = TRUE) > 0, 1, 0),
+            beetle = ifelse(sum(Group == 'beetle', na.rm = TRUE) > 0, 1, 0),
+            truebug = ifelse(sum(Group == 'truebugs', na.rm = TRUE) > 0, 1, 0),
+            hopper = ifelse(sum(Group == 'leafhopper', na.rm = TRUE) > 0, 1, 0),
+            ant = ifelse(sum(Group == 'ant', na.rm = TRUE) > 0, 1, 0),
+            grasshopper = ifelse(sum(Group == "grasshopper", na.rm = TRUE) > 0, 1, 0),
+            fly = ifelse(sum(Group == "fly", na.rm = TRUE) > 0, 1, 0),
+            daddylonglegs = ifelse(sum(Group == "daddylonglegs", na.rm = TRUE) > 0, 1, 0),
+            nSurv = n_distinct(ID)) %>% 
+  group_by(Name, ObservationMethod) %>% 
+  summarise(caterpillar = mean(caterpillar),
+            spider = mean(spider),
+            beetle = mean(beetle),
+            truebug = mean(truebug),
+            hopper  = mean(hopper),
+            ant = mean(ant),
+            grasshopper = mean(grasshopper),
+            fly = mean(fly),
+            daddylonglegs = mean(daddylonglegs),
+            nSurv = sum(nSurv))  
 
-  
 
 
-#   PCA
 
-prop.num <- prop_data[,3:11]
-site.info <- prop_data[,c(1,2,12:17)]
+prop_dataset = left_join(prop_fullDataset, sites, by = 'Name') %>% 
+  filter(nSurv >= minSurveys)
+
+
+ 
+
 
 
 
@@ -95,6 +75,9 @@ site.info <- prop_data[,c(1,2,12:17)]
 ### using a RDA
 # Read more: https://sites.google.com/site/mb3gustame/constrained-analyses/redundancy-analysis
 # We would constrain the arthropod composition by the environmental variable (and maybe covary by latitude)
+
+prop.num <- prop_dataset[,3:11]
+site.info <- prop_dataset[,c(1,2,12:17)]
 
 prop.num <- prop.num %>% as.data.frame()
 
@@ -328,8 +311,7 @@ ggplot() +
     fill = guide_colorbar(title = "% occurence")  # keep a nice fill legend
   )+  
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "black")+
-  annotation_raster(hopperImage, ymin = -1.2, ymax = -0.6, xmin = -1.1, xmax = -0.4)
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black")
 
 
 

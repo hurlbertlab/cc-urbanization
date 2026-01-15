@@ -87,7 +87,8 @@ prop_fullDataset<- fullDataset %>%
             ant = ifelse(sum(Group == 'ant', na.rm = TRUE) > 0, 1, 0),
             grasshopper = ifelse(sum(Group == "grasshopper", na.rm = TRUE) > 0, 1, 0),
             fly = ifelse(sum(Group == "fly", na.rm = TRUE) > 0, 1, 0),
-            daddylonglegs = ifelse(sum(Group == "daddylonglegs", na.rm = TRUE) > 0, 1, 0)) %>% 
+            daddylonglegs = ifelse(sum(Group == "daddylonglegs", na.rm = TRUE) > 0, 1, 0),
+            nSurv = n_distinct(ID)) %>% 
   group_by(Name, ObservationMethod) %>% 
   summarise(caterpillar_prop = mean(caterpillar),
             spider_prop = mean(spider),
@@ -98,7 +99,8 @@ prop_fullDataset<- fullDataset %>%
             grasshopper_prop = mean(grasshopper),
             fly_prop = mean(fly),
             daddylonglegs_prop = mean(daddylonglegs),
-            Trials = n())  
+            Trials = n(),
+            nSurv = sum(nSurv))  
 
 prop_dataset = left_join(prop_fullDataset, sites, by = 'Name') %>% 
   filter(Trials >= 50)

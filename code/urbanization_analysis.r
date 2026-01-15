@@ -1,4 +1,4 @@
-library(dplyr)
+
 library(geodata)
 library(sf)
 library(terra)
@@ -14,23 +14,31 @@ library(maps)
 library(viridisLite)
 library(vioplot)
 library(tibble)
+library(tidyverse)
+library(jsonlite)
+
 
 
 # (1) Read in latest Caterpillars Count! raw dataset from the caterpillars-analysis-public repo----
-data_repo <- "https://github.com/hurlbertlab/caterpillars-analysis-public/tree/master/data"
-webpage <- read_html(data_repo)
-repo_links <- unique(html_attr(html_nodes(webpage, "a"), "href"))
-dataset_url <- repo_links[grepl("fullDataset", repo_links)]
+options(timeout = 300)  
 
-latest_file <- word(dataset_url, -1, sep = "/")
+api_url <- "https://api.github.com/repos/hurlbertlab/caterpillars-analysis-public/contents/data"
+files <- fromJSON(api_url)
 
-github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/refs/heads/master/data/"
+dataset_file <- files$name[grepl("fullDataset", files$name, ignore.case = TRUE)]
 
-fullDataset = read.csv(paste0(github_raw, latest_file), header = TRUE, quote = '\"', fill = TRUE)
+# pick the latest one
+latest_file <- dataset_file[1]
+
+github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/master/data/"
+
+fullDataset <- read.csv(paste0(github_raw, latest_file))
+
+
 
 
 # (2) Filter dataset ----
-# to sites east of 100W with a minimum of 40 branch surveys during June and July (juliandays 152-213)
+# to sites east of 100W with a minimum of 50 branch surveys during June and July (juliandays 152-213)
 minSurveys = 50
 julianWindow = 152:213
 
@@ -41,7 +49,7 @@ goodSites = fullDataset %>%
   group_by(Name, ObservationMethod) %>%
   summarize(nSurvs = n_distinct(ID)) %>%
   filter(nSurvs >= minSurveys) %>%
-  arrange((nSurvs))
+  arrange((nSurvs)) %>% as.data.frame()
 
 # Dataset thru 2024 includes 154 sites with at least 50 surveys in the seasonal window
 
@@ -571,7 +579,7 @@ mod.x = groups[-c(1,2, length(groups), length(groups)-1)]
 
 # Urban cover
 
-simDev_5caterpillar <- sim_slopes(cat.Dev.Latitude, pred = dev, modx = Latitude,modx.values = mod.x,
+simDev_5caterpillar <- sim_slopes(cat.Dev.Latitude, pred = dev, modx = Latitude, modx.values = mod.x,
                                   johnson_neyman = FALSE, digits = 4)
 
 simDev_5beetle <-sim_slopes(beet.Dev.Latitude, pred = dev, modx = Latitude,modx.values = mod.x,
