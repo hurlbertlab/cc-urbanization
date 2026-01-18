@@ -21,8 +21,6 @@ library(tibble)
 library(tidyverse)
 library(jsonlite)
 library(magick)
-# library(factoextra)
-# library(FactoMineR)
 require(vegan)
 require(ggimage) 
 
@@ -365,7 +363,7 @@ rownames(prop.devLatOutput) = NULL
 
 
 
-
+### urbanization effect on occurrence by observationMethod
 
 prop_dataset %>% 
   pivot_longer(cols = -c("Name", "ObservationMethod", "Region", 
