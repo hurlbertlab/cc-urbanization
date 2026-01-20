@@ -1,594 +1,2038 @@
-"Group","Rank","Taxon","nOfTaxon","nofCount"
-"ant","genus","Brachymyrmex",1,1
-"ant","genus","Brachyponera",1,4
-"ant","genus","Camponotus",8,198
-"ant","genus","Colobopsis",1,3
-"ant","genus","Crematogaster",1,103
-"ant","genus","Dolichoderus",1,1
-"ant","genus","Formica",6,146
-"ant","genus","Lasius",3,38
-"ant","genus","Linepithema",1,2
-"ant","genus","Monomorium",3,14
-"ant","genus","Myrmentoma",1,94
-"ant","genus","Myrmica",2,38
-"ant","genus","Nylanderia",2,13
-"ant","genus","Prenolepis",1,16
-"ant","genus","Pseudomyrmex",2,4
-"ant","genus","Tapinoma",1,17
-"ant","genus","Temnothorax",4,31
-"ant","subfamily","Formicinae",1,15
-"ant","subfamily","Myrmicinae",1,5
-"ant","subfamily","Ponerinae",1,1
-"ant","subfamily","Pseudomyrmecinae",1,1
-"ant","tribe","Camponotini",1,1
-"ant","tribe","Lasiini",1,5
-"beetle","genus","Acalymma",1,1
-"beetle","genus","Agrilus",3,5
-"beetle","genus","Alaus",1,1
-"beetle","genus","Analeptura",1,1
-"beetle","genus","Anaspis",1,1
-"beetle","genus","Anatis",2,4
-"beetle","genus","Anomoea",2,2
-"beetle","genus","Anthonomus",2,3
-"beetle","genus","Anthrenus",2,4
-"beetle","genus","Aphrastus",1,1
-"beetle","genus","Axion",1,1
-"beetle","genus","Baliosus",1,1
-"beetle","genus","Barypeithes",1,1
-"beetle","genus","Bassareus",2,6
-"beetle","genus","Brachiacantha",3,3
-"beetle","genus","Brachys",4,6
-"beetle","genus","Brachystylus",1,5
-"beetle","genus","Calligrapha",2,3
-"beetle","genus","Calopteron",2,4
-"beetle","genus","Capraita",1,1
-"beetle","genus","Centronopus",1,1
-"beetle","genus","Chauliognathus",1,3
-"beetle","genus","Chelonarium",1,1
-"beetle","genus","Chilocorus",2,4
-"beetle","genus","Chrysochus",1,2
-"beetle","genus","Coccinella",1,4
-"beetle","genus","Coleomegilla",1,1
-"beetle","genus","Coleothorpa",1,1
-"beetle","genus","Conoderus",1,6
-"beetle","genus","Conotrachelus",2,2
-"beetle","genus","Contacyphon",1,5
-"beetle","genus","Cryptocephalus",4,13
-"beetle","genus","Cryptolaemus",1,1
-"beetle","genus","Cupes",1,2
-"beetle","genus","Cycloneda",1,3
-"beetle","genus","Cyrtepistomus",1,162
-"beetle","genus","Demotina",1,10
-"beetle","genus","Dendroides",2,2
-"beetle","genus","Dicerca",1,1
-"beetle","genus","Dichelonyx",1,1
-"beetle","genus","Dircaea",1,1
-"beetle","genus","Dorcaschema",1,3
-"beetle","genus","Ellychnia",1,1
-"beetle","genus","Elonus",1,1
-"beetle","genus","Eugnamptus",1,3
-"beetle","genus","Eulechriops",1,1
-"beetle","genus","Euphoria",1,1
-"beetle","genus","Exomala",1,2
-"beetle","genus","Falsomordellistena",3,12
-"beetle","genus","Gambrinus",1,1
-"beetle","genus","Germarostes",1,1
-"beetle","genus","Glipa",1,1
-"beetle","genus","Glyphonyx",1,1
-"beetle","genus","Harmonia",3,194
-"beetle","genus","Heilipus",1,4
-"beetle","genus","Horistonotus",1,1
-"beetle","genus","Hylobius",1,1
-"beetle","genus","Hyperaspis",1,2
-"beetle","genus","Isomira",1,1
-"beetle","genus","Lebia",2,3
-"beetle","genus","Lechriops",1,4
-"beetle","genus","Leptoceletes",1,1
-"beetle","genus","Limonius",2,2
-"beetle","genus","Lucidota",1,5
-"beetle","genus","Macratria",1,4
-"beetle","genus","Macrodactylus",2,8
-"beetle","genus","Macrosiagon",1,1
-"beetle","genus","Mastogenius",1,1
-"beetle","genus","Megapenthes",1,1
-"beetle","genus","Melanotus",1,6
-"beetle","genus","Microtonus",1,2
-"beetle","genus","Monarthrum",1,1
-"beetle","genus","Monocrepidius",1,3
-"beetle","genus","Mordella",2,5
-"beetle","genus","Mordellina",1,1
-"beetle","genus","Mordellistena",3,8
-"beetle","genus","Myosides",1,1
-"beetle","genus","Myrmex",1,1
-"beetle","genus","Naupactus",1,1
-"beetle","genus","Neoclytus",1,1
-"beetle","genus","Neofidia",1,3
-"beetle","genus","Neolema",1,1
-"beetle","genus","Neopyrochroa",1,1
-"beetle","genus","Ochyromera",1,5
-"beetle","genus","Octotoma",1,1
-"beetle","genus","Odontopus",1,11
-"beetle","genus","Odontota",1,3
-"beetle","genus","Odontotaenius",1,1
-"beetle","genus","Orchestes",2,3
-"beetle","genus","Ormiscus",1,1
-"beetle","genus","Otiorhynchus",1,4
-"beetle","genus","Pacificanthia",1,1
-"beetle","genus","Palaminus",1,7
-"beetle","genus","Pandeleteius",1,2
-"beetle","genus","Panscopus",1,1
-"beetle","genus","Pantomorus",1,6
-"beetle","genus","Paramordellaria",2,6
-"beetle","genus","Paria",1,2
-"beetle","genus","Pedilus",1,1
-"beetle","genus","Petalium",1,1
-"beetle","genus","Photinus",3,49
-"beetle","genus","Photuris",1,27
-"beetle","genus","Phyllobaenus",1,2
-"beetle","genus","Phyllobius",1,25
-"beetle","genus","Plagiodera",1,1
-"beetle","genus","Podabrus",2,3
-"beetle","genus","Polydrusus",4,44
-"beetle","genus","Popillia",1,32
-"beetle","genus","Proludius",1,1
-"beetle","genus","Propylea",1,2
-"beetle","genus","Pseudocneorhinus",1,50
-"beetle","genus","Pseudoedophrys",1,116
-"beetle","genus","Psyllobora",2,29
-"beetle","genus","Ptilinus",1,1
-"beetle","genus","Ptosima",1,1
-"beetle","genus","Pyractomena",1,1
-"beetle","genus","Pyropyga",1,1
-"beetle","genus","Rhagonycha",3,31
-"beetle","genus","Saperda",2,2
-"beetle","genus","Sciaphilus",1,10
-"beetle","genus","Scirtes",1,3
-"beetle","genus","Statira",1,2
-"beetle","genus","Strangalepta",1,1
-"beetle","genus","Strangalia",1,1
-"beetle","genus","Strongylium",2,2
-"beetle","genus","Strophosoma",1,3
-"beetle","genus","Synolabus",1,4
-"beetle","genus","Tenomerga",1,4
-"beetle","genus","Tolidomordella",1,1
-"beetle","genus","Trichodesma",2,3
-"beetle","genus","Trigonarthris",1,1
-"beetle","genus","Triplax",1,1
-"beetle","genus","Trirhabda",1,1
-"beetle","genus","Trypherus",1,1
-"beetle","genus","Typocerus",2,2
-"beetle","genus","Tytthonyx",1,1
-"beetle","genus","Urgleptes",3,4
-"beetle","subfamily","Agrilinae",1,1
-"beetle","subfamily","Alleculinae",1,6
-"beetle","subfamily","Anobiinae",1,1
-"beetle","subfamily","Anthribinae",1,1
-"beetle","subfamily","Apioninae",1,1
-"beetle","subfamily","Cantharinae",1,8
-"beetle","subfamily","Cassidinae",1,1
-"beetle","subfamily","Ceutorhynchinae",1,1
-"beetle","subfamily","Coccinellinae",1,1
-"beetle","subfamily","Cossoninae",1,1
-"beetle","subfamily","Cryptocephalinae",1,13
-"beetle","subfamily","Curculioninae",1,1
-"beetle","subfamily","Elaterinae",1,1
-"beetle","subfamily","Entiminae",1,8
-"beetle","subfamily","Eumolpinae",1,33
-"beetle","subfamily","Inopeplinae",1,1
-"beetle","subfamily","Lagriinae",1,1
-"beetle","subfamily","Lepturinae",1,2
-"beetle","subfamily","Malachiinae",1,5
-"beetle","subfamily","Scolytinae",1,1
-"beetle","subfamily","Xyletininae",1,1
-"beetle","subtribe","Cryptocephalina",1,7
-"beetle","tribe","Alticini",1,1
-"beetle","tribe","Bromiini",1,6
-"beetle","tribe","Cantharini",1,1
-"beetle","tribe","Choragini",1,1
-"beetle","tribe","Coccinellini",1,5
-"beetle","tribe","Cryptocephalini",1,8
-"beetle","tribe","Cyphicerini",1,1
-"beetle","tribe","Dichelonychini",1,1
-"beetle","tribe","Lepturini",1,1
-"beetle","tribe","Macrodactylini",1,2
-"beetle","tribe","Mordellistenini",1,3
-"beetle","tribe","Rhamphini",1,5
-"beetle","tribe","Silini",1,1
-"beetle","tribe","Tracheini",1,1
-"caterpillar","genus","Acharia",1,5
-"caterpillar","genus","Achatia",1,1
-"caterpillar","genus","Acronicta",9,130
-"caterpillar","genus","Actias",1,5
-"caterpillar","genus","Adoneta",1,1
-"caterpillar","genus","Alsophila",1,1
-"caterpillar","genus","Amphipyra",1,6
-"caterpillar","genus","Ancylis",1,2
-"caterpillar","genus","Anisota",1,11
-"caterpillar","genus","Antaeotricha",2,3
-"caterpillar","genus","Apatelodes",1,2
-"caterpillar","genus","Archips",1,1
-"caterpillar","genus","Arogalea",1,1
-"caterpillar","genus","Asterocampa",1,6
-"caterpillar","genus","Athrips",1,1
-"caterpillar","genus","Bucculatrix",1,1
-"caterpillar","genus","Cameraria",1,2
-"caterpillar","genus","Cecrita",2,36
-"caterpillar","genus","Charadra",1,1
-"caterpillar","genus","Coelodasys",1,3
-"caterpillar","genus","Colocasia",2,6
-"caterpillar","genus","Cyclophora",1,1
-"caterpillar","genus","Dasychira",1,2
-"caterpillar","genus","Datana",1,1
-"caterpillar","genus","Dryocampa",1,3
-"caterpillar","genus","Elaphria",2,5
-"caterpillar","genus","Ennomos",2,2
-"caterpillar","genus","Epimecis",1,19
-"caterpillar","genus","Euclea",1,2
-"caterpillar","genus","Eupithecia",1,1
-"caterpillar","genus","Feralia",1,1
-"caterpillar","genus","Furcula",1,1
-"caterpillar","genus","Halysidota",3,76
-"caterpillar","genus","Harrisimemna",1,1
-"caterpillar","genus","Hemaris",1,3
-"caterpillar","genus","Heterocampa",1,1
-"caterpillar","genus","Homaledra",1,4
-"caterpillar","genus","Hypagyrtis",1,10
-"caterpillar","genus","Hypena",1,1
-"caterpillar","genus","Hypercompe",1,3
-"caterpillar","genus","Hyphantria",1,26
-"caterpillar","genus","Hypsoropha",2,15
-"caterpillar","genus","Ianassa",1,1
-"caterpillar","genus","Lepitoreuma",1,2
-"caterpillar","genus","Lithacodes",1,3
-"caterpillar","genus","Lithophane",1,6
-"caterpillar","genus","Lochmaeus",3,4
-"caterpillar","genus","Lomographa",1,1
-"caterpillar","genus","Lycia",1,1
-"caterpillar","genus","Lymantria",2,93
-"caterpillar","genus","Machimia",1,4
-"caterpillar","genus","Macrurocampa",1,2
-"caterpillar","genus","Malacosoma",2,7
-"caterpillar","genus","Melanolophia",1,1
-"caterpillar","genus","Misogada",1,2
-"caterpillar","genus","Morrisonia",2,36
-"caterpillar","genus","Nadata",2,5
-"caterpillar","genus","Natada",1,8
-"caterpillar","genus","Nematocampa",1,3
-"caterpillar","genus","Oreta",1,1
-"caterpillar","genus","Orgyia",3,22
-"caterpillar","genus","Orthosia",1,1
-"caterpillar","genus","Paectes",2,14
-"caterpillar","genus","Panopoda",1,6
-"caterpillar","genus","Papilio",1,3
-"caterpillar","genus","Paraclemensia",1,1
-"caterpillar","genus","Paraeschra",1,1
-"caterpillar","genus","Parallelia",1,1
-"caterpillar","genus","Peridea",2,3
-"caterpillar","genus","Phigalia",2,2
-"caterpillar","genus","Phobetron",1,1
-"caterpillar","genus","Phyllonorycter",1,5
-"caterpillar","genus","Pococera",1,2
-"caterpillar","genus","Polygonia",1,1
-"caterpillar","genus","Pseudorthodes",1,1
-"caterpillar","genus","Psyche",1,1
-"caterpillar","genus","Pyreferra",1,8
-"caterpillar","genus","Pyrrharctia",1,1
-"caterpillar","genus","Schizura",2,7
-"caterpillar","genus","Spilosoma",1,1
-"caterpillar","genus","Zale",1,4
-"caterpillar","subfamily","Ennominae",1,3
-"caterpillar","subfamily","Erebinae",1,6
-"caterpillar","subfamily","Geometrinae",1,2
-"caterpillar","subfamily","Heterocampinae",1,1
-"caterpillar","subfamily","Hypeninae",1,4
-"caterpillar","subfamily","Limacodinae",1,6
-"caterpillar","subfamily","Limenitidinae",1,2
-"caterpillar","subfamily","Lymantriinae",1,6
-"caterpillar","subfamily","Noctuinae",1,5
-"caterpillar","subfamily","Plusiinae",1,1
-"caterpillar","subfamily","Sphinginae",1,1
-"caterpillar","subtribe","Sphingina",1,1
-"caterpillar","tribe","Arctiini",1,3
-"caterpillar","tribe","Argyrogrammatini",1,1
-"caterpillar","tribe","Catocalini",1,1
-"caterpillar","tribe","Elaphriini",1,1
-"caterpillar","tribe","Orgyiini",1,6
-"caterpillar","tribe","Panopodini",1,2
-"daddylonglegs","genus","Leiobunum",6,23
-"daddylonglegs","genus","Odiellus",1,1
-"fly","genus","Aedes",1,1
-"fly","genus","Allograpta",1,2
-"fly","genus","Amblypsilopus",1,1
-"fly","genus","Anthrax",1,1
-"fly","genus","Atomosia",1,1
-"fly","genus","Caryomyia",1,1
-"fly","genus","Cerotainia",1,1
-"fly","genus","Chaoborus",1,1
-"fly","genus","Chironomus",1,1
-"fly","genus","Chrysopilus",2,3
-"fly","genus","Chrysops",2,2
-"fly","genus","Chrysotimus",1,1
-"fly","genus","Chrysotus",1,6
-"fly","genus","Chyliza",1,1
-"fly","genus","Coenosia",1,1
-"fly","genus","Compsobata",1,1
-"fly","genus","Condylostylus",5,69
-"fly","genus","Delphinia",1,4
-"fly","genus","Dialysis",1,1
-"fly","genus","Diogmites",1,1
-"fly","genus","Efferia",1,2
-"fly","genus","Elephantomyia",1,1
-"fly","genus","Erioptera",1,1
-"fly","genus","Eudasyphora",1,1
-"fly","genus","Eudioctria",1,1
-"fly","genus","Eupeodes",1,1
-"fly","genus","Gymnopternus",3,24
-"fly","genus","Helius",1,1
-"fly","genus","Homoneura",1,20
-"fly","genus","Laphria",1,2
-"fly","genus","Lauxaniella",1,1
-"fly","genus","Leptogaster",1,1
-"fly","genus","Lonchaea",1,1
-"fly","genus","Lucilia",1,2
-"fly","genus","Macrocera",1,5
-"fly","genus","Macrodiplosis",2,4
-"fly","genus","Microtendipes",1,2
-"fly","genus","Minettia",1,1
-"fly","genus","Neodexiopsis",1,1
-"fly","genus","Neogriphoneura",1,2
-"fly","genus","Nephrotoma",1,2
-"fly","genus","Ocyptamus",1,1
-"fly","genus","Ozodiceromyia",1,1
-"fly","genus","Pelecinobaccha",1,1
-"fly","genus","Pollenia",1,1
-"fly","genus","Psorophora",1,1
-"fly","genus","Rainieria",1,2
-"fly","genus","Rhagio",4,5
-"fly","genus","Rhagoletis",1,1
-"fly","genus","Rivellia",1,12
-"fly","genus","Sarcophaga",1,2
-"fly","genus","Stenochironomus",3,4
-"fly","genus","Stilpon",1,1
-"fly","genus","Strauzia",1,1
-"fly","genus","Tanytarsus",1,1
-"fly","genus","Taracticus",1,1
-"fly","genus","Thaumatomyia",1,1
-"fly","genus","Toxomerus",2,5
-"fly","genus","Toxonevra",2,8
-"fly","subfamily","Chironominae",1,3
-"fly","subfamily","Dolichopodinae",1,2
-"fly","subfamily","Luciliinae",1,1
-"fly","subfamily","Macrocerinae",1,2
-"fly","subfamily","Muscinae",1,1
-"fly","subfamily","Orthocladiinae",1,1
-"fly","subfamily","Sarcophaginae",1,2
-"fly","subfamily","Sciapodinae",1,6
-"fly","subfamily","Syrphinae",1,1
-"fly","subfamily","Tipulinae",1,2
-"fly","subtribe","Xylotina",1,1
-"fly","tribe","Aedini",1,1
-"fly","tribe","Chironomini",1,1
-"fly","tribe","Diaphorini",1,11
-"fly","tribe","Dolichopodini",1,12
-"fly","tribe","Elachipterini",1,1
-"fly","tribe","Muscini",1,1
-"fly","tribe","Syrphini",1,1
-"grasshopper","genus","Amblycorypha",1,1
-"grasshopper","genus","Anaxipha",1,4
-"grasshopper","genus","Camptonotus",1,7
-"grasshopper","genus","Cycloptilum",1,2
-"grasshopper","genus","Cyrtoxipha",2,68
-"grasshopper","genus","Dendrotettix",1,1
-"grasshopper","genus","Hapithus",2,36
-"grasshopper","genus","Meconema",2,28
-"grasshopper","genus","Melanoplus",2,9
-"grasshopper","genus","Microcentrum",2,4
-"grasshopper","genus","Neoxabea",1,17
-"grasshopper","genus","Oecanthus",3,133
-"grasshopper","genus","Orocharis",1,3
-"grasshopper","genus","Phaneroptera",1,1
-"grasshopper","genus","Phyllopalpus",1,39
-"grasshopper","genus","Pterophylla",1,1
-"grasshopper","genus","Scudderia",2,7
-"grasshopper","subfamily","Melanoplinae",1,2
-"grasshopper","subfamily","Oecanthinae",1,3
-"grasshopper","subfamily","Phaneropterinae",1,2
-"grasshopper","subfamily","Trigonidiinae",1,1
-"leafhopper","genus","Acanalonia",4,122
-"leafhopper","genus","Acericerus",1,2
-"leafhopper","genus","Agallia",1,2
-"leafhopper","genus","Agalliopsis",1,3
-"leafhopper","genus","Alebra",1,6
-"leafhopper","genus","Allygidius",1,1
-"leafhopper","genus","Anotia",2,3
-"leafhopper","genus","Aphrophora",1,1
-"leafhopper","genus","Aplos",1,10
-"leafhopper","genus","Bothriocera",1,2
-"leafhopper","genus","Cedusa",1,28
-"leafhopper","genus","Clastoptera",3,10
-"leafhopper","genus","Cloanthanus",1,2
-"leafhopper","genus","Colladonus",1,3
-"leafhopper","genus","Cyrtolobus",3,7
-"leafhopper","genus","Empoa",2,4
-"leafhopper","genus","Enchenopa",2,8
-"leafhopper","genus","Eratoneura",1,1
-"leafhopper","genus","Eutettix",1,1
-"leafhopper","genus","Fieberiella",1,1
-"leafhopper","genus","Flatormenis",1,197
-"leafhopper","genus","Graphocephala",4,36
-"leafhopper","genus","Gyponana",1,26
-"leafhopper","genus","Haplaxius",1,3
-"leafhopper","genus","Idiocerus",1,2
-"leafhopper","genus","Japananus",1,21
-"leafhopper","genus","Jikradia",2,55
-"leafhopper","genus","Joruma",1,1
-"leafhopper","genus","Lycorma",1,6
-"leafhopper","genus","Macropsis",1,2
-"leafhopper","genus","Magicicada",2,5
-"leafhopper","genus","Metcalfa",1,84
-"leafhopper","genus","Micrutalis",1,1
-"leafhopper","genus","Omolicna",1,1
-"leafhopper","genus","Oncometopia",1,14
-"leafhopper","genus","Oncopsis",3,13
-"leafhopper","genus","Orientus",1,18
-"leafhopper","genus","Ormenoides",1,202
-"leafhopper","genus","Osbornellus",1,4
-"leafhopper","genus","Ossiannilssonola",1,1
-"leafhopper","genus","Otiocerus",1,2
-"leafhopper","genus","Pagaronia",1,1
-"leafhopper","genus","Paraphlepsius",1,2
-"leafhopper","genus","Paraulacizes",1,2
-"leafhopper","genus","Pelitropis",1,7
-"leafhopper","genus","Penestragania",1,6
-"leafhopper","genus","Penthimia",1,1
-"leafhopper","genus","Philaenus",1,9
-"leafhopper","genus","Platycotis",1,22
-"leafhopper","genus","Ponana",1,1
-"leafhopper","genus","Prosapia",1,8
-"leafhopper","genus","Rugosana",1,8
-"leafhopper","genus","Scaphoideus",1,7
-"leafhopper","genus","Scaphytopius",1,1
-"leafhopper","genus","Sibovia",1,1
-"leafhopper","genus","Stictocephala",3,37
-"leafhopper","genus","Synecdoche",2,3
-"leafhopper","genus","Thionia",3,90
-"leafhopper","genus","Vanduzea",1,1
-"leafhopper","subfamily","Cicadellinae",1,2
-"leafhopper","subfamily","Deltocephalinae",1,1
-"leafhopper","subfamily","Flatinae",1,2
-"leafhopper","subfamily","Smiliinae",1,1
-"leafhopper","subfamily","Thioniinae",1,1
-"leafhopper","subfamily","Typhlocybinae",1,14
-"leafhopper","subtribe","Agalliina",1,1
-"leafhopper","tribe","Ceresini",1,9
-"leafhopper","tribe","Cicadellini",1,2
-"leafhopper","tribe","Empoascini",1,5
-"leafhopper","tribe","Erythroneurini",1,1
-"leafhopper","tribe","Gyponini",1,37
-"leafhopper","tribe","Idiocerini",1,2
-"leafhopper","tribe","Macropsini",1,5
-"leafhopper","tribe","Nephesini",1,94
-"leafhopper","tribe","Pentastirini",1,1
-"leafhopper","tribe","Scaphoideini",1,4
-"leafhopper","tribe","Smiliini",1,3
-"leafhopper","tribe","Thioniini",1,3
-"leafhopper","tribe","Typhlocybini",1,2
-"spider","genus","Anyphaena",1,20
-"spider","genus","Araneus",5,24
-"spider","genus","Araniella",2,8
-"spider","genus","Ariadna",1,1
-"spider","genus","Asagena",1,1
-"spider","genus","Barronopsis",1,1
-"spider","genus","Bassaniana",1,1
-"spider","genus","Castianeira",2,2
-"spider","genus","Cheiracanthium",1,2
-"spider","genus","Clubiona",1,2
-"spider","genus","Colonus",2,58
-"spider","genus","Enoplognatha",1,18
-"spider","genus","Eris",1,1
-"spider","genus","Euryopis",1,1
-"spider","genus","Eustala",2,4
-"spider","genus","Florinda",2,2
-"spider","genus","Hentzia",3,29
-"spider","genus","Herpyllus",1,1
-"spider","genus","Hibana",2,5
-"spider","genus","Larinioides",2,3
-"spider","genus","Leucauge",2,38
-"spider","genus","Lyssomanes",1,38
-"spider","genus","Mangora",4,20
-"spider","genus","Mastophora",1,1
-"spider","genus","Mecaphesa",1,10
-"spider","genus","Mecynogea",1,3
-"spider","genus","Metepeira",2,10
-"spider","genus","Micrathena",4,32
-"spider","genus","Mimetus",1,7
-"spider","genus","Misumena",1,1
-"spider","genus","Misumessus",2,102
-"spider","genus","Neoscona",3,24
-"spider","genus","Neriene",1,2
-"spider","genus","Ozyptila",1,1
-"spider","genus","Paraphidippus",1,17
-"spider","genus","Parasteatoda",1,2
-"spider","genus","Pelegrina",1,6
-"spider","genus","Phidippus",5,7
-"spider","genus","Philodromus",3,61
-"spider","genus","Phylloneta",1,3
-"spider","genus","Pisaurina",1,2
-"spider","genus","Pityohyphantes",1,1
-"spider","genus","Synageles",1,1
-"spider","genus","Synema",2,17
-"spider","genus","Synemosyna",2,3
-"spider","genus","Tetragnatha",1,30
-"spider","genus","Theridion",1,17
-"spider","genus","Theridiosoma",1,1
-"spider","genus","Theridula",2,3
-"spider","genus","Tmarus",2,28
-"spider","genus","Trachelas",1,4
-"spider","genus","Tutelina",1,4
-"spider","genus","Uloborus",1,4
-"spider","genus","Verrucosa",1,79
-"spider","genus","Wulfila",2,116
-"spider","genus","Xysticus",1,3
-"spider","genus","Yunohamella",1,1
-"spider","subfamily","Ageleninae",1,2
-"spider","subfamily","Anyphaeninae",1,4
-"spider","subfamily","Araneinae",1,11
-"spider","subfamily","Salticinae",1,43
-"spider","subfamily","Theridiinae",1,1
-"spider","subfamily","Thomisinae",1,3
-"spider","subtribe","Dendryphantina",1,2
-"spider","tribe","Coriarachnini",1,3
-"spider","tribe","Dendryphantini",1,9
-"spider","tribe","Misumenini",1,22
-"truebugs","genus","Acanthocephala",3,39
-"truebugs","genus","Arilus",1,23
-"truebugs","genus","Banasa",2,4
-"truebugs","genus","Brochymena",2,5
-"truebugs","genus","Campyloneura",1,5
-"truebugs","genus","Ceratocapsus",1,2
-"truebugs","genus","Chinavia",2,16
-"truebugs","genus","Coccobaphes",1,1
-"truebugs","genus","Corythucha",3,16
-"truebugs","genus","Dendrocoris",1,1
-"truebugs","genus","Empicoris",1,6
-"truebugs","genus","Euschistus",2,11
-"truebugs","genus","Gargaphia",2,2
-"truebugs","genus","Halyomorpha",1,5
-"truebugs","genus","Hoplistoscelis",1,1
-"truebugs","genus","Hyaliodes",3,28
-"truebugs","genus","Jalysus",1,1
-"truebugs","genus","Kleidocerys",1,2
-"truebugs","genus","Lasiomerus",1,1
-"truebugs","genus","Leptoglossus",3,5
-"truebugs","genus","Lopidea",1,1
-"truebugs","genus","Lygaeus",1,3
-"truebugs","genus","Lygus",1,1
-"truebugs","genus","Menecles",1,1
-"truebugs","genus","Neolygus",1,8
-"truebugs","genus","Neortholomus",1,1
-"truebugs","genus","Neurocolpus",1,2
-"truebugs","genus","Paraxenetus",2,3
-"truebugs","genus","Phymata",1,2
-"truebugs","genus","Phytocoris",1,2
-"truebugs","genus","Piezogaster",1,1
-"truebugs","genus","Pilophorus",1,1
-"truebugs","genus","Plagiognathus",1,4
-"truebugs","genus","Podisus",3,4
-"truebugs","genus","Pselliopus",3,10
-"truebugs","genus","Sehirus",1,1
-"truebugs","genus","Sinea",2,14
-"truebugs","genus","Stephanitis",1,2
-"truebugs","genus","Texocoris",1,2
-"truebugs","genus","Zelus",2,35
-"truebugs","subfamily","Asopinae",1,1
-"truebugs","subfamily","Coreinae",1,1
-"truebugs","subfamily","Emesinae",1,8
-"truebugs","subfamily","Harpactorinae",1,1
-"truebugs","subfamily","Pentatominae",1,1
-"truebugs","subfamily","Phylinae",1,2
-"truebugs","tribe","Anisoscelini",1,1
-"truebugs","tribe","Ceratocapsini",1,2
-"truebugs","tribe","Harpactorini",1,1
-"truebugs","tribe","Nezarini",1,1
-"truebugs","tribe","Orthotylini",1,2
-"truebugs","tribe","Tingini",1,2
+"Group","Name","Rank","Taxon","nOfTaxon","nofCount"
+"ant","ASRI Fort","genus","Camponotus",2,2
+"ant","ASRI Long Pond","genus","Camponotus",1,1
+"ant","ASRI Powder Mill","genus","Camponotus",1,1
+"ant","BHRC - Hemlock Draw","genus","Camponotus",1,1
+"ant","BHRC - Hemlock Draw","genus","Lasius",2,6
+"ant","BHRC - Hemlock Draw","genus","Myrmica",1,1
+"ant","BHRC - Hemlock Draw","genus","Temnothorax",1,1
+"ant","BHRC - Pan Hollow","genus","Camponotus",1,1
+"ant","BHRC - Pan Hollow","genus","Myrmentoma",1,1
+"ant","BHRC - Pan Hollow","genus","Myrmica",1,1
+"ant","BHRC Green Forest","genus","Camponotus",1,2
+"ant","BHRC Green Forest","genus","Lasius",2,2
+"ant","BHRC Green Forest","genus","Myrmica",1,1
+"ant","BHRC Happy Hill","genus","Lasius",1,1
+"ant","BHRC Hemlock Draw North","genus","Myrmentoma",1,1
+"ant","BHRC Misty Valley Uplands","genus","Lasius",2,2
+"ant","BHRC Natural Bridge South","genus","Camponotus",1,1
+"ant","BHRC Natural Bridge South","genus","Formica",1,1
+"ant","BHRC Natural Bridge South","genus","Lasius",1,1
+"ant","BHRC Natural Bridge South","genus","Myrmentoma",1,1
+"ant","BHRC Natural Bridge Uplands","genus","Lasius",1,1
+"ant","BHRC Pan Hollow Uplands","genus","Camponotus",1,1
+"ant","BHRC Pine Glen Uplands","genus","Lasius",1,1
+"ant","BHRC Pine Glen Uplands","subfamily","Myrmicinae",1,1
+"ant","BHRC Schara Road Woodland","genus","Camponotus",1,1
+"ant","Beare Swamp in Rouge Park","genus","Camponotus",1,1
+"ant","Beare Swamp in Rouge Park","genus","Crematogaster",1,2
+"ant","Belle Isle State Park, Lancaster, VA","genus","Camponotus",6,14
+"ant","Belle Isle State Park, Lancaster, VA","genus","Crematogaster",1,1
+"ant","Belle Isle State Park, Lancaster, VA","genus","Formica",1,4
+"ant","Belle Isle State Park, Lancaster, VA","genus","Myrmentoma",1,12
+"ant","Belle Isle State Park, Lancaster, VA","genus","Tapinoma",1,1
+"ant","Belle Isle State Park, Lancaster, VA","subfamily","Formicinae",1,1
+"ant","Belle Isle State Park, Lancaster, VA","tribe","Lasiini",1,1
+"ant","Brookbanks Park","genus","Myrmica",1,1
+"ant","Callawassie Island South Carolina","genus","Crematogaster",1,1
+"ant","Camp Woods Survey","genus","Camponotus",1,2
+"ant","Colonel Samuel Smith Park","genus","Crematogaster",1,1
+"ant","Colonel Samuel Smith Park","genus","Formica",2,2
+"ant","Colonel Samuel Smith Park","genus","Myrmica",2,27
+"ant","Colonel Samuel Smith Park","genus","Tapinoma",1,1
+"ant","Colonel Samuel Smith Park","subfamily","Myrmicinae",1,1
+"ant","Cowee MAPS Site","subfamily","Myrmicinae",1,1
+"ant","Currituck Banks Reserve","genus","Camponotus",1,1
+"ant","Currituck Banks Reserve","genus","Crematogaster",1,3
+"ant","Eno River State Park","genus","Camponotus",2,2
+"ant","Eno River State Park","genus","Myrmentoma",1,1
+"ant","EwA at Fresh Pond","genus","Camponotus",3,6
+"ant","EwA at Fresh Pond","genus","Myrmentoma",1,1
+"ant","EwA at Fresh Pond","genus","Myrmica",1,2
+"ant","EwA at Fresh Pond","genus","Nylanderia",1,2
+"ant","EwA at Fresh Pond","genus","Tapinoma",1,1
+"ant","EwA at Fresh Pond","genus","Temnothorax",3,4
+"ant","EwA at Fresh Pond","subfamily","Myrmicinae",1,1
+"ant","EwA at Habitat","genus","Camponotus",2,11
+"ant","EwA at Habitat","genus","Crematogaster",1,1
+"ant","EwA at Habitat","genus","Formica",4,23
+"ant","EwA at Habitat","genus","Lasius",1,1
+"ant","EwA at Habitat","genus","Myrmentoma",1,2
+"ant","EwA at Habitat","genus","Tapinoma",1,1
+"ant","EwA at Habitat","genus","Temnothorax",2,2
+"ant","EwA at Habitat","subfamily","Formicinae",1,1
+"ant","EwA at Horn Pond","genus","Camponotus",4,11
+"ant","EwA at Horn Pond","genus","Crematogaster",1,6
+"ant","EwA at Horn Pond","genus","Formica",3,17
+"ant","EwA at Horn Pond","genus","Lasius",1,2
+"ant","EwA at Horn Pond","genus","Myrmentoma",1,2
+"ant","EwA at the Fells","genus","Camponotus",3,39
+"ant","EwA at the Fells","genus","Crematogaster",1,20
+"ant","EwA at the Fells","genus","Dolichoderus",1,1
+"ant","EwA at the Fells","genus","Formica",4,41
+"ant","EwA at the Fells","genus","Myrmentoma",1,17
+"ant","EwA at the Fells","genus","Tapinoma",1,1
+"ant","EwA at the Fells","genus","Temnothorax",3,20
+"ant","EwA at the Fells","subfamily","Formicinae",1,2
+"ant","EwA at the Fells","tribe","Camponotini",1,1
+"ant","EwA at the Growing Center","genus","Camponotus",1,1
+"ant","EwA at the Growing Center","genus","Crematogaster",1,3
+"ant","EwA at the Growing Center","genus","Lasius",2,18
+"ant","EwA at the Growing Center","genus","Myrmica",1,1
+"ant","EwA at the Growing Center","genus","Nylanderia",2,8
+"ant","EwA at the Growing Center","genus","Prenolepis",1,3
+"ant","EwA at the Growing Center","genus","Tapinoma",1,3
+"ant","EwA at the Growing Center","subfamily","Formicinae",1,1
+"ant","EwA at the Growing Center","tribe","Lasiini",1,2
+"ant","Grandfather Mountain","genus","Formica",1,5
+"ant","Grandfather Mountain","subfamily","Formicinae",1,3
+"ant","Gulf Branch Nature Center","genus","Myrmentoma",1,1
+"ant","Gulf Branch Nature Center","genus","Nylanderia",2,3
+"ant","Gulf Branch Nature Center","genus","Prenolepis",1,3
+"ant","Gulf Branch Nature Center","subfamily","Formicinae",1,1
+"ant","Ijams Nature Center","genus","Camponotus",4,4
+"ant","Ijams Nature Center","genus","Formica",1,1
+"ant","Ijams Nature Center","genus","Lasius",1,1
+"ant","Ijams Nature Center","genus","Myrmentoma",1,2
+"ant","Leopold's Preserve","genus","Camponotus",2,3
+"ant","Leopold's Preserve","genus","Crematogaster",1,14
+"ant","Leopold's Preserve","genus","Formica",1,2
+"ant","Leopold's Preserve","genus","Lasius",1,1
+"ant","Leopold's Preserve","genus","Myrmentoma",1,1
+"ant","Leopold's Preserve","genus","Tapinoma",1,2
+"ant","Leopold's Preserve","genus","Temnothorax",1,1
+"ant","Liberty Fox Backyard","genus","Camponotus",1,1
+"ant","Linda Loring Nature Foundation","genus","Crematogaster",1,1
+"ant","Mass Audubon's Boston Nature Center","genus","Myrmica",1,1
+"ant","Mass Audubon's Boston Nature Center","subfamily","Myrmicinae",1,1
+"ant","Mass Audubon's Boston Nature Center","tribe","Lasiini",1,2
+"ant","Middle Mill","genus","Myrmica",2,2
+"ant","Miller Park Zoo","genus","Camponotus",1,1
+"ant","Mt. Auburn Cemetery","genus","Camponotus",2,2
+"ant","Mt. Auburn Cemetery","genus","Formica",1,1
+"ant","Mt. Auburn Cemetery","genus","Myrmentoma",1,3
+"ant","Mt. Auburn Cemetery","genus","Prenolepis",1,1
+"ant","Mt. Auburn Cemetery","subfamily","Formicinae",1,1
+"ant","NC Botanical Garden","genus","Brachyponera",1,2
+"ant","NC Botanical Garden","genus","Camponotus",6,22
+"ant","NC Botanical Garden","genus","Crematogaster",1,8
+"ant","NC Botanical Garden","genus","Formica",1,10
+"ant","NC Botanical Garden","genus","Myrmentoma",1,12
+"ant","NC Botanical Garden","genus","Prenolepis",1,5
+"ant","NC Botanical Garden","subfamily","Formicinae",1,1
+"ant","Over Easy Farm","genus","Camponotus",3,8
+"ant","Over Easy Farm","genus","Myrmentoma",1,1
+"ant","Over Easy Farm","subfamily","Formicinae",1,2
+"ant","Piedmont Wildlife Center","genus","Camponotus",1,1
+"ant","Piedmont Wildlife Center","genus","Crematogaster",1,2
+"ant","Piedmont Wildlife Center","genus","Formica",1,3
+"ant","Piedmont Wildlife Center","genus","Monomorium",1,4
+"ant","Piedmont Wildlife Center","genus","Myrmentoma",1,3
+"ant","Prairie Ridge Ecostation","genus","Brachyponera",1,2
+"ant","Prairie Ridge Ecostation","genus","Camponotus",5,37
+"ant","Prairie Ridge Ecostation","genus","Colobopsis",1,2
+"ant","Prairie Ridge Ecostation","genus","Crematogaster",1,13
+"ant","Prairie Ridge Ecostation","genus","Formica",4,19
+"ant","Prairie Ridge Ecostation","genus","Monomorium",3,7
+"ant","Prairie Ridge Ecostation","genus","Myrmentoma",1,23
+"ant","Prairie Ridge Ecostation","genus","Pseudomyrmex",3,6
+"ant","Prairie Ridge Ecostation","genus","Tapinoma",1,1
+"ant","Prairie Ridge Ecostation","subfamily","Formicinae",1,1
+"ant","Prairie Ridge Ecostation","subfamily","Ponerinae",1,1
+"ant","Prairie Ridge Ecostation","subfamily","Pseudomyrmecinae",1,1
+"ant","RAUNERIMD","genus","Camponotus",4,4
+"ant","RAUNERIMD","genus","Crematogaster",1,4
+"ant","RAUNERIMD","genus","Myrmentoma",1,4
+"ant","RAUNERIMD","genus","Temnothorax",1,1
+"ant","RVCC","genus","Crematogaster",1,5
+"ant","Riverbend Park","genus","Camponotus",2,2
+"ant","Riverbend Park","genus","Crematogaster",1,1
+"ant","Riverbend Park","subfamily","Formicinae",1,1
+"ant","Sedgwick County Zoo","genus","Crematogaster",1,2
+"ant","Sedgwick County Zoo","genus","Myrmica",1,1
+"ant","Sedgwick County Zoo","genus","Prenolepis",1,1
+"ant","Somerville Street Trees","genus","Camponotus",1,1
+"ant","Somerville Street Trees","genus","Tapinoma",1,1
+"ant","Taghkanic","genus","Tapinoma",1,1
+"ant","Taylor Creek Park","genus","Myrmica",2,8
+"ant","Taylor Creek Park","genus","Prenolepis",1,1
+"ant","The PoHo","genus","Formica",1,1
+"ant","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Camponotus",1,5
+"ant","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Myrmentoma",1,2
+"ant","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Prenolepis",1,1
+"ant","UNC Chapel Hill Campus","genus","Brachymyrmex",1,1
+"ant","UNC Chapel Hill Campus","genus","Camponotus",5,6
+"ant","UNC Chapel Hill Campus","genus","Colobopsis",1,1
+"ant","UNC Chapel Hill Campus","genus","Crematogaster",1,16
+"ant","UNC Chapel Hill Campus","genus","Formica",1,14
+"ant","UNC Chapel Hill Campus","genus","Lasius",1,1
+"ant","UNC Chapel Hill Campus","genus","Linepithema",1,2
+"ant","UNC Chapel Hill Campus","genus","Monomorium",2,3
+"ant","UNC Chapel Hill Campus","genus","Myrmentoma",1,3
+"ant","UNC Chapel Hill Campus","genus","Tapinoma",1,3
+"ant","Walker Nature Center","genus","Camponotus",3,6
+"ant","Walker Nature Center","genus","Formica",1,2
+"ant","Walker Nature Center","genus","Myrmentoma",1,1
+"ant","Walker Nature Center","genus","Prenolepis",1,2
+"ant","Walker Nature Center","genus","Tapinoma",1,1
+"ant","Walker Nature Center","genus","Temnothorax",1,1
+"ant","Wellesley College","genus","Temnothorax",1,1
+"beetle","ASRI Claire McIntosh","genus","Exomala",1,1
+"beetle","ASRI Claire McIntosh","genus","Harmonia",1,1
+"beetle","ASRI Claire McIntosh","genus","Polydrusus",1,1
+"beetle","ASRI Claire McIntosh","genus","Pseudoedophrys",1,1
+"beetle","ASRI Claire McIntosh","genus","Psyllobora",1,1
+"beetle","ASRI Fort","genus","Photinus",1,1
+"beetle","ASRI Fort","genus","Podabrus",1,1
+"beetle","ASRI Fort","subfamily","Cantharinae",1,2
+"beetle","ASRI Powder Mill","genus","Cupes",1,1
+"beetle","ASRI Powder Mill","genus","Cyrtepistomus",1,1
+"beetle","ASRI Powder Mill","genus","Photinus",1,1
+"beetle","ASRI Powder Mill","genus","Photuris",1,1
+"beetle","BHRC - Hemlock Draw","genus","Cycloneda",1,1
+"beetle","BHRC - Hemlock Draw","genus","Cyrtepistomus",1,1
+"beetle","BHRC - Hemlock Draw","genus","Harmonia",1,5
+"beetle","BHRC - Hemlock Draw","genus","Photinus",1,1
+"beetle","BHRC - Hemlock Draw","genus","Phyllobius",1,1
+"beetle","BHRC - Hemlock Draw","genus","Propylea",1,1
+"beetle","BHRC - Hemlock Draw","genus","Pyropyga",1,1
+"beetle","BHRC - Pan Hollow","genus","Phyllobius",1,1
+"beetle","BHRC - Pan Hollow","genus","Polydrusus",1,1
+"beetle","BHRC - Pan Hollow","genus","Strangalepta",1,1
+"beetle","BHRC Green Forest","genus","Harmonia",1,5
+"beetle","BHRC Green Forest","genus","Neopyrochroa",1,1
+"beetle","BHRC Green Forest","genus","Podabrus",1,1
+"beetle","BHRC Green Forest","genus","Polydrusus",1,8
+"beetle","BHRC Green Forest","genus","Typocerus",1,1
+"beetle","BHRC Green Forest","subfamily","Entiminae",1,1
+"beetle","BHRC Happy Hill","genus","Dendroides",1,1
+"beetle","BHRC Happy Hill","genus","Harmonia",1,1
+"beetle","BHRC Happy Hill","genus","Photinus",1,1
+"beetle","BHRC Happy Hill","genus","Rhagonycha",1,1
+"beetle","BHRC Hemlock Draw North","genus","Analeptura",1,1
+"beetle","BHRC Hemlock Draw North","genus","Cyrtepistomus",1,1
+"beetle","BHRC Hemlock Draw North","genus","Harmonia",1,4
+"beetle","BHRC Hemlock Draw North","genus","Myrmex",1,1
+"beetle","BHRC Hemlock Draw North","genus","Podabrus",1,1
+"beetle","BHRC Hemlock Draw North","genus","Polydrusus",1,1
+"beetle","BHRC Hemlock Draw North","genus","Psyllobora",1,1
+"beetle","BHRC Hemlock Draw North","genus","Saperda",1,1
+"beetle","BHRC Hemlock Draw North","genus","Typocerus",1,1
+"beetle","BHRC Misty Valley Uplands","genus","Anatis",1,1
+"beetle","BHRC Misty Valley Uplands","genus","Photinus",1,1
+"beetle","BHRC Misty Valley Uplands","genus","Phyllobius",1,1
+"beetle","BHRC Misty Valley Uplands","genus","Polydrusus",2,4
+"beetle","BHRC Misty Valley Uplands","genus","Sciaphilus",1,1
+"beetle","BHRC Natural Bridge South","genus","Ellychnia",1,1
+"beetle","BHRC Natural Bridge South","genus","Harmonia",1,1
+"beetle","BHRC Natural Bridge South","genus","Photinus",1,1
+"beetle","BHRC Natural Bridge South","genus","Phyllobius",1,1
+"beetle","BHRC Natural Bridge South","subfamily","Eumolpinae",1,2
+"beetle","BHRC Natural Bridge Uplands","genus","Harmonia",1,5
+"beetle","BHRC Natural Bridge Uplands","genus","Photinus",1,1
+"beetle","BHRC Natural Bridge Uplands","genus","Rhagonycha",1,2
+"beetle","BHRC Natural Bridge Uplands","tribe","Coccinellini",1,1
+"beetle","BHRC Pan Hollow Uplands","genus","Phyllobius",1,3
+"beetle","BHRC Pan Hollow Uplands","genus","Polydrusus",1,1
+"beetle","BHRC Pan Hollow Uplands","subfamily","Entiminae",1,4
+"beetle","BHRC Pine Glen Uplands","genus","Phyllobius",1,1
+"beetle","BHRC Pine Glen Uplands","tribe","Dichelonychini",1,1
+"beetle","BHRC Schara Road Woodland","genus","Agrilus",1,1
+"beetle","BHRC Schara Road Woodland","genus","Cyrtepistomus",1,5
+"beetle","BHRC Schara Road Woodland","genus","Harmonia",1,2
+"beetle","BHRC Schara Road Woodland","genus","Photinus",1,1
+"beetle","BHRC Schara Road Woodland","genus","Polydrusus",1,1
+"beetle","BHRC Schara Road Woodland","genus","Popillia",1,1
+"beetle","BHRC Schara Road Woodland","subfamily","Scolytinae",1,1
+"beetle","BHRC Schara Road Woodland","tribe","Coccinellini",1,1
+"beetle","Beare Swamp in Rouge Park","genus","Isomira",1,1
+"beetle","Beare Swamp in Rouge Park","genus","Neofidia",1,2
+"beetle","Beare Swamp in Rouge Park","genus","Phyllobius",1,10
+"beetle","Beare Swamp in Rouge Park","genus","Psyllobora",1,1
+"beetle","Beare Swamp in Rouge Park","genus","Sciaphilus",1,2
+"beetle","Beare Swamp in Rouge Park","genus","Urgleptes",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Agrilus",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Anomoea",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Chauliognathus",1,2
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Chrysochus",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Conoderus",1,2
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Cyrtepistomus",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Demotina",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Euphoria",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Harmonia",1,2
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Macrodactylus",2,2
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Macrosiagon",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Monocrepidius",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Mordellistena",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Neofidia",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Ochyromera",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Odontopus",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Photinus",2,12
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Photuris",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Popillia",1,5
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Pyractomena",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","genus","Trichodesma",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","subfamily","Eumolpinae",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","tribe","Bromiini",1,1
+"beetle","Belle Isle State Park, Lancaster, VA","tribe","Lepturini",1,1
+"beetle","Bickford Park Caterpillars Count","tribe","Coccinellini",1,1
+"beetle","Big Branch","genus","Cyrtepistomus",1,7
+"beetle","Big Branch","tribe","Cryptocephalini",1,1
+"beetle","Birmingham Zoo AL","genus","Ochyromera",1,1
+"beetle","Birmingham Zoo AL","genus","Pantomorus",1,3
+"beetle","Brookbanks Park","genus","Anatis",1,1
+"beetle","Brookbanks Park","genus","Coccinella",1,1
+"beetle","Brookbanks Park","genus","Phyllobius",1,1
+"beetle","Brookbanks Park","genus","Psyllobora",1,2
+"beetle","Brookbanks Park","genus","Sciaphilus",1,3
+"beetle","Broyhill Park","genus","Harmonia",1,1
+"beetle","Callawassie Island South Carolina","genus","Chilocorus",1,1
+"beetle","Camp Woods Survey","genus","Harmonia",1,2
+"beetle","Camp Woods Survey","genus","Popillia",1,1
+"beetle","Camp Woods Survey","genus","Pseudoedophrys",1,2
+"beetle","Colonel Samuel Smith Park","genus","Chilocorus",1,1
+"beetle","Colonel Samuel Smith Park","genus","Harmonia",1,4
+"beetle","Colonel Samuel Smith Park","genus","Orchestes",2,3
+"beetle","Colonel Samuel Smith Park","genus","Polydrusus",1,1
+"beetle","Colonel Samuel Smith Park","genus","Popillia",1,1
+"beetle","Colonel Samuel Smith Park","genus","Psyllobora",1,1
+"beetle","Colonel Samuel Smith Park","genus","Rhagonycha",1,2
+"beetle","Colonel Samuel Smith Park","genus","Trirhabda",1,1
+"beetle","Colonel Samuel Smith Park","tribe","Rhamphini",1,4
+"beetle","Cowee MAPS Site","genus","Palaminus",1,1
+"beetle","Cowee MAPS Site","genus","Panscopus",1,1
+"beetle","Crossways Survey","genus","Anatis",1,1
+"beetle","Crossways Survey","genus","Conoderus",1,1
+"beetle","Crossways Survey","genus","Cyrtepistomus",1,3
+"beetle","Crossways Survey","genus","Harmonia",1,2
+"beetle","Crossways Survey","genus","Odontota",1,1
+"beetle","Crossways Survey","genus","Photuris",1,2
+"beetle","Crossways Survey","genus","Pseudoedophrys",1,2
+"beetle","Crossways Survey","genus","Statira",1,1
+"beetle","Crossways Survey","subfamily","Entiminae",1,1
+"beetle","Currituck Banks Reserve","genus","Axion",1,1
+"beetle","Eastern Market Street Trees","genus","Odontota",1,2
+"beetle","Eno River State Park","genus","Cryptocephalus",1,1
+"beetle","Eno River State Park","genus","Cyrtepistomus",1,19
+"beetle","Eno River State Park","genus","Falsomordellistena",1,1
+"beetle","Eno River State Park","genus","Harmonia",1,1
+"beetle","Eno River State Park","genus","Macrodactylus",1,2
+"beetle","Eno River State Park","genus","Neolema",1,1
+"beetle","Eno River State Park","genus","Odontopus",1,1
+"beetle","Eno River State Park","genus","Palaminus",1,1
+"beetle","Eno River State Park","genus","Popillia",1,1
+"beetle","Eno River State Park","genus","Pseudocneorhinus",1,3
+"beetle","Eno River State Park","genus","Pseudoedophrys",1,10
+"beetle","Eno River State Park","genus","Rhagonycha",1,1
+"beetle","Eno River State Park","genus","Tenomerga",1,1
+"beetle","Eno River State Park","genus","Urgleptes",1,2
+"beetle","EwA at Fresh Pond","genus","Acalymma",1,1
+"beetle","EwA at Fresh Pond","genus","Brachiacantha",2,2
+"beetle","EwA at Fresh Pond","genus","Calopteron",1,1
+"beetle","EwA at Fresh Pond","genus","Conotrachelus",1,1
+"beetle","EwA at Fresh Pond","genus","Harmonia",2,19
+"beetle","EwA at Fresh Pond","genus","Hyperaspis",1,1
+"beetle","EwA at Fresh Pond","genus","Mordellina",1,1
+"beetle","EwA at Fresh Pond","genus","Pedilus",1,1
+"beetle","EwA at Fresh Pond","genus","Polydrusus",1,4
+"beetle","EwA at Fresh Pond","genus","Psyllobora",1,2
+"beetle","EwA at Fresh Pond","genus","Ptilinus",1,1
+"beetle","EwA at Fresh Pond","genus","Scirtes",1,3
+"beetle","EwA at Fresh Pond","tribe","Mordellistenini",1,1
+"beetle","EwA at Habitat","genus","Elonus",1,1
+"beetle","EwA at Habitat","genus","Lechriops",1,1
+"beetle","EwA at Habitat","genus","Melanotus",1,2
+"beetle","EwA at Habitat","genus","Polydrusus",1,1
+"beetle","EwA at Habitat","genus","Synolabus",1,1
+"beetle","EwA at Horn Pond","genus","Brachys",1,1
+"beetle","EwA at Horn Pond","genus","Calopteron",2,3
+"beetle","EwA at Horn Pond","genus","Coleothorpa",1,1
+"beetle","EwA at Horn Pond","genus","Cyrtepistomus",1,2
+"beetle","EwA at Horn Pond","genus","Eugnamptus",1,1
+"beetle","EwA at Horn Pond","genus","Gambrinus",1,1
+"beetle","EwA at Horn Pond","genus","Harmonia",1,15
+"beetle","EwA at Horn Pond","genus","Mastogenius",1,1
+"beetle","EwA at Horn Pond","genus","Polydrusus",1,1
+"beetle","EwA at Horn Pond","subfamily","Apioninae",1,1
+"beetle","EwA at Horn Pond","subfamily","Cantharinae",1,2
+"beetle","EwA at Horn Pond","subfamily","Lepturinae",1,1
+"beetle","EwA at Horn Pond","tribe","Rhamphini",1,1
+"beetle","EwA at Horn Pond","tribe","Tracheini",1,1
+"beetle","EwA at the Fells","genus","Agrilus",1,1
+"beetle","EwA at the Fells","genus","Anaspis",1,1
+"beetle","EwA at the Fells","genus","Brachys",2,3
+"beetle","EwA at the Fells","genus","Contacyphon",1,5
+"beetle","EwA at the Fells","genus","Cryptolaemus",1,1
+"beetle","EwA at the Fells","genus","Cyrtepistomus",1,2
+"beetle","EwA at the Fells","genus","Eulechriops",1,1
+"beetle","EwA at the Fells","genus","Harmonia",1,2
+"beetle","EwA at the Fells","genus","Horistonotus",1,1
+"beetle","EwA at the Fells","genus","Hyperaspis",1,1
+"beetle","EwA at the Fells","genus","Leptoceletes",1,1
+"beetle","EwA at the Fells","genus","Melanotus",1,3
+"beetle","EwA at the Fells","genus","Monarthrum",1,1
+"beetle","EwA at the Fells","genus","Mordella",2,4
+"beetle","EwA at the Fells","genus","Mordellistena",1,2
+"beetle","EwA at the Fells","genus","Odontopus",1,1
+"beetle","EwA at the Fells","genus","Phyllobaenus",1,2
+"beetle","EwA at the Fells","genus","Rhagonycha",2,12
+"beetle","EwA at the Fells","genus","Strangalia",1,1
+"beetle","EwA at the Fells","genus","Strophosoma",1,3
+"beetle","EwA at the Fells","genus","Synolabus",1,3
+"beetle","EwA at the Fells","genus","Tytthonyx",1,1
+"beetle","EwA at the Fells","subfamily","Alleculinae",1,3
+"beetle","EwA at the Fells","subfamily","Cantharinae",1,2
+"beetle","EwA at the Fells","subfamily","Cossoninae",1,1
+"beetle","EwA at the Fells","subfamily","Malachiinae",1,5
+"beetle","EwA at the Fells","subfamily","Xyletininae",1,1
+"beetle","EwA at the Fells","tribe","Cantharini",1,1
+"beetle","EwA at the Fells","tribe","Choragini",1,1
+"beetle","EwA at the Growing Center","genus","Agrilus",1,1
+"beetle","EwA at the Growing Center","genus","Anthrenus",2,4
+"beetle","EwA at the Growing Center","genus","Brachys",1,1
+"beetle","EwA at the Growing Center","genus","Chilocorus",1,1
+"beetle","EwA at the Growing Center","genus","Harmonia",1,8
+"beetle","EwA at the Growing Center","genus","Petalium",1,1
+"beetle","EwA at the Growing Center","genus","Polydrusus",1,1
+"beetle","EwA at the Growing Center","genus","Propylea",1,1
+"beetle","EwA at the Growing Center","genus","Pseudoedophrys",1,1
+"beetle","EwA at the Growing Center","genus","Psyllobora",1,2
+"beetle","Grandfather Mountain","genus","Calligrapha",1,2
+"beetle","Grandfather Mountain","genus","Coleomegilla",1,1
+"beetle","Grandfather Mountain","genus","Cyrtepistomus",1,4
+"beetle","Grandfather Mountain","genus","Dendroides",1,1
+"beetle","Grandfather Mountain","genus","Dichelonyx",1,1
+"beetle","Grandfather Mountain","genus","Harmonia",1,1
+"beetle","Grandfather Mountain","genus","Lebia",1,1
+"beetle","Grandfather Mountain","genus","Lucidota",1,2
+"beetle","Grandfather Mountain","genus","Pacificanthia",1,1
+"beetle","Grandfather Mountain","genus","Photinus",1,4
+"beetle","Grandfather Mountain","genus","Popillia",1,2
+"beetle","Grandfather Mountain","genus","Psyllobora",2,3
+"beetle","Grandfather Mountain","genus","Rhagonycha",1,8
+"beetle","Grandfather Mountain","genus","Saperda",1,1
+"beetle","Grandfather Mountain","subfamily","Cantharinae",1,1
+"beetle","Grandfather Mountain","subtribe","Cryptocephalina",1,1
+"beetle","Great Smoky Mountains Institute at Tremont","genus","Cyrtepistomus",1,1
+"beetle","Great Smoky Mountains Institute at Tremont","genus","Psyllobora",1,1
+"beetle","Great Smoky Mountains Institute at Tremont","subfamily","Elaterinae",1,1
+"beetle","Gulf Branch Nature Center","genus","Harmonia",1,1
+"beetle","Gulf Branch Nature Center","subfamily","Anobiinae",1,1
+"beetle","Gulf Branch Nature Center","subfamily","Cantharinae",1,1
+"beetle","Gulf Branch Nature Center","tribe","Mordellistenini",1,1
+"beetle","Hemlock Bluffs","genus","Cryptocephalus",1,2
+"beetle","Hemlock Bluffs","genus","Cyrtepistomus",1,2
+"beetle","Hemlock Bluffs","genus","Harmonia",1,2
+"beetle","Highlands Biological Station","genus","Cyrtepistomus",1,2
+"beetle","Highlands Biological Station","genus","Hylobius",1,1
+"beetle","Highlands Biological Station","genus","Palaminus",1,1
+"beetle","Highlands Biological Station","genus","Proludius",1,1
+"beetle","Ijams Nature Center","genus","Centronopus",1,1
+"beetle","Ijams Nature Center","genus","Dircaea",1,1
+"beetle","Ijams Nature Center","genus","Photuris",1,3
+"beetle","Ijams Nature Center","subfamily","Entiminae",1,1
+"beetle","Kituwah MAPS Site","genus","Aphrastus",1,1
+"beetle","Kituwah MAPS Site","genus","Harmonia",1,1
+"beetle","Kituwah MAPS Site","subfamily","Cassidinae",1,1
+"beetle","Lake Murphysboro State Park, Overflow","genus","Palaminus",1,1
+"beetle","Lake Murphysboro State Park, Overflow","genus","Pseudoedophrys",1,1
+"beetle","Lake Murphysboro State Park, Overflow","tribe","Alticini",1,1
+"beetle","Lakeside Lab","genus","Trypherus",1,1
+"beetle","Leesylvania State Park","genus","Harmonia",1,1
+"beetle","Leopold's Preserve","genus","Anthonomus",1,1
+"beetle","Leopold's Preserve","genus","Brachystylus",1,1
+"beetle","Leopold's Preserve","genus","Cycloneda",1,1
+"beetle","Leopold's Preserve","genus","Cyrtepistomus",1,2
+"beetle","Leopold's Preserve","genus","Harmonia",1,1
+"beetle","Leopold's Preserve","genus","Photinus",1,1
+"beetle","Leopold's Preserve","genus","Pseudocneorhinus",1,1
+"beetle","Leopold's Preserve","genus","Pseudoedophrys",1,3
+"beetle","Leopold's Preserve","subfamily","Coccinellinae",1,1
+"beetle","Leopold's Preserve","subfamily","Curculioninae",1,1
+"beetle","Leopold's Preserve","subfamily","Entiminae",1,1
+"beetle","Leopold's Preserve","tribe","Macrodactylini",1,1
+"beetle","Liberty Fox Backyard","genus","Cyrtepistomus",1,1
+"beetle","Liberty Fox Backyard","genus","Harmonia",1,1
+"beetle","Liberty Fox Backyard","genus","Octotoma",1,1
+"beetle","Liberty Fox Backyard","tribe","Coccinellini",1,1
+"beetle","Liberty Fox Backyard","tribe","Cryptocephalini",1,1
+"beetle","Linda Loring Nature Foundation","genus","Brachys",1,1
+"beetle","Litzsinger Road Ecology Center Woodland Site A","genus","Harmonia",1,1
+"beetle","Litzsinger Road Ecology Center Woodland Site A","genus","Photuris",1,1
+"beetle","Litzsinger Road Ecology Center Woodland Site A","tribe","Coccinellini",1,1
+"beetle","Merrimac Farm","genus","Cyrtepistomus",1,1
+"beetle","Merrimac Farm","genus","Pseudoedophrys",1,3
+"beetle","Merrimac Farm","subfamily","Eumolpinae",1,1
+"beetle","Middle Mill","genus","Brachiacantha",1,1
+"beetle","Middle Mill","genus","Chilocorus",1,1
+"beetle","Middle Mill","genus","Harmonia",1,2
+"beetle","Middle Mill","genus","Phyllobius",1,1
+"beetle","Middle Mill","genus","Polydrusus",2,4
+"beetle","Middle Mill","genus","Rhagonycha",1,1
+"beetle","Miller Park Zoo","genus","Anthonomus",1,1
+"beetle","Miller Park Zoo","genus","Popillia",1,1
+"beetle","Miller Park Zoo","genus","Pseudoedophrys",1,4
+"beetle","Mt. Auburn Cemetery","genus","Harmonia",1,9
+"beetle","Mt. Auburn Cemetery","genus","Lucidota",1,1
+"beetle","Mt. Auburn Cemetery","genus","Pseudoedophrys",1,13
+"beetle","Mt. Auburn Cemetery","genus","Psyllobora",1,6
+"beetle","Mt. Auburn Cemetery","genus","Rhagonycha",1,1
+"beetle","NC Botanical Garden","genus","Agrilus",1,1
+"beetle","NC Botanical Garden","genus","Cryptocephalus",2,2
+"beetle","NC Botanical Garden","genus","Cyrtepistomus",1,39
+"beetle","NC Botanical Garden","genus","Demotina",1,2
+"beetle","NC Botanical Garden","genus","Falsomordellistena",2,4
+"beetle","NC Botanical Garden","genus","Germarostes",1,1
+"beetle","NC Botanical Garden","genus","Glipa",1,1
+"beetle","NC Botanical Garden","genus","Harmonia",1,1
+"beetle","NC Botanical Garden","genus","Heilipus",1,1
+"beetle","NC Botanical Garden","genus","Limonius",1,1
+"beetle","NC Botanical Garden","genus","Monocrepidius",1,1
+"beetle","NC Botanical Garden","genus","Mordellistena",1,1
+"beetle","NC Botanical Garden","genus","Neoclytus",1,1
+"beetle","NC Botanical Garden","genus","Odontopus",1,1
+"beetle","NC Botanical Garden","genus","Palaminus",1,2
+"beetle","NC Botanical Garden","genus","Photinus",2,2
+"beetle","NC Botanical Garden","genus","Pseudocneorhinus",1,14
+"beetle","NC Botanical Garden","genus","Pseudoedophrys",1,16
+"beetle","NC Botanical Garden","genus","Strongylium",1,1
+"beetle","NC Botanical Garden","genus","Tenomerga",1,1
+"beetle","NC Botanical Garden","subfamily","Cryptocephalinae",1,1
+"beetle","NC Botanical Garden","subfamily","Eumolpinae",1,9
+"beetle","NC Botanical Garden","tribe","Bromiini",1,3
+"beetle","NZ Ravine","genus","Anatis",1,1
+"beetle","NZ Ravine","genus","Psyllobora",1,1
+"beetle","Nordheimer Ravine","genus","Polydrusus",1,1
+"beetle","Occoquan Forest","genus","Strongylium",1,1
+"beetle","Over Easy Farm","genus","Naupactus",1,1
+"beetle","Over Easy Farm","genus","Odontopus",1,1
+"beetle","Over Easy Farm","genus","Odontotaenius",1,1
+"beetle","Over Easy Farm","genus","Popillia",1,5
+"beetle","Over Easy Farm","tribe","Macrodactylini",1,1
+"beetle","Philosopher's Walk","genus","Harmonia",1,1
+"beetle","Pickering Creek Audubon Center","genus","Tolidomordella",1,1
+"beetle","Pickering Creek Audubon Center","subfamily","Eumolpinae",1,1
+"beetle","Piedmont Wildlife Center","genus","Cyrtepistomus",1,4
+"beetle","Piedmont Wildlife Center","genus","Pseudoedophrys",1,1
+"beetle","Piedmont Wildlife Center","tribe","Cyphicerini",1,1
+"beetle","Prairie Ridge Ecostation","genus","Bassareus",2,6
+"beetle","Prairie Ridge Ecostation","genus","Brachystylus",1,4
+"beetle","Prairie Ridge Ecostation","genus","Chauliognathus",1,1
+"beetle","Prairie Ridge Ecostation","genus","Chelonarium",1,1
+"beetle","Prairie Ridge Ecostation","genus","Chrysochus",1,1
+"beetle","Prairie Ridge Ecostation","genus","Conoderus",1,3
+"beetle","Prairie Ridge Ecostation","genus","Cryptocephalus",3,6
+"beetle","Prairie Ridge Ecostation","genus","Cupes",1,1
+"beetle","Prairie Ridge Ecostation","genus","Cycloneda",1,1
+"beetle","Prairie Ridge Ecostation","genus","Cyrtepistomus",1,45
+"beetle","Prairie Ridge Ecostation","genus","Demotina",1,4
+"beetle","Prairie Ridge Ecostation","genus","Dicerca",1,1
+"beetle","Prairie Ridge Ecostation","genus","Dorcaschema",1,3
+"beetle","Prairie Ridge Ecostation","genus","Eugnamptus",1,2
+"beetle","Prairie Ridge Ecostation","genus","Falsomordellistena",2,6
+"beetle","Prairie Ridge Ecostation","genus","Glyphonyx",1,1
+"beetle","Prairie Ridge Ecostation","genus","Harmonia",1,48
+"beetle","Prairie Ridge Ecostation","genus","Lebia",2,2
+"beetle","Prairie Ridge Ecostation","genus","Lechriops",1,1
+"beetle","Prairie Ridge Ecostation","genus","Lucidota",1,1
+"beetle","Prairie Ridge Ecostation","genus","Macrodactylus",1,1
+"beetle","Prairie Ridge Ecostation","genus","Melanotus",1,1
+"beetle","Prairie Ridge Ecostation","genus","Microtonus",1,2
+"beetle","Prairie Ridge Ecostation","genus","Monocrepidius",1,1
+"beetle","Prairie Ridge Ecostation","genus","Mordellistena",1,4
+"beetle","Prairie Ridge Ecostation","genus","Ochyromera",1,1
+"beetle","Prairie Ridge Ecostation","genus","Ormiscus",1,1
+"beetle","Prairie Ridge Ecostation","genus","Paramordellaria",2,6
+"beetle","Prairie Ridge Ecostation","genus","Paria",1,2
+"beetle","Prairie Ridge Ecostation","genus","Photinus",2,15
+"beetle","Prairie Ridge Ecostation","genus","Photuris",1,14
+"beetle","Prairie Ridge Ecostation","genus","Popillia",1,6
+"beetle","Prairie Ridge Ecostation","genus","Pseudocneorhinus",1,33
+"beetle","Prairie Ridge Ecostation","genus","Pseudoedophrys",1,15
+"beetle","Prairie Ridge Ecostation","genus","Psyllobora",1,1
+"beetle","Prairie Ridge Ecostation","genus","Tenomerga",1,1
+"beetle","Prairie Ridge Ecostation","genus","Trichodesma",2,2
+"beetle","Prairie Ridge Ecostation","genus","Urgleptes",1,1
+"beetle","Prairie Ridge Ecostation","subfamily","Agrilinae",1,1
+"beetle","Prairie Ridge Ecostation","subfamily","Anthribinae",1,1
+"beetle","Prairie Ridge Ecostation","subfamily","Ceutorhynchinae",1,1
+"beetle","Prairie Ridge Ecostation","subfamily","Cryptocephalinae",1,12
+"beetle","Prairie Ridge Ecostation","subfamily","Eumolpinae",1,13
+"beetle","Prairie Ridge Ecostation","subtribe","Cryptocephalina",1,6
+"beetle","Prairie Ridge Ecostation","tribe","Bromiini",1,1
+"beetle","Prairie Ridge Ecostation","tribe","Cryptocephalini",1,6
+"beetle","Prairie Ridge Ecostation","tribe","Mordellistenini",1,1
+"beetle","RAUNERIMD","genus","Harmonia",1,2
+"beetle","RVCC","genus","Calligrapha",1,1
+"beetle","RVCC","genus","Coccinella",1,1
+"beetle","RVCC","genus","Conotrachelus",1,1
+"beetle","RVCC","genus","Harmonia",1,1
+"beetle","RVCC","genus","Lucidota",1,1
+"beetle","RVCC","genus","Otiorhynchus",1,3
+"beetle","RVCC","genus","Phyllobius",1,5
+"beetle","RVCC","genus","Polydrusus",2,14
+"beetle","RVCC","genus","Popillia",1,1
+"beetle","RVCC","genus","Psyllobora",1,3
+"beetle","RVCC","genus","Rhagonycha",1,1
+"beetle","RVCC","genus","Sciaphilus",1,4
+"beetle","RVCC","genus","Trigonarthris",1,1
+"beetle","RVCC","subfamily","Eumolpinae",1,3
+"beetle","Riverbend Park","genus","Macrodactylus",1,1
+"beetle","Riverbend Park","genus","Popillia",1,1
+"beetle","Riverbend Park","genus","Rhagonycha",1,1
+"beetle","Riverbend Park","subfamily","Alleculinae",1,1
+"beetle","Riverbend Park","tribe","Bromiini",1,1
+"beetle","Riverdale Park East","genus","Popillia",1,1
+"beetle","Robert C. McDonnell Campgrounds","genus","Cyrtepistomus",1,1
+"beetle","Robert C. McDonnell Campgrounds","genus","Harmonia",1,1
+"beetle","Robert C. McDonnell Campgrounds","genus","Macrodactylus",1,1
+"beetle","Robert C. McDonnell Campgrounds","genus","Photuris",1,1
+"beetle","Sault College","genus","Barypeithes",1,1
+"beetle","Schuylkill Center","genus","Alaus",1,1
+"beetle","Schuylkill Center","genus","Capraita",1,1
+"beetle","Schuylkill Center","genus","Exomala",1,1
+"beetle","Schuylkill Center","genus","Psyllobora",1,1
+"beetle","Sedgwick County Zoo","genus","Coccinella",1,1
+"beetle","Seven Islands State Birding Park","genus","Photuris",1,2
+"beetle","Stage Nature Center","genus","Harmonia",1,1
+"beetle","Taghkanic","genus","Harmonia",1,2
+"beetle","Taghkanic","genus","Photuris",1,1
+"beetle","Taghkanic","genus","Plagiodera",1,1
+"beetle","The PoHo","genus","Falsomordellistena",1,1
+"beetle","The PoHo","genus","Harmonia",1,3
+"beetle","The PoHo","genus","Heilipus",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Anomoea",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Cryptocephalus",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Cyrtepistomus",1,9
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Demotina",1,2
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Harmonia",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Heilipus",1,2
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Myosides",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Odontopus",1,5
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Palaminus",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Popillia",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Pseudocneorhinus",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Pseudoedophrys",1,3
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Statira",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","subfamily","Eumolpinae",1,1
+"beetle","Triangle Land Conservancy - Johnston Mill Nature Preserve","subfamily","Lagriinae",1,1
+"beetle","UNC Chapel Hill Campus","genus","Anthonomus",1,1
+"beetle","UNC Chapel Hill Campus","genus","Baliosus",1,1
+"beetle","UNC Chapel Hill Campus","genus","Coccinella",1,1
+"beetle","UNC Chapel Hill Campus","genus","Cryptocephalus",1,1
+"beetle","UNC Chapel Hill Campus","genus","Cyrtepistomus",1,6
+"beetle","UNC Chapel Hill Campus","genus","Demotina",1,1
+"beetle","UNC Chapel Hill Campus","genus","Harmonia",1,18
+"beetle","UNC Chapel Hill Campus","genus","Lechriops",1,1
+"beetle","UNC Chapel Hill Campus","genus","Ochyromera",1,1
+"beetle","UNC Chapel Hill Campus","genus","Odontopus",1,1
+"beetle","UNC Chapel Hill Campus","genus","Pandeleteius",1,2
+"beetle","UNC Chapel Hill Campus","genus","Pantomorus",1,4
+"beetle","UNC Chapel Hill Campus","genus","Photinus",1,5
+"beetle","UNC Chapel Hill Campus","genus","Popillia",1,4
+"beetle","UNC Chapel Hill Campus","genus","Pseudoedophrys",1,40
+"beetle","UNC Chapel Hill Campus","genus","Psyllobora",1,3
+"beetle","UNC Chapel Hill Campus","subfamily","Eumolpinae",1,2
+"beetle","UNC Chapel Hill Campus","subfamily","Inopeplinae",1,1
+"beetle","University of Pittsburgh","genus","Harmonia",1,1
+"beetle","University of Toronto","genus","Otiorhynchus",1,1
+"beetle","Virginia Zoo","genus","Cyrtepistomus",1,1
+"beetle","Virginia Zoo","genus","Ochyromera",1,1
+"beetle","Virginia Zoo","genus","Pseudoedophrys",1,1
+"beetle","Walker Nature Center","genus","Cyrtepistomus",1,5
+"beetle","Walker Nature Center","genus","Harmonia",1,12
+"beetle","Walker Nature Center","genus","Lechriops",1,1
+"beetle","Walker Nature Center","genus","Limonius",1,1
+"beetle","Walker Nature Center","genus","Macratria",1,4
+"beetle","Walker Nature Center","genus","Megapenthes",1,1
+"beetle","Walker Nature Center","genus","Mordella",1,1
+"beetle","Walker Nature Center","genus","Photinus",1,2
+"beetle","Walker Nature Center","genus","Photuris",1,1
+"beetle","Walker Nature Center","genus","Rhagonycha",2,2
+"beetle","Walker Nature Center","genus","Tenomerga",1,1
+"beetle","Walker Nature Center","genus","Triplax",1,1
+"beetle","Walker Nature Center","subfamily","Alleculinae",1,2
+"beetle","Walker Nature Center","subfamily","Lepturinae",1,1
+"beetle","Walker Nature Center","tribe","Silini",1,1
+"beetle","Wellesley College","genus","Harmonia",1,2
+"beetle","Woodland Edge Ravine","genus","Macrodactylus",1,1
+"beetle","Woodland Edge Ravine","genus","Popillia",1,1
+"beetle","Woodland Edge Ravine","genus","Pseudoedophrys",1,2
+"beetle","Woodland Edge Ravine","genus","Ptosima",1,1
+"caterpillar","ASRI Claire McIntosh","genus","Morrisonia",1,1
+"caterpillar","ASRI Claire McIntosh","genus","Papilio",1,1
+"caterpillar","ASRI Davis Memorial","genus","Morrisonia",1,1
+"caterpillar","ASRI Fisherville Brook","genus","Cecrita",1,6
+"caterpillar","ASRI Fisherville Brook","genus","Morrisonia",1,3
+"caterpillar","ASRI Fisherville Brook","genus","Orgyia",1,2
+"caterpillar","ASRI Fisherville Brook","genus","Zale",1,1
+"caterpillar","ASRI Fort","genus","Acronicta",1,1
+"caterpillar","ASRI Fort","genus","Dryocampa",1,3
+"caterpillar","ASRI Fort","genus","Morrisonia",1,2
+"caterpillar","ASRI Fort","genus","Orgyia",1,1
+"caterpillar","ASRI Fort","subfamily","Ennominae",1,1
+"caterpillar","ASRI Long Pond","genus","Cecrita",1,1
+"caterpillar","ASRI Long Pond","genus","Lymantria",1,2
+"caterpillar","ASRI Long Pond","genus","Machimia",1,1
+"caterpillar","ASRI Long Pond","genus","Pyreferra",1,1
+"caterpillar","ASRI Maxwell Mays","genus","Acronicta",1,2
+"caterpillar","ASRI Maxwell Mays","genus","Amphipyra",1,1
+"caterpillar","ASRI Maxwell Mays","genus","Cecrita",2,3
+"caterpillar","ASRI Maxwell Mays","genus","Ennomos",1,1
+"caterpillar","ASRI Maxwell Mays","genus","Morrisonia",1,1
+"caterpillar","ASRI Maxwell Mays","subfamily","Heterocampinae",1,1
+"caterpillar","ASRI Parker Woodland","genus","Acronicta",1,2
+"caterpillar","ASRI Parker Woodland","genus","Cecrita",1,2
+"caterpillar","ASRI Parker Woodland","genus","Malacosoma",1,1
+"caterpillar","ASRI Parker Woodland","genus","Morrisonia",1,1
+"caterpillar","ASRI Parker Woodland","genus","Orgyia",1,1
+"caterpillar","ASRI Powder Mill","genus","Amphipyra",1,2
+"caterpillar","ASRI Powder Mill","genus","Morrisonia",1,1
+"caterpillar","ASRI Touisset Marsh","genus","Morrisonia",1,1
+"caterpillar","BHRC - Hemlock Draw","genus","Alsophila",1,1
+"caterpillar","BHRC - Hemlock Draw","genus","Lymantria",1,3
+"caterpillar","BHRC - Hemlock Draw","genus","Malacosoma",1,1
+"caterpillar","BHRC - Hemlock Draw","genus","Morrisonia",1,1
+"caterpillar","BHRC - Hemlock Draw","genus","Pyreferra",1,1
+"caterpillar","BHRC - Pan Hollow","genus","Acronicta",1,1
+"caterpillar","BHRC - Pan Hollow","genus","Lymantria",1,3
+"caterpillar","BHRC Green Forest","genus","Achatia",1,1
+"caterpillar","BHRC Green Forest","genus","Lymantria",1,2
+"caterpillar","BHRC Green Forest","genus","Malacosoma",1,1
+"caterpillar","BHRC Green Forest","subfamily","Noctuinae",1,2
+"caterpillar","BHRC Happy Hill","genus","Lithophane",1,3
+"caterpillar","BHRC Happy Hill","genus","Lymantria",1,1
+"caterpillar","BHRC Happy Hill","genus","Phigalia",1,1
+"caterpillar","BHRC Happy Hill","subfamily","Lymantriinae",1,1
+"caterpillar","BHRC Hemlock Draw North","genus","Dasychira",1,1
+"caterpillar","BHRC Hemlock Draw North","genus","Lymantria",1,3
+"caterpillar","BHRC Misty Valley Uplands","genus","Lymantria",1,1
+"caterpillar","BHRC Misty Valley Uplands","genus","Phigalia",1,1
+"caterpillar","BHRC Natural Bridge South","genus","Amphipyra",1,1
+"caterpillar","BHRC Natural Bridge South","genus","Lithophane",1,1
+"caterpillar","BHRC Natural Bridge South","genus","Lymantria",1,9
+"caterpillar","BHRC Natural Bridge South","genus","Nematocampa",1,2
+"caterpillar","BHRC Natural Bridge South","genus","Orgyia",1,1
+"caterpillar","BHRC Natural Bridge South","genus","Orthosia",1,1
+"caterpillar","BHRC Natural Bridge South","tribe","Arctiini",1,2
+"caterpillar","BHRC Natural Bridge Uplands","genus","Hypagyrtis",1,1
+"caterpillar","BHRC Natural Bridge Uplands","genus","Lymantria",1,5
+"caterpillar","BHRC Pan Hollow Uplands","genus","Pyreferra",1,2
+"caterpillar","BHRC Pine Glen Uplands","genus","Lymantria",1,3
+"caterpillar","BHRC Schara Road Woodland","genus","Lymantria",1,1
+"caterpillar","BHRC Schara Road Woodland","genus","Pyreferra",1,1
+"caterpillar","Beare Swamp in Rouge Park","genus","Lymantria",1,9
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Acronicta",2,3
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Actias",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Adoneta",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Anisota",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Apatelodes",1,2
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Archips",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Asterocampa",1,5
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Cecrita",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Halysidota",1,9
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Hyphantria",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Orgyia",2,3
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Papilio",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Polygonia",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","genus","Schizura",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","subfamily","Sphinginae",1,1
+"caterpillar","Belle Isle State Park, Lancaster, VA","subtribe","Sphingina",1,1
+"caterpillar","Birmingham Zoo AL","genus","Halysidota",1,1
+"caterpillar","Brookbanks Park","genus","Lymantria",1,10
+"caterpillar","CawCaw Interpretive Center","genus","Homaledra",1,3
+"caterpillar","Cowee MAPS Site","genus","Cecrita",1,2
+"caterpillar","Cowee MAPS Site","genus","Elaphria",1,1
+"caterpillar","Cowee MAPS Site","genus","Hypagyrtis",1,1
+"caterpillar","Cowee MAPS Site","genus","Lomographa",1,1
+"caterpillar","Crossways Survey","genus","Elaphria",1,1
+"caterpillar","Crossways Survey","genus","Oreta",1,1
+"caterpillar","Eno River State Park","genus","Acronicta",1,6
+"caterpillar","Eno River State Park","genus","Ancylis",1,1
+"caterpillar","Eno River State Park","genus","Colocasia",1,3
+"caterpillar","Eno River State Park","genus","Halysidota",1,1
+"caterpillar","Eno River State Park","genus","Hyphantria",1,2
+"caterpillar","Eno River State Park","genus","Morrisonia",1,2
+"caterpillar","Eno River State Park","genus","Orgyia",1,1
+"caterpillar","Eno River State Park","subfamily","Geometrinae",1,2
+"caterpillar","Eno River State Park","subfamily","Limacodinae",1,1
+"caterpillar","Eno River State Park","subfamily","Lymantriinae",1,1
+"caterpillar","EwA at Fresh Pond","genus","Acronicta",1,1
+"caterpillar","EwA at Fresh Pond","genus","Amphipyra",1,1
+"caterpillar","EwA at Fresh Pond","genus","Bucculatrix",1,1
+"caterpillar","EwA at Fresh Pond","genus","Dasychira",1,1
+"caterpillar","EwA at Fresh Pond","genus","Machimia",1,1
+"caterpillar","EwA at Fresh Pond","genus","Morrisonia",1,1
+"caterpillar","EwA at Fresh Pond","subfamily","Hypeninae",1,1
+"caterpillar","EwA at Habitat","genus","Acronicta",1,1
+"caterpillar","EwA at Habitat","genus","Pyreferra",1,1
+"caterpillar","EwA at Horn Pond","genus","Acronicta",1,1
+"caterpillar","EwA at Horn Pond","genus","Furcula",1,1
+"caterpillar","EwA at Horn Pond","genus","Morrisonia",1,2
+"caterpillar","EwA at Horn Pond","genus","Paraeschra",1,1
+"caterpillar","EwA at the Fells","genus","Acronicta",2,9
+"caterpillar","EwA at the Fells","genus","Antaeotricha",1,1
+"caterpillar","EwA at the Fells","genus","Arogalea",1,1
+"caterpillar","EwA at the Fells","genus","Cameraria",1,2
+"caterpillar","EwA at the Fells","genus","Cecrita",1,1
+"caterpillar","EwA at the Fells","genus","Feralia",1,1
+"caterpillar","EwA at the Fells","genus","Halysidota",1,1
+"caterpillar","EwA at the Fells","genus","Heterocampa",1,1
+"caterpillar","EwA at the Fells","genus","Lymantria",1,1
+"caterpillar","EwA at the Fells","genus","Machimia",1,2
+"caterpillar","EwA at the Fells","genus","Morrisonia",1,1
+"caterpillar","EwA at the Fells","genus","Nadata",1,1
+"caterpillar","EwA at the Fells","genus","Psyche",1,1
+"caterpillar","EwA at the Fells","genus","Pyreferra",1,1
+"caterpillar","EwA at the Fells","tribe","Arctiini",1,1
+"caterpillar","Fernbank Forest","genus","Acharia",1,1
+"caterpillar","Fernbank Forest","genus","Acronicta",1,2
+"caterpillar","Georgetown","genus","Hyphantria",1,1
+"caterpillar","Grandfather Mountain","genus","Halysidota",1,1
+"caterpillar","Grandfather Mountain","genus","Zale",1,1
+"caterpillar","Grandfather Mountain","subfamily","Ennominae",1,2
+"caterpillar","High Park","genus","Amphipyra",1,1
+"caterpillar","High Park","genus","Lycia",1,1
+"caterpillar","High Park","genus","Lymantria",2,6
+"caterpillar","High Park","genus","Zale",1,1
+"caterpillar","Highlands Biological Station","genus","Elaphria",1,3
+"caterpillar","Highlands Biological Station","genus","Pyreferra",1,1
+"caterpillar","Highlands Biological Station","subfamily","Noctuinae",1,1
+"caterpillar","Ijams Nature Center","genus","Acronicta",1,1
+"caterpillar","Inglewood area","genus","Anisota",1,1
+"caterpillar","Lake Murphysboro State Park, Overflow","genus","Melanolophia",1,1
+"caterpillar","Leopold's Preserve","genus","Panopoda",1,1
+"caterpillar","Leopold's Preserve","genus","Schizura",1,1
+"caterpillar","Litzsinger Road Ecology Center Woodland Site A","genus","Acronicta",1,1
+"caterpillar","Litzsinger Road Ecology Center Woodland Site A","genus","Orgyia",1,1
+"caterpillar","Litzsinger Road Ecology Center Woodland Site A","genus","Zale",1,1
+"caterpillar","Litzsinger Road Ecology Center Woodland Site A","subfamily","Limenitidinae",1,2
+"caterpillar","Litzsinger Road Ecology Center Woodland Site B","genus","Hypercompe",1,1
+"caterpillar","Mass Audubon's Boston Nature Center","genus","Lymantria",1,2
+"caterpillar","Mass Audubon's Broadmoor Wildlife Sanctuary","genus","Lymantria",1,4
+"caterpillar","Merrimac Farm","genus","Halysidota",1,3
+"caterpillar","Merrimac Farm","genus","Orgyia",1,1
+"caterpillar","Middle Mill","genus","Acronicta",1,1
+"caterpillar","Middle Mill","genus","Athrips",1,1
+"caterpillar","Middle Mill","genus","Hemaris",1,3
+"caterpillar","Middle Mill","genus","Hyphantria",1,2
+"caterpillar","Middle Mill","genus","Lymantria",1,3
+"caterpillar","Middle Mill","genus","Nematocampa",1,1
+"caterpillar","Middle Mill","genus","Orgyia",1,1
+"caterpillar","Middle Mill","genus","Pseudorthodes",1,1
+"caterpillar","Museum of American Bird Art","genus","Eupithecia",1,1
+"caterpillar","Museum of American Bird Art","genus","Lithophane",1,1
+"caterpillar","NC Botanical Garden","genus","Acharia",1,2
+"caterpillar","NC Botanical Garden","genus","Acronicta",4,25
+"caterpillar","NC Botanical Garden","genus","Antaeotricha",2,2
+"caterpillar","NC Botanical Garden","genus","Cecrita",2,7
+"caterpillar","NC Botanical Garden","genus","Colocasia",1,1
+"caterpillar","NC Botanical Garden","genus","Epimecis",1,3
+"caterpillar","NC Botanical Garden","genus","Halysidota",2,8
+"caterpillar","NC Botanical Garden","genus","Hypagyrtis",1,1
+"caterpillar","NC Botanical Garden","genus","Hypena",1,1
+"caterpillar","NC Botanical Garden","genus","Hyphantria",1,1
+"caterpillar","NC Botanical Garden","genus","Lepitoreuma",1,1
+"caterpillar","NC Botanical Garden","genus","Lochmaeus",1,2
+"caterpillar","NC Botanical Garden","genus","Macrurocampa",1,1
+"caterpillar","NC Botanical Garden","genus","Morrisonia",1,4
+"caterpillar","NC Botanical Garden","genus","Orgyia",1,2
+"caterpillar","NC Botanical Garden","genus","Papilio",1,1
+"caterpillar","NC Botanical Garden","genus","Paraclemensia",1,1
+"caterpillar","NC Botanical Garden","genus","Peridea",2,3
+"caterpillar","NC Botanical Garden","genus","Phyllonorycter",1,1
+"caterpillar","NC Botanical Garden","subfamily","Erebinae",1,1
+"caterpillar","NC Botanical Garden","subfamily","Hypeninae",1,1
+"caterpillar","NC Botanical Garden","subfamily","Limacodinae",1,2
+"caterpillar","NC Botanical Garden","subfamily","Lymantriinae",1,1
+"caterpillar","NC Botanical Garden","tribe","Orgyiini",1,1
+"caterpillar","NZ Oak Hill","genus","Phyllonorycter",1,1
+"caterpillar","NZ Ravine","genus","Acronicta",1,1
+"caterpillar","NZ Ravine","genus","Phyllonorycter",1,2
+"caterpillar","NZ Science Building Enclosure","genus","Phyllonorycter",1,1
+"caterpillar","NZ Science Hill","genus","Halysidota",1,2
+"caterpillar","Nordheimer Ravine","genus","Lymantria",1,2
+"caterpillar","Over Easy Farm","genus","Acharia",1,1
+"caterpillar","Over Easy Farm","genus","Cecrita",1,1
+"caterpillar","Over Easy Farm","genus","Halysidota",1,1
+"caterpillar","Over Easy Farm","genus","Ianassa",1,1
+"caterpillar","Piedmont Wildlife Center","subfamily","Lymantriinae",1,1
+"caterpillar","Potter Park Zoo","genus","Lymantria",1,2
+"caterpillar","Prairie Ridge Ecostation","genus","Acronicta",3,48
+"caterpillar","Prairie Ridge Ecostation","genus","Actias",1,5
+"caterpillar","Prairie Ridge Ecostation","genus","Ancylis",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Anisota",1,9
+"caterpillar","Prairie Ridge Ecostation","genus","Cecrita",2,12
+"caterpillar","Prairie Ridge Ecostation","genus","Coelodasys",1,3
+"caterpillar","Prairie Ridge Ecostation","genus","Datana",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Epimecis",1,15
+"caterpillar","Prairie Ridge Ecostation","genus","Euclea",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Halysidota",2,39
+"caterpillar","Prairie Ridge Ecostation","genus","Harrisimemna",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Hypagyrtis",1,6
+"caterpillar","Prairie Ridge Ecostation","genus","Hypercompe",1,2
+"caterpillar","Prairie Ridge Ecostation","genus","Hyphantria",1,19
+"caterpillar","Prairie Ridge Ecostation","genus","Hypsoropha",2,15
+"caterpillar","Prairie Ridge Ecostation","genus","Lithacodes",1,2
+"caterpillar","Prairie Ridge Ecostation","genus","Lochmaeus",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Macrurocampa",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Misogada",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Morrisonia",1,7
+"caterpillar","Prairie Ridge Ecostation","genus","Nadata",1,2
+"caterpillar","Prairie Ridge Ecostation","genus","Natada",1,8
+"caterpillar","Prairie Ridge Ecostation","genus","Orgyia",2,8
+"caterpillar","Prairie Ridge Ecostation","genus","Paectes",2,14
+"caterpillar","Prairie Ridge Ecostation","genus","Panopoda",1,5
+"caterpillar","Prairie Ridge Ecostation","genus","Parallelia",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Phobetron",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Pococera",1,2
+"caterpillar","Prairie Ridge Ecostation","genus","Pyrrharctia",1,1
+"caterpillar","Prairie Ridge Ecostation","genus","Schizura",2,5
+"caterpillar","Prairie Ridge Ecostation","genus","Spilosoma",1,1
+"caterpillar","Prairie Ridge Ecostation","subfamily","Erebinae",1,1
+"caterpillar","Prairie Ridge Ecostation","subfamily","Hypeninae",1,2
+"caterpillar","Prairie Ridge Ecostation","subfamily","Limacodinae",1,1
+"caterpillar","Prairie Ridge Ecostation","subfamily","Lymantriinae",1,1
+"caterpillar","Prairie Ridge Ecostation","subfamily","Noctuinae",1,1
+"caterpillar","Prairie Ridge Ecostation","subfamily","Plusiinae",1,1
+"caterpillar","Prairie Ridge Ecostation","tribe","Argyrogrammatini",1,1
+"caterpillar","Prairie Ridge Ecostation","tribe","Elaphriini",1,1
+"caterpillar","Prairie Ridge Ecostation","tribe","Orgyiini",1,5
+"caterpillar","Prairie Ridge Ecostation","tribe","Panopodini",1,1
+"caterpillar","RVCC","genus","Lymantria",1,7
+"caterpillar","RVCC","genus","Morrisonia",1,1
+"caterpillar","Riverbanks Zoo","genus","Halysidota",1,1
+"caterpillar","Riverbend Park","genus","Acronicta",1,12
+"caterpillar","Riverbend Park","genus","Halysidota",1,7
+"caterpillar","Riverbend Park","subfamily","Limacodinae",1,1
+"caterpillar","Sault College","genus","Lithophane",1,1
+"caterpillar","Sault College","genus","Lymantria",1,7
+"caterpillar","Sault College","genus","Malacosoma",1,4
+"caterpillar","Sault College","subfamily","Erebinae",1,1
+"caterpillar","Sault College","subfamily","Noctuinae",1,1
+"caterpillar","Schuylkill Center","genus","Acronicta",1,1
+"caterpillar","Schuylkill Center","genus","Morrisonia",1,1
+"caterpillar","Schuylkill Center","genus","Nadata",1,1
+"caterpillar","Seven Islands State Birding Park","genus","Euclea",1,1
+"caterpillar","Seven Islands State Birding Park","genus","Homaledra",1,1
+"caterpillar","Seven Islands State Birding Park","tribe","Catocalini",1,1
+"caterpillar","Stage Nature Center","genus","Lymantria",1,3
+"caterpillar","Taghkanic","genus","Lymantria",1,4
+"caterpillar","The PoHo","genus","Acronicta",1,1
+"caterpillar","The PoHo","genus","Colocasia",1,1
+"caterpillar","The PoHo","genus","Lepitoreuma",1,1
+"caterpillar","The PoHo","genus","Morrisonia",1,1
+"caterpillar","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Acharia",1,1
+"caterpillar","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Acronicta",2,2
+"caterpillar","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Colocasia",1,1
+"caterpillar","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Epimecis",1,1
+"caterpillar","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Lithacodes",1,1
+"caterpillar","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Morrisonia",1,3
+"caterpillar","Triangle Land Conservancy - Johnston Mill Nature Preserve","subfamily","Limacodinae",1,1
+"caterpillar","UNC Chapel Hill Campus","genus","Acronicta",1,2
+"caterpillar","UNC Chapel Hill Campus","genus","Charadra",1,1
+"caterpillar","UNC Chapel Hill Campus","genus","Hypagyrtis",1,1
+"caterpillar","UNC Chapel Hill Campus","genus","Lochmaeus",1,1
+"caterpillar","UNC Chapel Hill Campus","genus","Morrisonia",1,1
+"caterpillar","UNC Chapel Hill Campus","subfamily","Lymantriinae",1,1
+"caterpillar","Walker Nature Center","genus","Acronicta",1,5
+"caterpillar","Walker Nature Center","genus","Cyclophora",1,1
+"caterpillar","Walker Nature Center","genus","Ennomos",1,1
+"caterpillar","Walker Nature Center","genus","Halysidota",1,2
+"caterpillar","Walker Nature Center","genus","Hyphantria",1,1
+"caterpillar","Walker Nature Center","genus","Misogada",1,1
+"caterpillar","Walker Nature Center","genus","Nadata",1,1
+"caterpillar","Walker Nature Center","subfamily","Erebinae",1,3
+"caterpillar","Walker Nature Center","tribe","Panopodini",1,1
+"caterpillar","Woodland Edge Ravine","genus","Acronicta",1,1
+"caterpillar","Woodland Edge Ravine","genus","Asterocampa",1,1
+"caterpillar","Woodland Edge Ravine","genus","Halysidota",1,1
+"daddylonglegs","ASRI Fort","genus","Odiellus",1,1
+"daddylonglegs","ASRI Powder Mill","genus","Leiobunum",1,1
+"daddylonglegs","BHRC Natural Bridge Uplands","genus","Leiobunum",1,3
+"daddylonglegs","Belle Isle State Park, Lancaster, VA","genus","Leiobunum",1,1
+"daddylonglegs","Camp Woods Survey","genus","Leiobunum",1,2
+"daddylonglegs","EwA at the Fells","genus","Leiobunum",1,1
+"daddylonglegs","Ijams Nature Center","genus","Leiobunum",2,2
+"daddylonglegs","NC Botanical Garden","genus","Leiobunum",2,3
+"daddylonglegs","Prairie Ridge Ecostation","genus","Leiobunum",2,5
+"daddylonglegs","Riverbend Park","genus","Leiobunum",2,2
+"daddylonglegs","Seven Islands State Birding Park","genus","Leiobunum",1,1
+"daddylonglegs","The PoHo","genus","Leiobunum",1,1
+"daddylonglegs","Walker Nature Center","genus","Leiobunum",1,1
+"fly","ASRI Claire McIntosh","genus","Delphinia",1,1
+"fly","ASRI Claire McIntosh","genus","Pollenia",1,1
+"fly","ASRI Claire McIntosh","genus","Rhagio",1,1
+"fly","ASRI Fort","genus","Rhagio",1,2
+"fly","ASRI Parker Woodland","genus","Elephantomyia",1,1
+"fly","ASRI Touisset Marsh","genus","Condylostylus",1,1
+"fly","BHRC - Hemlock Draw","genus","Chrysotus",1,2
+"fly","BHRC - Hemlock Draw","genus","Homoneura",1,1
+"fly","BHRC - Hemlock Draw","genus","Rivellia",1,5
+"fly","BHRC Green Forest","genus","Condylostylus",1,3
+"fly","BHRC Green Forest","genus","Rhagio",1,1
+"fly","BHRC Happy Hill","genus","Chrysopilus",1,1
+"fly","BHRC Happy Hill","tribe","Dolichopodini",1,1
+"fly","BHRC Hemlock Draw North","genus","Rivellia",1,2
+"fly","BHRC Misty Valley Uplands","genus","Condylostylus",1,1
+"fly","BHRC Misty Valley Uplands","tribe","Diaphorini",1,1
+"fly","BHRC Natural Bridge South","genus","Rainieria",1,1
+"fly","BHRC Natural Bridge Uplands","genus","Chrysotimus",1,1
+"fly","BHRC Natural Bridge Uplands","genus","Chyliza",1,1
+"fly","BHRC Natural Bridge Uplands","genus","Condylostylus",1,1
+"fly","BHRC Schara Road Woodland","genus","Chrysotus",1,1
+"fly","BHRC Schara Road Woodland","genus","Condylostylus",1,1
+"fly","BHRC Schara Road Woodland","genus","Rivellia",1,3
+"fly","BHRC Schara Road Woodland","tribe","Muscini",1,1
+"fly","Baltimore Woods Nature Center","genus","Chrysops",1,1
+"fly","Belle Isle State Park, Lancaster, VA","genus","Condylostylus",3,14
+"fly","Belle Isle State Park, Lancaster, VA","genus","Diogmites",1,1
+"fly","Belle Isle State Park, Lancaster, VA","genus","Rivellia",1,1
+"fly","Belle Isle State Park, Lancaster, VA","genus","Toxomerus",1,3
+"fly","Belle Isle State Park, Lancaster, VA","subfamily","Sarcophaginae",1,2
+"fly","Belle Isle State Park, Lancaster, VA","tribe","Syrphini",1,1
+"fly","Brookbanks Park","genus","Lucilia",1,1
+"fly","Callawassie Island South Carolina","genus","Caryomyia",1,1
+"fly","Colonel Samuel Smith Park","subfamily","Chironominae",1,1
+"fly","Crossways Survey","genus","Chrysops",1,1
+"fly","Eno River State Park","genus","Condylostylus",1,1
+"fly","Eno River State Park","genus","Macrocera",1,1
+"fly","Eno River State Park","genus","Ocyptamus",1,1
+"fly","Eno River State Park","genus","Taracticus",1,1
+"fly","Eno River State Park","subfamily","Syrphinae",1,1
+"fly","Eno River State Park","tribe","Chironomini",1,1
+"fly","EwA at Fresh Pond","genus","Allograpta",1,1
+"fly","EwA at Fresh Pond","genus","Compsobata",1,1
+"fly","EwA at Fresh Pond","genus","Condylostylus",2,2
+"fly","EwA at Fresh Pond","genus","Delphinia",1,1
+"fly","EwA at Fresh Pond","genus","Stenochironomus",2,2
+"fly","EwA at Fresh Pond","genus","Tanytarsus",1,1
+"fly","EwA at Fresh Pond","tribe","Elachipterini",1,1
+"fly","EwA at Habitat","genus","Condylostylus",2,2
+"fly","EwA at Habitat","genus","Leptogaster",1,1
+"fly","EwA at Habitat","genus","Sarcophaga",1,1
+"fly","EwA at Habitat","subfamily","Luciliinae",1,1
+"fly","EwA at Habitat","subfamily","Sciapodinae",1,2
+"fly","EwA at Horn Pond","genus","Chrysotus",1,1
+"fly","EwA at Horn Pond","genus","Condylostylus",1,3
+"fly","EwA at Horn Pond","genus","Efferia",1,1
+"fly","EwA at Horn Pond","genus","Microtendipes",1,2
+"fly","EwA at Horn Pond","tribe","Diaphorini",1,1
+"fly","EwA at the Fells","genus","Chaoborus",1,1
+"fly","EwA at the Fells","genus","Chrysotus",1,2
+"fly","EwA at the Fells","genus","Condylostylus",1,2
+"fly","EwA at the Fells","genus","Efferia",1,1
+"fly","EwA at the Fells","genus","Gymnopternus",3,23
+"fly","EwA at the Fells","genus","Homoneura",1,2
+"fly","EwA at the Fells","genus","Neodexiopsis",1,1
+"fly","EwA at the Fells","genus","Stilpon",1,1
+"fly","EwA at the Fells","subfamily","Dolichopodinae",1,2
+"fly","EwA at the Fells","subfamily","Orthocladiinae",1,1
+"fly","EwA at the Fells","tribe","Diaphorini",1,9
+"fly","EwA at the Fells","tribe","Dolichopodini",1,10
+"fly","EwA at the Growing Center","genus","Coenosia",1,1
+"fly","EwA at the Growing Center","genus","Condylostylus",4,5
+"fly","EwA at the Growing Center","genus","Lucilia",1,1
+"fly","EwA at the Growing Center","genus","Ozodiceromyia",1,1
+"fly","EwA at the Growing Center","genus","Rainieria",1,1
+"fly","EwA at the Growing Center","genus","Sarcophaga",1,1
+"fly","EwA at the Growing Center","genus","Strauzia",1,1
+"fly","EwA at the Growing Center","subfamily","Sciapodinae",1,1
+"fly","Grandfather Mountain","genus","Rhagio",1,1
+"fly","Hemlock Bluffs","genus","Homoneura",1,1
+"fly","Ijams Nature Center","genus","Neogriphoneura",1,1
+"fly","Ijams Nature Center","genus","Stenochironomus",1,2
+"fly","Ijams Nature Center","genus","Toxonevra",2,3
+"fly","Lakeside Lab","subtribe","Xylotina",1,1
+"fly","Leopold's Preserve","genus","Atomosia",1,1
+"fly","Litzsinger Road Ecology Center Woodland Site A","genus","Eudasyphora",1,1
+"fly","Long Branch Nature Center","genus","Laphria",1,1
+"fly","Mass Audubon's Boston Nature Center","subfamily","Chironominae",1,1
+"fly","Miller Park Zoo","genus","Chironomus",1,1
+"fly","Miller Park Zoo","genus","Condylostylus",1,1
+"fly","Miller Park Zoo","genus","Delphinia",1,1
+"fly","Miller Park Zoo","genus","Nephrotoma",1,1
+"fly","Miller Park Zoo","genus","Rhagoletis",1,1
+"fly","Mt. Auburn Cemetery","genus","Condylostylus",4,8
+"fly","Mt. Auburn Cemetery","genus","Helius",1,1
+"fly","Mt. Auburn Cemetery","genus","Macrodiplosis",1,2
+"fly","NC Botanical Garden","genus","Amblypsilopus",1,1
+"fly","NC Botanical Garden","genus","Condylostylus",1,1
+"fly","NC Botanical Garden","genus","Erioptera",1,1
+"fly","NC Botanical Garden","genus","Gymnopternus",1,1
+"fly","NC Botanical Garden","genus","Homoneura",1,2
+"fly","NC Botanical Garden","genus","Macrocera",1,1
+"fly","NC Botanical Garden","genus","Psorophora",1,1
+"fly","NC Botanical Garden","subfamily","Chironominae",1,1
+"fly","NC Botanical Garden","tribe","Aedini",1,1
+"fly","NZ Ravine","genus","Toxonevra",1,1
+"fly","Oregon Ridge Nature Center","genus","Chrysopilus",1,2
+"fly","Over Easy Farm","genus","Condylostylus",1,2
+"fly","Over Easy Farm","subfamily","Sciapodinae",1,2
+"fly","Prairie Ridge Ecostation","genus","Allograpta",1,1
+"fly","Prairie Ridge Ecostation","genus","Anthrax",1,1
+"fly","Prairie Ridge Ecostation","genus","Cerotainia",1,1
+"fly","Prairie Ridge Ecostation","genus","Condylostylus",5,15
+"fly","Prairie Ridge Ecostation","genus","Homoneura",1,10
+"fly","Prairie Ridge Ecostation","genus","Lonchaea",1,1
+"fly","Prairie Ridge Ecostation","genus","Macrocera",1,3
+"fly","Prairie Ridge Ecostation","genus","Nephrotoma",1,1
+"fly","Prairie Ridge Ecostation","genus","Thaumatomyia",1,1
+"fly","Prairie Ridge Ecostation","genus","Toxomerus",1,1
+"fly","Prairie Ridge Ecostation","subfamily","Macrocerinae",1,2
+"fly","Prairie Ridge Ecostation","subfamily","Sciapodinae",1,1
+"fly","RAUNERIMD","subfamily","Muscinae",1,1
+"fly","Schuylkill Center","genus","Condylostylus",1,1
+"fly","Schuylkill Center","genus","Dialysis",1,1
+"fly","Schuylkill Center","genus","Eudioctria",1,1
+"fly","Schuylkill Center","genus","Macrodiplosis",1,2
+"fly","Stage Nature Center","genus","Homoneura",1,2
+"fly","Stage Nature Center","subfamily","Tipulinae",1,1
+"fly","Taghkanic","genus","Condylostylus",1,2
+"fly","The PoHo","genus","Rivellia",1,1
+"fly","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Laphria",1,1
+"fly","Virginia Zoo","genus","Condylostylus",1,1
+"fly","Walker Nature Center","genus","Aedes",1,1
+"fly","Walker Nature Center","genus","Condylostylus",2,2
+"fly","Walker Nature Center","genus","Eupeodes",1,1
+"fly","Walker Nature Center","genus","Homoneura",1,2
+"fly","Walker Nature Center","genus","Lauxaniella",1,1
+"fly","Walker Nature Center","genus","Minettia",1,1
+"fly","Walker Nature Center","genus","Neogriphoneura",1,1
+"fly","Walker Nature Center","genus","Toxomerus",1,1
+"fly","Walker Nature Center","genus","Toxonevra",1,4
+"fly","Walker Nature Center","subfamily","Tipulinae",1,1
+"fly","Walker Nature Center","tribe","Dolichopodini",1,1
+"fly","Woodland Edge Ravine","genus","Delphinia",1,1
+"fly","Woodland Edge Ravine","genus","Pelecinobaccha",1,1
+"grasshopper","ASRI Claire McIntosh","genus","Hapithus",1,1
+"grasshopper","ASRI Fisherville Brook","genus","Scudderia",1,1
+"grasshopper","ASRI Parker Woodland","genus","Amblycorypha",1,1
+"grasshopper","BHRC - Hemlock Draw","genus","Dendrotettix",1,1
+"grasshopper","BHRC - Hemlock Draw","genus","Melanoplus",1,1
+"grasshopper","BHRC - Hemlock Draw","genus","Oecanthus",1,1
+"grasshopper","BHRC Green Forest","genus","Melanoplus",1,1
+"grasshopper","BHRC Hemlock Draw North","genus","Scudderia",1,1
+"grasshopper","BHRC Misty Valley Uplands","subfamily","Melanoplinae",1,1
+"grasshopper","BHRC Natural Bridge South","genus","Melanoplus",1,2
+"grasshopper","BHRC Natural Bridge South","subfamily","Melanoplinae",1,1
+"grasshopper","BHRC Natural Bridge Uplands","genus","Melanoplus",1,1
+"grasshopper","BHRC Natural Bridge Uplands","genus","Neoxabea",1,2
+"grasshopper","BHRC Natural Bridge Uplands","genus","Oecanthus",1,1
+"grasshopper","Belle Isle State Park, Lancaster, VA","genus","Cyrtoxipha",1,3
+"grasshopper","Belle Isle State Park, Lancaster, VA","genus","Oecanthus",1,1
+"grasshopper","Broyhill Park","genus","Oecanthus",1,1
+"grasshopper","CawCaw Interpretive Center","genus","Microcentrum",1,1
+"grasshopper","Colonel Samuel Smith Park","genus","Meconema",1,1
+"grasshopper","Crossways Survey","genus","Neoxabea",1,4
+"grasshopper","Currituck Banks Reserve","genus","Oecanthus",1,1
+"grasshopper","Eno River State Park","genus","Oecanthus",1,1
+"grasshopper","Eno River State Park","genus","Phyllopalpus",1,1
+"grasshopper","Eno River State Park","subfamily","Oecanthinae",1,1
+"grasshopper","EwA at Fresh Pond","genus","Anaxipha",1,1
+"grasshopper","EwA at Fresh Pond","genus","Hapithus",1,1
+"grasshopper","EwA at Fresh Pond","genus","Meconema",1,5
+"grasshopper","EwA at Fresh Pond","genus","Neoxabea",1,2
+"grasshopper","EwA at Fresh Pond","genus","Oecanthus",3,21
+"grasshopper","EwA at Fresh Pond","genus","Phyllopalpus",1,4
+"grasshopper","EwA at Habitat","genus","Meconema",1,1
+"grasshopper","EwA at Habitat","genus","Scudderia",1,1
+"grasshopper","EwA at Horn Pond","genus","Meconema",1,1
+"grasshopper","EwA at Horn Pond","genus","Melanoplus",1,1
+"grasshopper","EwA at the Fells","genus","Hapithus",1,1
+"grasshopper","EwA at the Fells","genus","Meconema",1,11
+"grasshopper","EwA at the Fells","genus","Melanoplus",1,3
+"grasshopper","EwA at the Fells","genus","Oecanthus",1,5
+"grasshopper","EwA at the Fells","genus","Scudderia",1,1
+"grasshopper","EwA at the Growing Center","genus","Phaneroptera",1,1
+"grasshopper","Gulf Branch Nature Center","genus","Oecanthus",1,1
+"grasshopper","Hemlock Bluffs","genus","Orocharis",1,1
+"grasshopper","High Park","genus","Meconema",1,1
+"grasshopper","Ijams Nature Center","genus","Phyllopalpus",1,1
+"grasshopper","Liberty Fox Backyard","genus","Microcentrum",1,1
+"grasshopper","Long Branch Nature Center","genus","Oecanthus",1,1
+"grasshopper","Mass Audubon's Boston Nature Center","genus","Hapithus",1,2
+"grasshopper","Middle Mill","genus","Anaxipha",1,1
+"grasshopper","Middle Mill","genus","Meconema",2,7
+"grasshopper","Middle Mill","genus","Neoxabea",1,2
+"grasshopper","Middle Mill","genus","Oecanthus",1,4
+"grasshopper","Middle Mill","subfamily","Oecanthinae",1,1
+"grasshopper","Mt. Auburn Cemetery","genus","Anaxipha",1,1
+"grasshopper","Mt. Auburn Cemetery","genus","Cyrtoxipha",1,1
+"grasshopper","Mt. Auburn Cemetery","genus","Hapithus",1,1
+"grasshopper","Mt. Auburn Cemetery","genus","Meconema",1,1
+"grasshopper","Mt. Auburn Cemetery","genus","Oecanthus",1,5
+"grasshopper","Mt. Auburn Cemetery","genus","Phyllopalpus",1,2
+"grasshopper","NC Botanical Garden","genus","Camptonotus",1,7
+"grasshopper","NC Botanical Garden","genus","Cyrtoxipha",2,3
+"grasshopper","NC Botanical Garden","genus","Hapithus",2,9
+"grasshopper","NC Botanical Garden","genus","Microcentrum",1,1
+"grasshopper","NC Botanical Garden","genus","Neoxabea",1,3
+"grasshopper","NC Botanical Garden","genus","Oecanthus",1,42
+"grasshopper","NC Botanical Garden","genus","Phyllopalpus",1,17
+"grasshopper","NC Botanical Garden","genus","Scudderia",1,2
+"grasshopper","NC State University","genus","Cyrtoxipha",1,1
+"grasshopper","NZ Ravine","genus","Oecanthus",1,1
+"grasshopper","Oregon Ridge Nature Center","genus","Neoxabea",1,1
+"grasshopper","Piedmont Wildlife Center","genus","Oecanthus",1,3
+"grasshopper","Piedmont Wildlife Center","genus","Phyllopalpus",1,1
+"grasshopper","Prairie Ridge Ecostation","genus","Cycloptilum",1,1
+"grasshopper","Prairie Ridge Ecostation","genus","Cyrtoxipha",2,41
+"grasshopper","Prairie Ridge Ecostation","genus","Hapithus",1,8
+"grasshopper","Prairie Ridge Ecostation","genus","Microcentrum",1,1
+"grasshopper","Prairie Ridge Ecostation","genus","Oecanthus",2,28
+"grasshopper","Prairie Ridge Ecostation","genus","Orocharis",1,2
+"grasshopper","Prairie Ridge Ecostation","genus","Phyllopalpus",1,10
+"grasshopper","Prairie Ridge Ecostation","genus","Pterophylla",1,1
+"grasshopper","Prairie Ridge Ecostation","genus","Scudderia",1,1
+"grasshopper","Prairie Ridge Ecostation","subfamily","Phaneropterinae",1,2
+"grasshopper","Prairie Ridge Ecostation","subfamily","Trigonidiinae",1,1
+"grasshopper","RVCC","genus","Meconema",1,1
+"grasshopper","RVCC","genus","Oecanthus",1,1
+"grasshopper","Sedgwick County Zoo","genus","Oecanthus",1,1
+"grasshopper","Seven Islands State Birding Park","genus","Neoxabea",1,1
+"grasshopper","The Children's Museum","genus","Neoxabea",1,1
+"grasshopper","The Children's Museum","genus","Oecanthus",1,1
+"grasshopper","The PoHo","genus","Oecanthus",1,4
+"grasshopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Hapithus",1,1
+"grasshopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Oecanthus",1,3
+"grasshopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Phyllopalpus",1,2
+"grasshopper","UNC Chapel Hill Campus","genus","Cycloptilum",1,1
+"grasshopper","UNC Chapel Hill Campus","genus","Cyrtoxipha",2,19
+"grasshopper","UNC Chapel Hill Campus","genus","Hapithus",1,13
+"grasshopper","UNC Chapel Hill Campus","genus","Oecanthus",1,1
+"grasshopper","Walker Nature Center","genus","Anaxipha",1,1
+"grasshopper","Walker Nature Center","genus","Neoxabea",1,1
+"grasshopper","Walker Nature Center","genus","Oecanthus",1,5
+"grasshopper","Walker Nature Center","subfamily","Oecanthinae",1,2
+"grasshopper","Wellesley College","genus","Phyllopalpus",1,1
+"leafhopper","ASRI Claire McIntosh","genus","Acanalonia",1,1
+"leafhopper","ASRI Claire McIntosh","genus","Clastoptera",1,1
+"leafhopper","ASRI Claire McIntosh","genus","Pagaronia",1,1
+"leafhopper","Azalea Repository (TNCA)","genus","Cedusa",1,1
+"leafhopper","BHRC - Hemlock Draw","genus","Cedusa",1,4
+"leafhopper","BHRC - Hemlock Draw","genus","Colladonus",1,1
+"leafhopper","BHRC - Hemlock Draw","genus","Cyrtolobus",1,1
+"leafhopper","BHRC - Hemlock Draw","genus","Jikradia",1,1
+"leafhopper","BHRC - Hemlock Draw","genus","Metcalfa",1,1
+"leafhopper","BHRC - Hemlock Draw","genus","Scaphoideus",1,1
+"leafhopper","BHRC - Hemlock Draw","subfamily","Typhlocybinae",1,1
+"leafhopper","BHRC - Hemlock Draw","tribe","Erythroneurini",1,1
+"leafhopper","BHRC - Pan Hollow","genus","Cedusa",1,1
+"leafhopper","BHRC - Pan Hollow","genus","Graphocephala",1,1
+"leafhopper","BHRC - Pan Hollow","genus","Scaphoideus",1,1
+"leafhopper","BHRC Happy Hill","genus","Cyrtolobus",1,1
+"leafhopper","BHRC Happy Hill","genus","Rugosana",1,1
+"leafhopper","BHRC Happy Hill","genus","Scaphoideus",1,1
+"leafhopper","BHRC Hemlock Draw North","genus","Cedusa",1,2
+"leafhopper","BHRC Hemlock Draw North","genus","Jikradia",1,2
+"leafhopper","BHRC Misty Valley Uplands","genus","Clastoptera",1,1
+"leafhopper","BHRC Natural Bridge South","genus","Cedusa",1,2
+"leafhopper","BHRC Natural Bridge South","genus","Clastoptera",1,1
+"leafhopper","BHRC Natural Bridge South","genus","Jikradia",1,1
+"leafhopper","BHRC Natural Bridge South","genus","Scaphoideus",1,1
+"leafhopper","BHRC Natural Bridge Uplands","genus","Jikradia",1,1
+"leafhopper","BHRC Schara Road Woodland","genus","Jikradia",1,1
+"leafhopper","BHRC Schara Road Woodland","genus","Synecdoche",1,2
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Acanalonia",2,11
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Alebra",1,1
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Cedusa",1,1
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Flatormenis",1,3
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Graphocephala",2,5
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Metcalfa",1,4
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Oncometopia",1,3
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Ormenoides",1,6
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Paraphlepsius",1,1
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Sibovia",1,1
+"leafhopper","Belle Isle State Park, Lancaster, VA","genus","Thionia",1,2
+"leafhopper","Belle Isle State Park, Lancaster, VA","subfamily","Cicadellinae",1,1
+"leafhopper","Belle Isle State Park, Lancaster, VA","tribe","Cicadellini",1,1
+"leafhopper","Bickford Park Caterpillars Count","genus","Fieberiella",1,1
+"leafhopper","Birmingham Zoo AL","genus","Acanalonia",1,1
+"leafhopper","Brookbanks Park","genus","Acanalonia",1,1
+"leafhopper","Brookbanks Park","genus","Allygidius",1,1
+"leafhopper","Brookbanks Park","genus","Flatormenis",1,1
+"leafhopper","Brookbanks Park","tribe","Gyponini",1,1
+"leafhopper","Brookbanks Park","tribe","Scaphoideini",1,2
+"leafhopper","Callawassie Island South Carolina","genus","Metcalfa",1,1
+"leafhopper","Camp Woods Survey","genus","Lycorma",1,1
+"leafhopper","Camp Woods Survey","genus","Metcalfa",1,3
+"leafhopper","Camp Woods Survey","subfamily","Cicadellinae",1,1
+"leafhopper","Camp Woods Survey","tribe","Gyponini",1,2
+"leafhopper","Camp Woods Survey","tribe","Nephesini",1,1
+"leafhopper","CawCaw Interpretive Center","genus","Prosapia",1,1
+"leafhopper","Colonel Samuel Smith Park","genus","Acericerus",1,2
+"leafhopper","Colonel Samuel Smith Park","genus","Jikradia",1,1
+"leafhopper","Colonel Samuel Smith Park","genus","Macropsis",1,1
+"leafhopper","Colonel Samuel Smith Park","genus","Penestragania",1,6
+"leafhopper","Colonel Samuel Smith Park","genus","Philaenus",1,2
+"leafhopper","Colonel Samuel Smith Park","genus","Vanduzea",1,1
+"leafhopper","Cowee MAPS Site","genus","Clastoptera",1,1
+"leafhopper","Crossways Survey","genus","Acanalonia",2,3
+"leafhopper","Crossways Survey","genus","Clastoptera",1,1
+"leafhopper","Crossways Survey","genus","Platycotis",1,1
+"leafhopper","Currituck Banks Reserve","genus","Metcalfa",1,1
+"leafhopper","Currituck Banks Reserve","genus","Omolicna",1,1
+"leafhopper","Eastern Market Street Trees","genus","Rugosana",1,1
+"leafhopper","Eno River State Park","genus","Acanalonia",2,4
+"leafhopper","Eno River State Park","genus","Cedusa",1,1
+"leafhopper","Eno River State Park","genus","Clastoptera",1,1
+"leafhopper","Eno River State Park","genus","Flatormenis",1,1
+"leafhopper","Eno River State Park","genus","Graphocephala",1,1
+"leafhopper","Eno River State Park","genus","Gyponana",1,3
+"leafhopper","Eno River State Park","genus","Magicicada",1,2
+"leafhopper","Eno River State Park","genus","Metcalfa",1,5
+"leafhopper","Eno River State Park","genus","Oncometopia",1,1
+"leafhopper","Eno River State Park","genus","Oncopsis",1,3
+"leafhopper","Eno River State Park","genus","Orientus",1,3
+"leafhopper","Eno River State Park","genus","Ormenoides",1,1
+"leafhopper","Eno River State Park","subfamily","Typhlocybinae",1,2
+"leafhopper","Eno River State Park","tribe","Gyponini",1,4
+"leafhopper","Eno River State Park","tribe","Nephesini",1,8
+"leafhopper","Eno River State Park","tribe","Typhlocybini",1,1
+"leafhopper","EwA at Fresh Pond","genus","Acanalonia",2,9
+"leafhopper","EwA at Fresh Pond","genus","Agallia",1,2
+"leafhopper","EwA at Fresh Pond","genus","Alebra",1,1
+"leafhopper","EwA at Fresh Pond","genus","Colladonus",1,1
+"leafhopper","EwA at Fresh Pond","genus","Cyrtolobus",1,2
+"leafhopper","EwA at Fresh Pond","genus","Flatormenis",1,1
+"leafhopper","EwA at Fresh Pond","genus","Graphocephala",3,3
+"leafhopper","EwA at Fresh Pond","genus","Idiocerus",1,2
+"leafhopper","EwA at Fresh Pond","genus","Jikradia",2,6
+"leafhopper","EwA at Fresh Pond","genus","Macropsis",1,1
+"leafhopper","EwA at Fresh Pond","genus","Metcalfa",1,8
+"leafhopper","EwA at Fresh Pond","genus","Oncopsis",1,5
+"leafhopper","EwA at Fresh Pond","genus","Orientus",1,1
+"leafhopper","EwA at Fresh Pond","genus","Ormenoides",1,10
+"leafhopper","EwA at Fresh Pond","genus","Paraulacizes",1,1
+"leafhopper","EwA at Fresh Pond","genus","Philaenus",1,4
+"leafhopper","EwA at Fresh Pond","genus","Scaphoideus",1,1
+"leafhopper","EwA at Fresh Pond","tribe","Empoascini",1,1
+"leafhopper","EwA at Fresh Pond","tribe","Gyponini",1,2
+"leafhopper","EwA at Fresh Pond","tribe","Idiocerini",1,2
+"leafhopper","EwA at Fresh Pond","tribe","Nephesini",1,2
+"leafhopper","EwA at Fresh Pond","tribe","Scaphoideini",1,1
+"leafhopper","EwA at Fresh Pond","tribe","Smiliini",1,2
+"leafhopper","EwA at Fresh Pond","tribe","Typhlocybini",1,1
+"leafhopper","EwA at Habitat","genus","Cedusa",1,4
+"leafhopper","EwA at Habitat","genus","Graphocephala",1,1
+"leafhopper","EwA at Habitat","genus","Jikradia",1,2
+"leafhopper","EwA at Habitat","genus","Metcalfa",1,3
+"leafhopper","EwA at Habitat","genus","Orientus",1,1
+"leafhopper","EwA at Horn Pond","genus","Enchenopa",1,1
+"leafhopper","EwA at Horn Pond","genus","Jikradia",1,1
+"leafhopper","EwA at Horn Pond","genus","Penthimia",1,1
+"leafhopper","EwA at Horn Pond","genus","Rugosana",1,1
+"leafhopper","EwA at Horn Pond","subfamily","Typhlocybinae",1,1
+"leafhopper","EwA at the Fells","genus","Cedusa",1,3
+"leafhopper","EwA at the Fells","genus","Empoa",1,1
+"leafhopper","EwA at the Fells","genus","Jikradia",1,1
+"leafhopper","EwA at the Fells","tribe","Macropsini",1,4
+"leafhopper","EwA at the Growing Center","genus","Alebra",1,2
+"leafhopper","EwA at the Growing Center","genus","Aplos",1,1
+"leafhopper","EwA at the Growing Center","genus","Empoa",2,2
+"leafhopper","EwA at the Growing Center","genus","Graphocephala",2,5
+"leafhopper","EwA at the Growing Center","genus","Japananus",1,1
+"leafhopper","EwA at the Growing Center","genus","Jikradia",1,6
+"leafhopper","EwA at the Growing Center","genus","Micrutalis",1,1
+"leafhopper","EwA at the Growing Center","genus","Orientus",1,8
+"leafhopper","EwA at the Growing Center","subfamily","Typhlocybinae",1,1
+"leafhopper","EwA at the Growing Center","tribe","Nephesini",1,1
+"leafhopper","Grandfather Mountain","genus","Acanalonia",1,1
+"leafhopper","Grandfather Mountain","genus","Aphrophora",1,1
+"leafhopper","Grandfather Mountain","genus","Clastoptera",1,1
+"leafhopper","Grandfather Mountain","genus","Cyrtolobus",1,1
+"leafhopper","Grandfather Mountain","genus","Oncopsis",2,4
+"leafhopper","Grandfather Mountain","genus","Philaenus",1,1
+"leafhopper","Grandfather Mountain","genus","Platycotis",1,11
+"leafhopper","Grandfather Mountain","tribe","Ceresini",1,1
+"leafhopper","Grandfather Mountain","tribe","Scaphoideini",1,1
+"leafhopper","Grandfather Mountain","tribe","Smiliini",1,1
+"leafhopper","Great Smoky Mountains Institute at Tremont","genus","Prosapia",1,1
+"leafhopper","Gulf Branch Nature Center","genus","Acanalonia",1,1
+"leafhopper","Hemlock Bluffs","genus","Anotia",1,1
+"leafhopper","Hemlock Bluffs","genus","Flatormenis",1,2
+"leafhopper","Hemlock Bluffs","genus","Gyponana",1,1
+"leafhopper","Hemlock Bluffs","genus","Metcalfa",1,2
+"leafhopper","Hemlock Bluffs","genus","Ormenoides",1,1
+"leafhopper","Highlands Biological Station","tribe","Gyponini",1,1
+"leafhopper","Ijams Nature Center","genus","Anotia",1,1
+"leafhopper","Ijams Nature Center","genus","Enchenopa",1,2
+"leafhopper","Ijams Nature Center","genus","Jikradia",1,2
+"leafhopper","Kituwah MAPS Site","genus","Jikradia",1,1
+"leafhopper","Kituwah MAPS Site","genus","Thionia",1,1
+"leafhopper","Lakeside Lab","genus","Jikradia",1,1
+"leafhopper","Leesylvania State Park","genus","Flatormenis",1,1
+"leafhopper","Leesylvania State Park","genus","Ossiannilssonola",1,1
+"leafhopper","Leopold's Preserve","genus","Acanalonia",1,1
+"leafhopper","Leopold's Preserve","genus","Aplos",1,1
+"leafhopper","Leopold's Preserve","genus","Enchenopa",1,1
+"leafhopper","Leopold's Preserve","genus","Gyponana",1,1
+"leafhopper","Leopold's Preserve","genus","Lycorma",1,2
+"leafhopper","Leopold's Preserve","genus","Metcalfa",1,7
+"leafhopper","Leopold's Preserve","genus","Ormenoides",1,2
+"leafhopper","Leopold's Preserve","subfamily","Typhlocybinae",1,1
+"leafhopper","Leopold's Preserve","tribe","Nephesini",1,1
+"leafhopper","Liberty Fox Backyard","genus","Gyponana",1,1
+"leafhopper","Liberty Fox Backyard","genus","Synecdoche",1,1
+"leafhopper","Long Branch Park","genus","Flatormenis",1,1
+"leafhopper","Long Branch Park","genus","Ormenoides",1,2
+"leafhopper","Mass Audubon's Boston Nature Center","genus","Metcalfa",1,1
+"leafhopper","Mass Audubon's Boston Nature Center","genus","Philaenus",1,1
+"leafhopper","Mass Audubon's Boston Nature Center","tribe","Gyponini",1,1
+"leafhopper","Merrimac Farm","genus","Metcalfa",1,1
+"leafhopper","Middle Mill","genus","Jikradia",1,1
+"leafhopper","Miller Park Zoo","genus","Japananus",1,2
+"leafhopper","Mt. Auburn Cemetery","genus","Cedusa",1,1
+"leafhopper","Mt. Auburn Cemetery","genus","Clastoptera",1,2
+"leafhopper","Mt. Auburn Cemetery","genus","Graphocephala",2,2
+"leafhopper","Mt. Auburn Cemetery","genus","Japananus",1,1
+"leafhopper","Mt. Auburn Cemetery","genus","Orientus",1,1
+"leafhopper","Mt. Auburn Cemetery","tribe","Empoascini",1,1
+"leafhopper","Mt. Auburn Cemetery","tribe","Nephesini",1,1
+"leafhopper","NC Botanical Garden","genus","Acanalonia",2,14
+"leafhopper","NC Botanical Garden","genus","Flatormenis",1,17
+"leafhopper","NC Botanical Garden","genus","Graphocephala",1,1
+"leafhopper","NC Botanical Garden","genus","Gyponana",1,5
+"leafhopper","NC Botanical Garden","genus","Metcalfa",1,2
+"leafhopper","NC Botanical Garden","genus","Oncopsis",1,1
+"leafhopper","NC Botanical Garden","genus","Ormenoides",1,41
+"leafhopper","NC Botanical Garden","genus","Osbornellus",1,1
+"leafhopper","NC Botanical Garden","genus","Pelitropis",1,1
+"leafhopper","NC Botanical Garden","genus","Platycotis",1,4
+"leafhopper","NC Botanical Garden","genus","Prosapia",1,2
+"leafhopper","NC Botanical Garden","genus","Thionia",2,3
+"leafhopper","NC Botanical Garden","subfamily","Flatinae",1,1
+"leafhopper","NC Botanical Garden","tribe","Gyponini",1,16
+"leafhopper","NC Botanical Garden","tribe","Macropsini",1,1
+"leafhopper","NC Botanical Garden","tribe","Nephesini",1,13
+"leafhopper","NZ Science Building Enclosure","genus","Ormenoides",1,1
+"leafhopper","NZ Science Hill","genus","Jikradia",1,1
+"leafhopper","Oregon Ridge Nature Center","genus","Acanalonia",1,1
+"leafhopper","Over Easy Farm","genus","Flatormenis",1,1
+"leafhopper","Over Easy Farm","genus","Metcalfa",1,1
+"leafhopper","Piedmont Wildlife Center","genus","Acanalonia",1,1
+"leafhopper","Piedmont Wildlife Center","genus","Metcalfa",1,1
+"leafhopper","Piedmont Wildlife Center","tribe","Nephesini",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Acanalonia",4,39
+"leafhopper","Prairie Ridge Ecostation","genus","Agalliopsis",1,3
+"leafhopper","Prairie Ridge Ecostation","genus","Aplos",1,2
+"leafhopper","Prairie Ridge Ecostation","genus","Bothriocera",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Cedusa",1,6
+"leafhopper","Prairie Ridge Ecostation","genus","Cloanthanus",1,2
+"leafhopper","Prairie Ridge Ecostation","genus","Enchenopa",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Eratoneura",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Eutettix",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Flatormenis",1,145
+"leafhopper","Prairie Ridge Ecostation","genus","Graphocephala",3,14
+"leafhopper","Prairie Ridge Ecostation","genus","Gyponana",1,13
+"leafhopper","Prairie Ridge Ecostation","genus","Haplaxius",1,2
+"leafhopper","Prairie Ridge Ecostation","genus","Japananus",1,17
+"leafhopper","Prairie Ridge Ecostation","genus","Jikradia",1,19
+"leafhopper","Prairie Ridge Ecostation","genus","Metcalfa",1,28
+"leafhopper","Prairie Ridge Ecostation","genus","Oncometopia",1,4
+"leafhopper","Prairie Ridge Ecostation","genus","Orientus",1,4
+"leafhopper","Prairie Ridge Ecostation","genus","Ormenoides",1,127
+"leafhopper","Prairie Ridge Ecostation","genus","Osbornellus",1,3
+"leafhopper","Prairie Ridge Ecostation","genus","Paraphlepsius",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Pelitropis",1,6
+"leafhopper","Prairie Ridge Ecostation","genus","Platycotis",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Prosapia",1,3
+"leafhopper","Prairie Ridge Ecostation","genus","Rugosana",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Scaphoideus",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Scaphytopius",1,1
+"leafhopper","Prairie Ridge Ecostation","genus","Stictocephala",3,36
+"leafhopper","Prairie Ridge Ecostation","genus","Thionia",3,79
+"leafhopper","Prairie Ridge Ecostation","subfamily","Flatinae",1,1
+"leafhopper","Prairie Ridge Ecostation","subfamily","Smiliinae",1,1
+"leafhopper","Prairie Ridge Ecostation","subfamily","Typhlocybinae",1,5
+"leafhopper","Prairie Ridge Ecostation","subtribe","Agalliina",1,1
+"leafhopper","Prairie Ridge Ecostation","tribe","Ceresini",1,7
+"leafhopper","Prairie Ridge Ecostation","tribe","Cicadellini",1,1
+"leafhopper","Prairie Ridge Ecostation","tribe","Empoascini",1,1
+"leafhopper","Prairie Ridge Ecostation","tribe","Gyponini",1,8
+"leafhopper","Prairie Ridge Ecostation","tribe","Nephesini",1,59
+"leafhopper","Prairie Ridge Ecostation","tribe","Pentastirini",1,1
+"leafhopper","Prairie Ridge Ecostation","tribe","Thioniini",1,2
+"leafhopper","RAUNERIMD","genus","Acanalonia",1,2
+"leafhopper","RAUNERIMD","genus","Metcalfa",1,4
+"leafhopper","RAUNERIMD","genus","Ormenoides",1,1
+"leafhopper","RVCC","genus","Anotia",1,1
+"leafhopper","Schuylkill Center","genus","Colladonus",1,1
+"leafhopper","Schuylkill Center","genus","Lycorma",1,2
+"leafhopper","Sedgwick County Zoo","genus","Acanalonia",1,1
+"leafhopper","Seven Islands State Birding Park","genus","Acanalonia",1,1
+"leafhopper","Seven Islands State Birding Park","genus","Philaenus",1,1
+"leafhopper","Somerville Street Trees","genus","Jikradia",1,1
+"leafhopper","Somerville Street Trees","tribe","Empoascini",1,1
+"leafhopper","Taghkanic","genus","Jikradia",1,1
+"leafhopper","The PoHo","genus","Gyponana",1,1
+"leafhopper","The PoHo","genus","Otiocerus",1,1
+"leafhopper","The PoHo","genus","Prosapia",1,1
+"leafhopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Flatormenis",1,1
+"leafhopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Joruma",1,1
+"leafhopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Magicicada",1,1
+"leafhopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Metcalfa",1,1
+"leafhopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Platycotis",1,3
+"leafhopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","subfamily","Typhlocybinae",1,1
+"leafhopper","Triangle Land Conservancy - Johnston Mill Nature Preserve","tribe","Nephesini",1,2
+"leafhopper","UNC Chapel Hill Campus","genus","Acanalonia",4,24
+"leafhopper","UNC Chapel Hill Campus","genus","Alebra",1,2
+"leafhopper","UNC Chapel Hill Campus","genus","Aplos",1,6
+"leafhopper","UNC Chapel Hill Campus","genus","Cedusa",1,1
+"leafhopper","UNC Chapel Hill Campus","genus","Cyrtolobus",2,2
+"leafhopper","UNC Chapel Hill Campus","genus","Empoa",1,1
+"leafhopper","UNC Chapel Hill Campus","genus","Flatormenis",1,22
+"leafhopper","UNC Chapel Hill Campus","genus","Graphocephala",2,3
+"leafhopper","UNC Chapel Hill Campus","genus","Gyponana",1,1
+"leafhopper","UNC Chapel Hill Campus","genus","Jikradia",1,1
+"leafhopper","UNC Chapel Hill Campus","genus","Magicicada",1,1
+"leafhopper","UNC Chapel Hill Campus","genus","Metcalfa",1,7
+"leafhopper","UNC Chapel Hill Campus","genus","Oncometopia",1,6
+"leafhopper","UNC Chapel Hill Campus","genus","Ormenoides",1,4
+"leafhopper","UNC Chapel Hill Campus","genus","Ponana",1,1
+"leafhopper","UNC Chapel Hill Campus","genus","Rugosana",1,4
+"leafhopper","UNC Chapel Hill Campus","genus","Stictocephala",1,1
+"leafhopper","UNC Chapel Hill Campus","genus","Thionia",2,5
+"leafhopper","UNC Chapel Hill Campus","subfamily","Thioniinae",1,1
+"leafhopper","UNC Chapel Hill Campus","subfamily","Typhlocybinae",1,2
+"leafhopper","UNC Chapel Hill Campus","tribe","Ceresini",1,1
+"leafhopper","UNC Chapel Hill Campus","tribe","Gyponini",1,1
+"leafhopper","UNC Chapel Hill Campus","tribe","Nephesini",1,3
+"leafhopper","UNC Chapel Hill Campus","tribe","Thioniini",1,1
+"leafhopper","University of Pittsburgh","subfamily","Deltocephalinae",1,1
+"leafhopper","Virginia Zoo","genus","Acanalonia",1,1
+"leafhopper","Walker Nature Center","genus","Acanalonia",2,5
+"leafhopper","Walker Nature Center","genus","Bothriocera",1,1
+"leafhopper","Walker Nature Center","genus","Clastoptera",1,1
+"leafhopper","Walker Nature Center","genus","Enchenopa",2,3
+"leafhopper","Walker Nature Center","genus","Flatormenis",1,1
+"leafhopper","Walker Nature Center","genus","Haplaxius",1,1
+"leafhopper","Walker Nature Center","genus","Jikradia",1,3
+"leafhopper","Walker Nature Center","genus","Lycorma",1,1
+"leafhopper","Walker Nature Center","genus","Magicicada",1,1
+"leafhopper","Walker Nature Center","genus","Metcalfa",1,3
+"leafhopper","Walker Nature Center","genus","Ormenoides",1,3
+"leafhopper","Walker Nature Center","genus","Otiocerus",1,1
+"leafhopper","Walker Nature Center","genus","Paraulacizes",1,1
+"leafhopper","Walker Nature Center","genus","Platycotis",1,2
+"leafhopper","Walker Nature Center","tribe","Empoascini",1,1
+"leafhopper","Walker Nature Center","tribe","Gyponini",1,1
+"leafhopper","Walker Nature Center","tribe","Nephesini",1,2
+"leafhopper","Wellesley College","genus","Cedusa",1,1
+"leafhopper","Wellesley College","genus","Scaphoideus",1,1
+"leafhopper","Woodland Edge Ravine","genus","Jikradia",1,1
+"leafhopper","Woodland Edge Ravine","genus","Ormenoides",1,3
+"spider","ASRI Claire McIntosh","genus","Xysticus",1,1
+"spider","ASRI Claire McIntosh","tribe","Misumenini",1,1
+"spider","ASRI Fisherville Brook","genus","Leucauge",1,1
+"spider","ASRI Fort","genus","Leucauge",1,1
+"spider","ASRI Fort","genus","Mimetus",1,1
+"spider","ASRI Fort","tribe","Coriarachnini",1,1
+"spider","ASRI Fort","tribe","Dendryphantini",1,1
+"spider","BHRC - Hemlock Draw","genus","Araniella",2,2
+"spider","BHRC - Hemlock Draw","genus","Pelegrina",1,1
+"spider","BHRC - Hemlock Draw","genus","Philodromus",1,1
+"spider","BHRC - Pan Hollow","genus","Anyphaena",1,2
+"spider","BHRC - Pan Hollow","genus","Enoplognatha",1,4
+"spider","BHRC Green Forest","genus","Araniella",1,1
+"spider","BHRC Happy Hill","genus","Philodromus",1,2
+"spider","BHRC Hemlock Draw North","genus","Theridion",1,1
+"spider","BHRC Misty Valley Uplands","genus","Anyphaena",1,1
+"spider","BHRC Misty Valley Uplands","genus","Enoplognatha",1,1
+"spider","BHRC Misty Valley Uplands","subfamily","Salticinae",1,1
+"spider","BHRC Natural Bridge South","genus","Tmarus",1,1
+"spider","BHRC Natural Bridge Uplands","genus","Neriene",1,1
+"spider","BHRC Natural Bridge Uplands","genus","Pelegrina",1,1
+"spider","BHRC Natural Bridge Uplands","subfamily","Salticinae",1,1
+"spider","BHRC Natural Bridge Uplands","tribe","Misumenini",1,1
+"spider","BHRC Pan Hollow Uplands","genus","Enoplognatha",1,2
+"spider","BHRC Pan Hollow Uplands","subfamily","Salticinae",1,1
+"spider","BHRC Pine Glen Uplands","genus","Enoplognatha",1,1
+"spider","Beare Swamp in Rouge Park","genus","Leucauge",1,1
+"spider","Beare Swamp in Rouge Park","genus","Philodromus",1,1
+"spider","Belle Isle State Park, Lancaster, VA","genus","Araneus",2,2
+"spider","Belle Isle State Park, Lancaster, VA","genus","Colonus",1,1
+"spider","Belle Isle State Park, Lancaster, VA","genus","Hentzia",1,1
+"spider","Belle Isle State Park, Lancaster, VA","genus","Leucauge",1,1
+"spider","Belle Isle State Park, Lancaster, VA","genus","Lyssomanes",1,3
+"spider","Belle Isle State Park, Lancaster, VA","genus","Mangora",1,1
+"spider","Belle Isle State Park, Lancaster, VA","genus","Mecaphesa",1,3
+"spider","Belle Isle State Park, Lancaster, VA","genus","Misumessus",1,1
+"spider","Belle Isle State Park, Lancaster, VA","genus","Neoscona",2,2
+"spider","Belle Isle State Park, Lancaster, VA","genus","Paraphidippus",1,1
+"spider","Belle Isle State Park, Lancaster, VA","genus","Philodromus",1,1
+"spider","Belle Isle State Park, Lancaster, VA","genus","Uloborus",1,1
+"spider","Belle Isle State Park, Lancaster, VA","genus","Wulfila",1,1
+"spider","Belle Isle State Park, Lancaster, VA","tribe","Dendryphantini",1,1
+"spider","Belle Isle State Park, Lancaster, VA","tribe","Misumenini",1,1
+"spider","Big Branch","genus","Micrathena",1,1
+"spider","Birmingham Zoo AL","genus","Xysticus",1,1
+"spider","Brookbanks Park","genus","Enoplognatha",1,5
+"spider","Brookbanks Park","subfamily","Thomisinae",1,1
+"spider","Broyhill Park","genus","Misumessus",1,1
+"spider","Callawassie Island South Carolina","genus","Lyssomanes",1,1
+"spider","Camp Woods Survey","genus","Eustala",1,1
+"spider","Camp Woods Survey","genus","Leucauge",1,1
+"spider","Camp Woods Survey","genus","Paraphidippus",1,1
+"spider","Camp Woods Survey","subfamily","Salticinae",1,3
+"spider","Camp Woods Survey","tribe","Dendryphantini",1,2
+"spider","CawCaw Interpretive Center","genus","Micrathena",1,1
+"spider","Colonel Samuel Smith Park","genus","Cheiracanthium",1,1
+"spider","Colonel Samuel Smith Park","genus","Enoplognatha",1,1
+"spider","Colonel Samuel Smith Park","genus","Philodromus",1,1
+"spider","Colonel Samuel Smith Park","genus","Tetragnatha",1,1
+"spider","Colonel Samuel Smith Park","genus","Theridion",1,1
+"spider","Colonel Samuel Smith Park","genus","Theridiosoma",1,1
+"spider","Colonel Samuel Smith Park","subfamily","Araneinae",1,3
+"spider","Colonel Samuel Smith Park","subfamily","Salticinae",1,1
+"spider","Crossways Survey","genus","Theridion",1,1
+"spider","Crossways Survey","genus","Tmarus",1,1
+"spider","Crossways Survey","tribe","Misumenini",1,1
+"spider","Currituck Banks Reserve","genus","Colonus",1,2
+"spider","Currituck Banks Reserve","genus","Leucauge",1,1
+"spider","Currituck Banks Reserve","genus","Lyssomanes",1,3
+"spider","Currituck Banks Reserve","genus","Micrathena",2,3
+"spider","Currituck Banks Reserve","genus","Phidippus",1,1
+"spider","Currituck Banks Reserve","genus","Tetragnatha",1,2
+"spider","Currituck Banks Reserve","genus","Theridion",1,1
+"spider","Currituck Banks Reserve","tribe","Dendryphantini",1,1
+"spider","Eastern Market Street Trees","subfamily","Theridiinae",1,1
+"spider","Eno River State Park","genus","Anyphaena",1,2
+"spider","Eno River State Park","genus","Araneus",1,1
+"spider","Eno River State Park","genus","Colonus",2,4
+"spider","Eno River State Park","genus","Florinda",1,1
+"spider","Eno River State Park","genus","Leucauge",2,2
+"spider","Eno River State Park","genus","Mangora",2,2
+"spider","Eno River State Park","genus","Metepeira",2,2
+"spider","Eno River State Park","genus","Micrathena",3,5
+"spider","Eno River State Park","genus","Mimetus",1,2
+"spider","Eno River State Park","genus","Misumessus",1,7
+"spider","Eno River State Park","genus","Neoscona",2,7
+"spider","Eno River State Park","genus","Philodromus",1,1
+"spider","Eno River State Park","genus","Synema",1,1
+"spider","Eno River State Park","genus","Tetragnatha",1,12
+"spider","Eno River State Park","genus","Tmarus",1,1
+"spider","Eno River State Park","genus","Trachelas",1,2
+"spider","Eno River State Park","genus","Tutelina",1,1
+"spider","Eno River State Park","genus","Verrucosa",1,4
+"spider","Eno River State Park","genus","Wulfila",1,8
+"spider","Eno River State Park","subfamily","Araneinae",1,1
+"spider","Eno River State Park","tribe","Misumenini",1,1
+"spider","EwA at Fresh Pond","genus","Enoplognatha",1,2
+"spider","EwA at Fresh Pond","genus","Eris",1,1
+"spider","EwA at Fresh Pond","genus","Hentzia",2,2
+"spider","EwA at Fresh Pond","genus","Leucauge",1,1
+"spider","EwA at Fresh Pond","genus","Misumessus",1,3
+"spider","EwA at Fresh Pond","genus","Neoscona",1,1
+"spider","EwA at Fresh Pond","genus","Philodromus",2,5
+"spider","EwA at Fresh Pond","genus","Synemosyna",2,2
+"spider","EwA at Fresh Pond","genus","Tetragnatha",1,4
+"spider","EwA at Fresh Pond","genus","Theridion",1,3
+"spider","EwA at Fresh Pond","genus","Theridula",1,1
+"spider","EwA at Fresh Pond","subfamily","Salticinae",1,1
+"spider","EwA at Fresh Pond","tribe","Misumenini",1,1
+"spider","EwA at Horn Pond","genus","Anyphaena",1,1
+"spider","EwA at Horn Pond","genus","Bassaniana",1,1
+"spider","EwA at Horn Pond","genus","Hentzia",2,3
+"spider","EwA at Horn Pond","genus","Neoscona",1,1
+"spider","EwA at Horn Pond","genus","Paraphidippus",1,1
+"spider","EwA at Horn Pond","genus","Philodromus",1,6
+"spider","EwA at Horn Pond","genus","Tutelina",1,2
+"spider","EwA at Horn Pond","subtribe","Dendryphantina",1,1
+"spider","EwA at the Fells","genus","Anyphaena",1,1
+"spider","EwA at the Fells","genus","Araniella",2,3
+"spider","EwA at the Fells","genus","Florinda",1,1
+"spider","EwA at the Fells","genus","Hentzia",2,4
+"spider","EwA at the Fells","genus","Leucauge",1,1
+"spider","EwA at the Fells","genus","Mastophora",1,1
+"spider","EwA at the Fells","genus","Mimetus",1,1
+"spider","EwA at the Fells","genus","Neriene",1,1
+"spider","EwA at the Fells","genus","Philodromus",1,12
+"spider","EwA at the Fells","genus","Pityohyphantes",1,1
+"spider","EwA at the Fells","genus","Tetragnatha",1,2
+"spider","EwA at the Fells","genus","Theridion",1,2
+"spider","EwA at the Fells","genus","Tmarus",2,3
+"spider","EwA at the Fells","genus","Wulfila",1,1
+"spider","EwA at the Fells","subfamily","Salticinae",1,3
+"spider","EwA at the Fells","tribe","Coriarachnini",1,1
+"spider","Grandfather Mountain","genus","Araneus",1,1
+"spider","Grandfather Mountain","genus","Clubiona",1,2
+"spider","Grandfather Mountain","genus","Misumessus",1,2
+"spider","Grandfather Mountain","genus","Neoscona",1,1
+"spider","Grandfather Mountain","genus","Tetragnatha",1,1
+"spider","Grandfather Mountain","subfamily","Araneinae",1,2
+"spider","Grandfather Mountain","subfamily","Salticinae",1,2
+"spider","Gulf Branch Nature Center","genus","Leucauge",1,3
+"spider","Hemlock Bluffs","genus","Micrathena",1,2
+"spider","High Park","genus","Enoplognatha",1,1
+"spider","High Park","genus","Ozyptila",1,1
+"spider","Highlands Biological Station","genus","Tetragnatha",1,1
+"spider","Ijams Nature Center","genus","Ariadna",1,1
+"spider","Ijams Nature Center","genus","Leucauge",2,2
+"spider","Ijams Nature Center","genus","Mangora",2,3
+"spider","Ijams Nature Center","genus","Micrathena",1,2
+"spider","Ijams Nature Center","genus","Misumessus",1,1
+"spider","Ijams Nature Center","genus","Theridion",1,1
+"spider","Ijams Nature Center","genus","Verrucosa",1,1
+"spider","Ijams Nature Center","genus","Wulfila",1,1
+"spider","Kituwah MAPS Site","genus","Leucauge",1,1
+"spider","Lake Murphysboro State Park, Overflow","genus","Colonus",1,1
+"spider","Lake Murphysboro State Park, Overflow","genus","Misumessus",1,1
+"spider","Leesylvania State Park","genus","Synema",1,1
+"spider","Leesylvania State Park","genus","Tetragnatha",1,1
+"spider","Leopold's Preserve","genus","Misumessus",1,1
+"spider","Leopold's Preserve","genus","Paraphidippus",1,1
+"spider","Leopold's Preserve","genus","Phidippus",1,1
+"spider","Leopold's Preserve","genus","Synema",1,1
+"spider","Leopold's Preserve","genus","Tetragnatha",1,1
+"spider","Leopold's Preserve","genus","Tutelina",1,1
+"spider","Leopold's Preserve","subfamily","Salticinae",1,1
+"spider","Liberty Fox Backyard","genus","Colonus",1,1
+"spider","Liberty Fox Backyard","genus","Leucauge",1,1
+"spider","Mass Audubon's Boston Nature Center","genus","Anyphaena",1,1
+"spider","Mass Audubon's Boston Nature Center","genus","Micrathena",1,1
+"spider","Mass Audubon's Boston Nature Center","genus","Misumena",1,1
+"spider","Mass Audubon's Boston Nature Center","genus","Parasteatoda",1,1
+"spider","Mass Audubon's Boston Nature Center","genus","Philodromus",1,1
+"spider","Mass Audubon's Boston Nature Center","genus","Synageles",1,1
+"spider","Mass Audubon's Boston Nature Center","genus","Tmarus",1,2
+"spider","Merrimac Farm","genus","Verrucosa",1,1
+"spider","Merrimac Farm","tribe","Misumenini",1,1
+"spider","Middle Mill","genus","Araneus",1,1
+"spider","Middle Mill","genus","Cheiracanthium",1,1
+"spider","Middle Mill","genus","Clubiona",1,1
+"spider","Middle Mill","genus","Enoplognatha",1,1
+"spider","Middle Mill","genus","Eustala",1,1
+"spider","Middle Mill","genus","Hentzia",2,2
+"spider","Middle Mill","genus","Hibana",1,1
+"spider","Middle Mill","genus","Larinioides",1,1
+"spider","Middle Mill","genus","Mangora",1,1
+"spider","Middle Mill","genus","Philodromus",1,1
+"spider","Middle Mill","genus","Salticus",1,1
+"spider","Middle Mill","genus","Tmarus",1,1
+"spider","Middle Mill","genus","Uloborus",1,1
+"spider","Middle Mill","subfamily","Anyphaeninae",1,2
+"spider","Middle Mill","tribe","Coriarachnini",1,1
+"spider","Miller Park Zoo","genus","Leucauge",1,1
+"spider","Miller Park Zoo","subfamily","Araneinae",1,1
+"spider","Mt. Auburn Cemetery","genus","Araniella",1,2
+"spider","Mt. Auburn Cemetery","genus","Paraphidippus",1,1
+"spider","Mt. Auburn Cemetery","genus","Parasteatoda",1,1
+"spider","Mt. Auburn Cemetery","genus","Philodromus",2,10
+"spider","Mt. Auburn Cemetery","genus","Theridion",1,2
+"spider","Mt. Auburn Cemetery","genus","Yunohamella",1,1
+"spider","Museum of American Bird Art","genus","Leucauge",1,1
+"spider","NC Botanical Garden","genus","Anyphaena",1,8
+"spider","NC Botanical Garden","genus","Araneus",2,9
+"spider","NC Botanical Garden","genus","Asagena",1,1
+"spider","NC Botanical Garden","genus","Castianeira",1,1
+"spider","NC Botanical Garden","genus","Colonus",2,13
+"spider","NC Botanical Garden","genus","Larinioides",1,1
+"spider","NC Botanical Garden","genus","Leucauge",2,4
+"spider","NC Botanical Garden","genus","Lyssomanes",1,5
+"spider","NC Botanical Garden","genus","Mangora",1,8
+"spider","NC Botanical Garden","genus","Metepeira",1,1
+"spider","NC Botanical Garden","genus","Micrathena",3,9
+"spider","NC Botanical Garden","genus","Misumessus",1,26
+"spider","NC Botanical Garden","genus","Neoscona",3,3
+"spider","NC Botanical Garden","genus","Ocrepeira",1,1
+"spider","NC Botanical Garden","genus","Paraphidippus",1,1
+"spider","NC Botanical Garden","genus","Tetragnatha",1,2
+"spider","NC Botanical Garden","genus","Theridion",1,1
+"spider","NC Botanical Garden","genus","Tmarus",1,3
+"spider","NC Botanical Garden","genus","Uloborus",1,1
+"spider","NC Botanical Garden","genus","Verrucosa",1,8
+"spider","NC Botanical Garden","genus","Wulfila",2,31
+"spider","NC Botanical Garden","subfamily","Anyphaeninae",1,1
+"spider","NC Botanical Garden","subfamily","Salticinae",1,4
+"spider","NC Botanical Garden","tribe","Misumenini",1,6
+"spider","NZ Ravine","genus","Lyssomanes",1,1
+"spider","NZ Ravine","genus","Wulfila",1,1
+"spider","Occoquan Forest","genus","Leucauge",1,1
+"spider","Oregon Ridge Nature Center","genus","Leucauge",1,2
+"spider","Over Easy Farm","genus","Leucauge",1,1
+"spider","Piedmont Wildlife Center","genus","Colonus",1,2
+"spider","Piedmont Wildlife Center","genus","Neoscona",1,1
+"spider","Piedmont Wildlife Center","genus","Tmarus",1,2
+"spider","Piedmont Wildlife Center","genus","Verrucosa",1,2
+"spider","Piedmont Wildlife Center","genus","Wulfila",1,1
+"spider","Prairie Ridge Ecostation","genus","Araneus",2,8
+"spider","Prairie Ridge Ecostation","genus","Castianeira",1,1
+"spider","Prairie Ridge Ecostation","genus","Colonus",2,28
+"spider","Prairie Ridge Ecostation","genus","Euryopis",1,1
+"spider","Prairie Ridge Ecostation","genus","Eustala",1,1
+"spider","Prairie Ridge Ecostation","genus","Hentzia",1,3
+"spider","Prairie Ridge Ecostation","genus","Larinioides",1,1
+"spider","Prairie Ridge Ecostation","genus","Leucauge",1,1
+"spider","Prairie Ridge Ecostation","genus","Lyssomanes",1,21
+"spider","Prairie Ridge Ecostation","genus","Mecaphesa",1,7
+"spider","Prairie Ridge Ecostation","genus","Mecynogea",1,3
+"spider","Prairie Ridge Ecostation","genus","Metepeira",2,5
+"spider","Prairie Ridge Ecostation","genus","Micrathena",1,2
+"spider","Prairie Ridge Ecostation","genus","Mimetus",1,1
+"spider","Prairie Ridge Ecostation","genus","Misumessus",1,36
+"spider","Prairie Ridge Ecostation","genus","Neoscona",3,5
+"spider","Prairie Ridge Ecostation","genus","Paraphidippus",1,12
+"spider","Prairie Ridge Ecostation","genus","Pelegrina",1,1
+"spider","Prairie Ridge Ecostation","genus","Phidippus",2,2
+"spider","Prairie Ridge Ecostation","genus","Philodromus",2,5
+"spider","Prairie Ridge Ecostation","genus","Phylloneta",1,1
+"spider","Prairie Ridge Ecostation","genus","Pisaurina",1,1
+"spider","Prairie Ridge Ecostation","genus","Synema",1,11
+"spider","Prairie Ridge Ecostation","genus","Synemosyna",1,1
+"spider","Prairie Ridge Ecostation","genus","Tetragnatha",1,2
+"spider","Prairie Ridge Ecostation","genus","Theridion",1,2
+"spider","Prairie Ridge Ecostation","genus","Theridula",1,2
+"spider","Prairie Ridge Ecostation","genus","Tmarus",1,9
+"spider","Prairie Ridge Ecostation","genus","Trachelas",1,1
+"spider","Prairie Ridge Ecostation","genus","Uloborus",1,1
+"spider","Prairie Ridge Ecostation","genus","Verrucosa",1,50
+"spider","Prairie Ridge Ecostation","genus","Wulfila",2,44
+"spider","Prairie Ridge Ecostation","genus","Xysticus",1,1
+"spider","Prairie Ridge Ecostation","subfamily","Ageleninae",1,1
+"spider","Prairie Ridge Ecostation","subfamily","Araneinae",1,4
+"spider","Prairie Ridge Ecostation","subfamily","Salticinae",1,15
+"spider","Prairie Ridge Ecostation","subfamily","Thomisinae",1,1
+"spider","Prairie Ridge Ecostation","tribe","Dendryphantini",1,3
+"spider","Prairie Ridge Ecostation","tribe","Misumenini",1,6
+"spider","RAUNERIMD","genus","Colonus",1,1
+"spider","RAUNERIMD","genus","Leucauge",1,1
+"spider","RAUNERIMD","tribe","Misumenini",1,1
+"spider","RVCC","genus","Pelegrina",1,3
+"spider","RVCC","genus","Philodromus",1,1
+"spider","RVCC","genus","Tmarus",1,1
+"spider","RVCC","subfamily","Thomisinae",1,1
+"spider","Riverbend Park","genus","Leucauge",1,3
+"spider","Riverbend Park","genus","Verrucosa",1,2
+"spider","Riverbend Park","genus","Wulfila",1,2
+"spider","Sault College","genus","Tmarus",1,1
+"spider","Sedgwick County Zoo","genus","Colonus",1,1
+"spider","Sedgwick County Zoo","subfamily","Salticinae",1,1
+"spider","Seven Islands State Birding Park","genus","Micrathena",2,3
+"spider","Seven Islands State Birding Park","genus","Misumessus",1,1
+"spider","Seven Islands State Birding Park","genus","Neoscona",1,1
+"spider","Seven Islands State Birding Park","genus","Theridion",1,1
+"spider","Seven Islands State Birding Park","subfamily","Salticinae",1,1
+"spider","Taylor Creek Park","genus","Tetragnatha",1,1
+"spider","Taylor Creek Park","tribe","Misumenini",1,1
+"spider","The Children's Museum","genus","Philodromus",1,1
+"spider","The PoHo","genus","Misumessus",1,3
+"spider","The PoHo","genus","Wulfila",1,1
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Anyphaena",1,2
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Araneus",1,1
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Colonus",1,3
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Mangora",2,4
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Micrathena",2,6
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Mimetus",1,2
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Misumessus",2,6
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Neoscona",2,3
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Phidippus",1,1
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Phylloneta",1,1
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Synema",1,1
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Tetragnatha",1,1
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Tmarus",1,2
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Trachelas",1,1
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Verrucosa",1,10
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Wulfila",2,13
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Yunohamella",1,1
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","subfamily","Salticinae",1,1
+"spider","Triangle Land Conservancy - Johnston Mill Nature Preserve","tribe","Dendryphantini",1,1
+"spider","UNC Chapel Hill Campus","genus","Anyphaena",1,4
+"spider","UNC Chapel Hill Campus","genus","Araneus",1,1
+"spider","UNC Chapel Hill Campus","genus","Barronopsis",1,1
+"spider","UNC Chapel Hill Campus","genus","Colonus",1,1
+"spider","UNC Chapel Hill Campus","genus","Eustala",1,1
+"spider","UNC Chapel Hill Campus","genus","Hentzia",2,11
+"spider","UNC Chapel Hill Campus","genus","Hibana",2,4
+"spider","UNC Chapel Hill Campus","genus","Lyssomanes",1,2
+"spider","UNC Chapel Hill Campus","genus","Mangora",1,1
+"spider","UNC Chapel Hill Campus","genus","Metepeira",1,1
+"spider","UNC Chapel Hill Campus","genus","Misumessus",1,9
+"spider","UNC Chapel Hill Campus","genus","Neoscona",1,1
+"spider","UNC Chapel Hill Campus","genus","Phidippus",1,1
+"spider","UNC Chapel Hill Campus","genus","Philodromus",1,8
+"spider","UNC Chapel Hill Campus","genus","Phylloneta",1,1
+"spider","UNC Chapel Hill Campus","genus","Tmarus",1,1
+"spider","UNC Chapel Hill Campus","genus","Wulfila",1,2
+"spider","UNC Chapel Hill Campus","subfamily","Ageleninae",1,1
+"spider","UNC Chapel Hill Campus","subfamily","Anyphaeninae",1,2
+"spider","UNC Chapel Hill Campus","subfamily","Salticinae",1,9
+"spider","UNC Chapel Hill Campus","subtribe","Dendryphantina",1,1
+"spider","UNC Chapel Hill Campus","tribe","Misumenini",1,1
+"spider","University of Pittsburgh","genus","Herpyllus",1,1
+"spider","Virginia Zoo","genus","Hentzia",2,2
+"spider","Virginia Zoo","genus","Phidippus",1,1
+"spider","Walker Nature Center","genus","Araneus",1,1
+"spider","Walker Nature Center","genus","Colonus",1,1
+"spider","Walker Nature Center","genus","Leucauge",2,6
+"spider","Walker Nature Center","genus","Lyssomanes",1,4
+"spider","Walker Nature Center","genus","Metepeira",1,1
+"spider","Walker Nature Center","genus","Misumessus",1,7
+"spider","Walker Nature Center","genus","Philodromus",2,3
+"spider","Walker Nature Center","genus","Synema",1,2
+"spider","Walker Nature Center","genus","Theridion",1,1
+"spider","Walker Nature Center","genus","Verrucosa",1,3
+"spider","Walker Nature Center","genus","Wulfila",2,12
+"spider","Walker Nature Center","tribe","Misumenini",1,1
+"spider","Wellesley College","genus","Philodromus",1,1
+"spider","Wellesley College","genus","Pisaurina",1,1
+"spider","Woodland Edge Ravine","genus","Hentzia",1,1
+"truebugs","ASRI Claire McIntosh","genus","Corythucha",1,1
+"truebugs","ASRI Fort","genus","Coccobaphes",1,1
+"truebugs","ASRI Fort","genus","Hoplistoscelis",1,1
+"truebugs","BHRC - Hemlock Draw","genus","Hyaliodes",1,1
+"truebugs","BHRC - Hemlock Draw","genus","Neolygus",1,1
+"truebugs","BHRC Green Forest","genus","Hyaliodes",1,2
+"truebugs","BHRC Hemlock Draw North","genus","Chinavia",1,1
+"truebugs","BHRC Misty Valley Uplands","genus","Chinavia",1,1
+"truebugs","BHRC Misty Valley Uplands","genus","Hyaliodes",1,1
+"truebugs","BHRC Misty Valley Uplands","genus","Piezogaster",1,1
+"truebugs","BHRC Natural Bridge South","genus","Euschistus",1,1
+"truebugs","BHRC Natural Bridge Uplands","genus","Menecles",1,1
+"truebugs","BHRC Natural Bridge Uplands","genus","Neolygus",1,1
+"truebugs","BHRC Natural Bridge Uplands","genus","Zelus",1,1
+"truebugs","BHRC Pan Hollow Uplands","genus","Neolygus",1,1
+"truebugs","Beare Swamp in Rouge Park","genus","Gargaphia",2,2
+"truebugs","Belle Isle State Park, Lancaster, VA","genus","Acanthocephala",2,5
+"truebugs","Belle Isle State Park, Lancaster, VA","genus","Arilus",1,6
+"truebugs","Belle Isle State Park, Lancaster, VA","genus","Brochymena",1,2
+"truebugs","Belle Isle State Park, Lancaster, VA","genus","Chinavia",2,4
+"truebugs","Belle Isle State Park, Lancaster, VA","genus","Euschistus",1,1
+"truebugs","Belle Isle State Park, Lancaster, VA","genus","Sinea",1,1
+"truebugs","Belle Isle State Park, Lancaster, VA","genus","Zelus",1,1
+"truebugs","Big Branch","genus","Sinea",1,1
+"truebugs","Broyhill Park","genus","Zelus",1,1
+"truebugs","Colonel Samuel Smith Park","genus","Pilophorus",1,1
+"truebugs","Cowee MAPS Site","genus","Arilus",1,1
+"truebugs","Crossways Survey","genus","Corythucha",1,1
+"truebugs","Crossways Survey","genus","Halyomorpha",1,1
+"truebugs","Crossways Survey","genus","Neortholomus",1,1
+"truebugs","Crossways Survey","genus","Zelus",1,1
+"truebugs","Currituck Banks Reserve","genus","Arilus",1,1
+"truebugs","Eno River State Park","genus","Chinavia",1,1
+"truebugs","Eno River State Park","genus","Hyaliodes",1,1
+"truebugs","Eno River State Park","genus","Sinea",1,1
+"truebugs","Eno River State Park","genus","Zelus",1,1
+"truebugs","EwA at Fresh Pond","genus","Hyaliodes",2,3
+"truebugs","EwA at Fresh Pond","genus","Kleidocerys",1,2
+"truebugs","EwA at Fresh Pond","genus","Lygaeus",1,2
+"truebugs","EwA at Fresh Pond","genus","Neurocolpus",1,1
+"truebugs","EwA at Fresh Pond","genus","Phymata",1,1
+"truebugs","EwA at Fresh Pond","genus","Plagiognathus",1,4
+"truebugs","EwA at Fresh Pond","genus","Stephanitis",1,1
+"truebugs","EwA at Fresh Pond","subfamily","Phylinae",1,1
+"truebugs","EwA at Habitat","genus","Chinavia",1,1
+"truebugs","EwA at Horn Pond","genus","Hyaliodes",1,1
+"truebugs","EwA at Horn Pond","genus","Podisus",1,1
+"truebugs","EwA at Horn Pond","genus","Zelus",2,3
+"truebugs","EwA at Horn Pond","subfamily","Asopinae",1,1
+"truebugs","EwA at the Fells","genus","Corythucha",1,1
+"truebugs","EwA at the Fells","genus","Dendrocoris",1,1
+"truebugs","EwA at the Fells","genus","Hyaliodes",1,2
+"truebugs","EwA at the Fells","genus","Neolygus",1,2
+"truebugs","EwA at the Fells","genus","Neurocolpus",1,1
+"truebugs","EwA at the Fells","genus","Phymata",1,1
+"truebugs","EwA at the Fells","genus","Phytocoris",1,1
+"truebugs","EwA at the Fells","genus","Stephanitis",1,1
+"truebugs","EwA at the Fells","genus","Zelus",2,3
+"truebugs","EwA at the Fells","subfamily","Harpactorinae",1,1
+"truebugs","EwA at the Fells","subfamily","Phylinae",1,1
+"truebugs","EwA at the Growing Center","genus","Campyloneura",1,3
+"truebugs","EwA at the Growing Center","genus","Halyomorpha",1,1
+"truebugs","EwA at the Growing Center","genus","Neolygus",1,1
+"truebugs","EwA at the Growing Center","tribe","Ceratocapsini",1,1
+"truebugs","EwA at the Growing Center","tribe","Orthotylini",1,1
+"truebugs","Grandfather Mountain","genus","Banasa",1,2
+"truebugs","Great Smoky Mountains Institute at Tremont","subfamily","Coreinae",1,1
+"truebugs","High Park","genus","Neolygus",1,1
+"truebugs","Ijams Nature Center","genus","Sehirus",1,1
+"truebugs","Kituwah MAPS Site","genus","Hyaliodes",1,1
+"truebugs","Kituwah MAPS Site","genus","Pselliopus",1,1
+"truebugs","Lake Murphysboro State Park, Overflow","genus","Acanthocephala",1,2
+"truebugs","Lake Murphysboro State Park, Overflow","genus","Chinavia",1,1
+"truebugs","Leopold's Preserve","genus","Pselliopus",1,1
+"truebugs","Mass Audubon's Boston Nature Center","genus","Corythucha",1,1
+"truebugs","Mass Audubon's Boston Nature Center","genus","Paraxenetus",1,1
+"truebugs","Mass Audubon's Boston Nature Center","genus","Phytocoris",1,1
+"truebugs","Merrimac Farm","genus","Arilus",1,1
+"truebugs","Middle Mill","genus","Acanthocephala",1,4
+"truebugs","Middle Mill","genus","Euschistus",1,1
+"truebugs","Middle Mill","genus","Podisus",1,1
+"truebugs","Miller Park Zoo","genus","Arilus",1,3
+"truebugs","Mt. Auburn Cemetery","genus","Campyloneura",1,1
+"truebugs","Mt. Auburn Cemetery","genus","Corythucha",1,1
+"truebugs","Mt. Auburn Cemetery","genus","Neolygus",1,1
+"truebugs","Museum of American Bird Art","genus","Corythucha",1,4
+"truebugs","NC Botanical Garden","genus","Acanthocephala",3,9
+"truebugs","NC Botanical Garden","genus","Hyaliodes",2,2
+"truebugs","NC Botanical Garden","genus","Leptoglossus",1,1
+"truebugs","NC Botanical Garden","genus","Lygaeus",1,1
+"truebugs","NC Botanical Garden","genus","Podisus",1,1
+"truebugs","NC Botanical Garden","genus","Pselliopus",1,1
+"truebugs","NC Botanical Garden","genus","Sinea",1,2
+"truebugs","NC Botanical Garden","genus","Zelus",1,1
+"truebugs","NC Botanical Garden","tribe","Anisoscelini",1,1
+"truebugs","NC Botanical Garden","tribe","Nezarini",1,1
+"truebugs","NC State University","genus","Zelus",1,1
+"truebugs","Potter Park Zoo","genus","Euschistus",1,1
+"truebugs","Prairie Ridge Ecostation","genus","Acanthocephala",3,12
+"truebugs","Prairie Ridge Ecostation","genus","Arilus",1,9
+"truebugs","Prairie Ridge Ecostation","genus","Brochymena",2,2
+"truebugs","Prairie Ridge Ecostation","genus","Ceratocapsus",1,1
+"truebugs","Prairie Ridge Ecostation","genus","Chinavia",1,5
+"truebugs","Prairie Ridge Ecostation","genus","Corythucha",2,2
+"truebugs","Prairie Ridge Ecostation","genus","Empicoris",1,6
+"truebugs","Prairie Ridge Ecostation","genus","Euschistus",2,7
+"truebugs","Prairie Ridge Ecostation","genus","Halyomorpha",1,1
+"truebugs","Prairie Ridge Ecostation","genus","Hyaliodes",3,7
+"truebugs","Prairie Ridge Ecostation","genus","Jalysus",1,1
+"truebugs","Prairie Ridge Ecostation","genus","Lasiomerus",1,1
+"truebugs","Prairie Ridge Ecostation","genus","Leptoglossus",1,2
+"truebugs","Prairie Ridge Ecostation","genus","Lopidea",1,1
+"truebugs","Prairie Ridge Ecostation","genus","Paraxenetus",2,2
+"truebugs","Prairie Ridge Ecostation","genus","Podisus",1,1
+"truebugs","Prairie Ridge Ecostation","genus","Pselliopus",3,6
+"truebugs","Prairie Ridge Ecostation","genus","Sinea",2,5
+"truebugs","Prairie Ridge Ecostation","genus","Texocoris",1,2
+"truebugs","Prairie Ridge Ecostation","genus","Zelus",2,13
+"truebugs","Prairie Ridge Ecostation","subfamily","Emesinae",1,4
+"truebugs","Prairie Ridge Ecostation","subfamily","Pentatominae",1,1
+"truebugs","Prairie Ridge Ecostation","tribe","Ceratocapsini",1,1
+"truebugs","Prairie Ridge Ecostation","tribe","Harpactorini",1,1
+"truebugs","Prairie Ridge Ecostation","tribe","Tingini",1,2
+"truebugs","RVCC","genus","Banasa",1,1
+"truebugs","RVCC","genus","Chinavia",1,1
+"truebugs","Riverbend Park","genus","Chinavia",1,1
+"truebugs","Riverbend Park","genus","Zelus",1,1
+"truebugs","Riverdale Park East","genus","Acanthocephala",1,1
+"truebugs","Robert C. McDonnell Campgrounds","genus","Zelus",1,2
+"truebugs","SCBI Banding Shed","genus","Zelus",1,1
+"truebugs","Sault College","genus","Banasa",1,1
+"truebugs","Sedgwick County Zoo","genus","Arilus",1,1
+"truebugs","Seven Islands State Birding Park","genus","Arilus",1,1
+"truebugs","Seven Islands State Birding Park","genus","Hyaliodes",1,1
+"truebugs","Seven Islands State Birding Park","genus","Sinea",1,1
+"truebugs","Taghkanic","genus","Acanthocephala",1,1
+"truebugs","The Children's Museum","genus","Campyloneura",1,1
+"truebugs","The PoHo","genus","Acanthocephala",1,2
+"truebugs","The PoHo","genus","Corythucha",1,1
+"truebugs","The PoHo","genus","Hyaliodes",1,1
+"truebugs","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Acanthocephala",1,1
+"truebugs","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Sinea",1,2
+"truebugs","Triangle Land Conservancy - Johnston Mill Nature Preserve","genus","Zelus",1,1
+"truebugs","UNC Chapel Hill Campus","genus","Acanthocephala",1,2
+"truebugs","UNC Chapel Hill Campus","genus","Brochymena",1,1
+"truebugs","UNC Chapel Hill Campus","genus","Ceratocapsus",1,1
+"truebugs","UNC Chapel Hill Campus","genus","Corythucha",2,3
+"truebugs","UNC Chapel Hill Campus","genus","Halyomorpha",1,2
+"truebugs","UNC Chapel Hill Campus","genus","Hyaliodes",2,4
+"truebugs","UNC Chapel Hill Campus","genus","Leptoglossus",2,2
+"truebugs","UNC Chapel Hill Campus","genus","Sinea",1,1
+"truebugs","UNC Chapel Hill Campus","genus","Zelus",1,5
+"truebugs","UNC Chapel Hill Campus","subfamily","Emesinae",1,4
+"truebugs","UNC Chapel Hill Campus","tribe","Orthotylini",1,1
+"truebugs","University of Pittsburgh","genus","Lygus",1,1
+"truebugs","Walker Nature Center","genus","Corythucha",1,1
+"truebugs","Walker Nature Center","genus","Hyaliodes",1,1
+"truebugs","Walker Nature Center","genus","Pselliopus",1,1

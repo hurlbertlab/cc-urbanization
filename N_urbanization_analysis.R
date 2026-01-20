@@ -23,6 +23,7 @@ library(jsonlite)
 library(magick)
 require(vegan)
 require(ggimage) 
+library(gt) # to create tables
 
 
 
@@ -376,15 +377,16 @@ prop_dataset %>%
     method = "glm",
     method.args = list(family = binomial),
     aes(weight = nSurv, colour = ObservationMethod ),
-    se = TRUE
+    se = FALSE, 
   )+
   facet_wrap(~ Group, scales = "free_y") +
   labs(
     colour = "Observation method",
     size   = "Number of surveys",
     x      = "% Urban development",
-    y      = "Proportion of cccurrence"
+    y      = "Proportion of occurrence"
   ) +
+  guides(alpha = "none", fill = "none")+
   theme_bw()
 
 
@@ -584,6 +586,19 @@ Dev_sims =
 
 
 
+Dev_sims %>% 
+  gt() %>% 
+  tab_header(
+    title = "Table 1. Fitting the effect of urbanization on arthropod occurence at low, mid, and high latitudes"
+  ) %>% 
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 3
+  ) %>% 
+  gtsave("images/table1.png")
+
+
+gtsave(gt(Dev_sims), "images/table1.png")
  
 par(mfrow = c(3, 3))  # 9 panels
 
