@@ -207,6 +207,7 @@ CaterpillarPlot = ggplot(caterpillarPred_summary, aes(x = dev, y = p_median, col
   annotation_raster(catImage, ymin = .085, ymax = .1, xmin = 60, xmax = 100) +
   theme_minimal()
 
+CaterpillarPlot
 
 ################################################################################
 # spider
@@ -603,9 +604,28 @@ daddylonglegsPlot = ggplot(daddylonglegsPred_summary, aes(x = dev, y = p_median,
 
 
 
-ggarrange(CaterpillarPlot, spiderPlot, beetlePlot, truebugPlot, hopperPlot, antPlot,
-          flyPlot, grasshopperPlot, daddylonglegsPlot,
-          ncol=3, nrow=3, common.legend = TRUE, legend="bottom")
+ggarrange(CaterpillarPlot +
+            annotate("text", x = I(0.05), y = I(0.95), label = "a", size = 8,
+                     fontface = "bold"), 
+          spiderPlot +
+            annotate("text", x = I(0.05), y = I(0.95), label = "b", size = 8,
+                     fontface = "bold"), 
+          beetlePlot +
+            annotate("text", x = I(0.05), y = I(0.95), label = "c", size = 8,
+                     fontface = "bold"), 
+          truebugPlot +
+            annotate("text", x = I(0.05), y = I(0.95), label = "d", size = 8,
+                     fontface = "bold"), 
+          hopperPlot +
+            annotate("text", x = I(0.05), y = I(0.95), label = "e", size = 8,
+                     fontface = "bold"), 
+          antPlot +
+            annotate("text", x = I(0.05), y = I(0.95), label = "f", size = 8,
+                     fontface = "bold"),
+           grasshopperPlot +
+            annotate("text", x = I(0.05), y = I(0.95), label = "g", size = 8,
+                     fontface = "bold"), 
+          ncol= 2, nrow= 4, common.legend = TRUE, legend = "right")
 
 
 
