@@ -255,9 +255,20 @@ prop_dataset %>%
       # subtitle = "Site observers preference for observation method dooes not differ with latitude"
        )
 
-
-
-
+prop_dataset %>% 
+  group_by(Latitude, ObservationMethod) %>% 
+  summarise(UrbanDevelopment = mean(dev),
+            nSurv = mean(nSurv)) %>% 
+  ggplot() +
+  geom_point(aes(x = UrbanDevelopment, y = Latitude,
+                 colour = ObservationMethod,
+                 shape = ObservationMethod),
+             size = 3, alpha = 0.7) +
+  labs(x = "% Urban development",
+       y = "Latitude",
+       colour = "Observation method",
+       shape = "Observation method") +
+  theme_light()
 
 
 
@@ -622,7 +633,7 @@ par(mfrow = c(1, 1))  # reset
 # Note that theoretically, the P-value from using lm() on dissimilarity computation, in this case, cannot be valid. This is because pair-wise correlations are not independent. That is what a mantel test corrects for by doing permutations.
 ########################################################################################################################
 
-prop.num <- prop_dataset[,3:11]
+prop.num <- prop_dataset[,3:11] %>% select(-c("fly", "daddylonglegs"))
 site.info <- prop_dataset[,c(1,2,12:17)]
 
 prop.num <- prop.num %>% as.data.frame()
@@ -701,13 +712,13 @@ taxa_scores <- taxa_scores %>%
 
 
 ggplot() +
-  geom_segment(
-    data = rda_axis.ld,
-    aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
-    arrow = arrow(length = unit(0.3, "cm")), 
-    color = "black",
-    size = 1, alpha = .5
-  ) +
+  # geom_segment(
+  #   data = rda_axis.ld,
+  #   aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+  #   arrow = arrow(length = unit(0.3, "cm")), 
+  #   color = "black",
+  #   size = 1, alpha = .5
+  # ) +
   geom_point(
     data = site_score.sites.ld, 
     aes(x = RDA1, y = RDA2, fill = dev),
@@ -718,17 +729,17 @@ ggplot() +
     aes(x = RDA1, y = RDA2, image = image),
     size = 0.065   # adjust this for figure scale
   ) +
-  geom_text(data = rda_axis.ld, 
-            aes(x = RDA1, y = RDA2, 
-                label = term), 
-            color = "black", vjust = -0.5, hjust = 0.1, size =5) +
+  # geom_text(data = rda_axis.ld, 
+  #           aes(x = RDA1, y = RDA2, 
+  #               label = term), 
+  #           color = "black", vjust = -0.5, hjust = 0.1, size =5) +
   scale_fill_gradientn(
     colours = c("green", "lightyellow", "blue"),
     name = "Development"
   ) +
   labs(x = "RDA1", y = "RDA2") +
   guides(color = "none", shape = "none", alpha = "none",
-         fill = guide_colorbar(title = "% Development")) +
+         fill = guide_colorbar(title = "% Urban Development")) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   geom_vline(xintercept = 0, linetype = "dashed") +
   theme_minimal()
@@ -764,3 +775,85 @@ ggplot() +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "black")+
   theme_minimal()
+
+
+dataset %>%
+  group_by(Name, ObservationMethod) %>% 
+  summarise(nSurv = n_distinct(ID))
+
+library(ggforce)
+
+
+
+yearofSurvPlot = fullDataset %>% 
+  filter(!Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK'),
+         WetLeaves == 0) %>% 
+  inner_join(
+    dataset %>%
+      group_by(Latitude, dev, ObservationMethod) %>% 
+      summarise(nSurv = n_distinct(ID)),
+    by = c("Latitude", "ObservationMethod")
+  ) %>% 
+  group_by(Latitude, dev, ObservationMethod, Year) %>% 
+  summarise(nSurv = mean(nSurv)) %>% 
+  mutate(Observ = ifelse(ObservationMethod == "Visual", "V", "B"),
+         Latitude = round(Latitude, 2),
+         Latitude = factor(Latitude),) %>% 
+  data.frame() %>% 
+  ggplot(aes(x = Observ,
+             y = Latitude)) +
+  geom_tile(aes(fill = dev), color = "grey") +
+  scale_fill_gradientn(
+    colours = c("green", "lightyellow", "blue"),
+    name = "% Urban Development"
+  ) +
+  facet_grid(. ~ Year,
+             space = "free_x") +
+  labs(x = " ", y = "Latitude (sites)") +
+  theme_bw() +
+  theme(
+   # axis.text.x = element_text(angle = 90, vjust = 0.5),
+    panel.spacing.x = unit(0, "lines"),
+    panel.grid.major.x = element_blank(),   # remove vertical lines
+    panel.grid.major.y = element_line(color = "grey80"), # keep horizontal
+    panel.grid.minor.y = element_blank(),
+    theme(legend.position = "bottom")
+  )
+yearofSurvPlot
+ggsave("yearofSurvPlot.pdf", plot = yearofSurvPlot, width = 20, height = 15)
+
+
+
+
+fullDataset %>% 
+  filter(!Name %in% c('Coweeta - BS', 'Coweeta - BB', 'Coweeta - RK'),
+         WetLeaves == 0) %>% 
+  inner_join(
+    dataset %>%
+      group_by(Latitude, dev, ObservationMethod) %>% 
+      summarise(nSurv = n_distinct(ID)),
+    by = c("Latitude", "ObservationMethod")
+  ) %>% 
+  group_by(Latitude, dev, ObservationMethod, Year) %>% 
+  summarise(nSurv = mean(nSurv)) %>% 
+  mutate(Observ = ifelse(ObservationMethod == "Visual", "V", "B"),
+         Latitude = round(Latitude, 2),
+         Latitude = factor(Latitude),) %>% 
+  group_by(Latitude) %>% 
+  summarise(nYear = n_distinct(Year)) %>% 
+  ggplot(aes(x= nYear)) +
+  geom_histogram(fill = "darkgrey")+
+  labs(x= "Number of years of survey", y = "Count") +
+  theme_classic()
+  
+
+
+
+
+
+
+
+
+
+
+

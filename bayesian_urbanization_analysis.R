@@ -8,6 +8,7 @@ library(viridis)
 library(raster)
 library(ggpubr)
 library(coda)
+library(gt) # to create tables
 
 # Load the rjags model fits saved as rds files ----
 
@@ -20,6 +21,70 @@ antFit         = readRDS("antFit.rds")
 grasshopperFit = readRDS("grasshopperFit.rds")
 flyFit         = readRDS("flyFit.rds")
 daddylonglegsFit = readRDS("daddylonglegsFit.rds")
+
+
+get_mcmc_diagnostics = function(fit, model_name) {
+  
+  rhat <- gelman.diag(fit, autoburnin = FALSE)$psrf[,1]
+  
+  ess <- effectiveSize(fit)
+
+  
+  
+  summary_stats <- summary(fit)$statistics
+  quantiles <- summary(fit)$quantiles
+  
+  tibble(
+    model = model_name,
+    Parameter = names(rhat),
+    Mean = summary_stats[, "Mean"],
+    SE = summary_stats[, "SD"],      # posterior SD
+    CI_lower = quantiles[, "2.5%"],
+    CI_upper = quantiles[, "97.5%"],
+    Rhat = as.numeric(rhat),
+    ESS = as.numeric(ess)
+  )
+}
+
+fits = list(
+  Caterpillar = caterpillarFit,
+  Spider = spiderFit,
+  Beetle = beetleFit,
+  TrueBug = truebugFit,
+  Hopper = hopperFit,
+  Ant = antFit,
+  Grasshopper = grasshopperFit,
+  Fly = flyFit,
+  DaddyLonglegs = daddylonglegsFit
+)
+
+diagnostics_table = bind_rows(
+  lapply(names(fits), function(name) {
+    get_mcmc_diagnostics(fits[[name]], name)
+  })
+) %>% as.data.frame()
+
+diagnostics_table
+
+
+
+diagnostics_table %>% 
+  filter(!model %in% c("Fly", "DaddyLonglegs")) %>% 
+  rename("Arthropod group" = "model",
+          "2.5% CI" =  "CI_lower",
+          "97.5% CI" =  "CI_upper",
+         ) %>% 
+  gt() %>% 
+  tab_header(
+    title = "Table 1. Model summaries"
+  ) %>% 
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 3
+  ) %>% 
+  gtsave("images/table S1.png")
+
+
 
 # Arthropod silhouette images ----
 
