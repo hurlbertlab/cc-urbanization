@@ -9,6 +9,8 @@ library(raster)
 library(ggpubr)
 library(coda)
 library(gt) # to create tables
+library(posterior)
+library(ggdist)
 
 # Load the rjags model fits saved as rds files ----
 
@@ -68,21 +70,6 @@ diagnostics_table
 
 
 
-diagnostics_table %>% 
-  filter(!model %in% c("Fly", "DaddyLonglegs")) %>% 
-  rename("Arthropod group" = "model",
-          "2.5% CI" =  "CI_lower",
-          "97.5% CI" =  "CI_upper",
-         ) %>% 
-  gt() %>% 
-  tab_header(
-    title = "Table 1. Model summaries"
-  ) %>% 
-  fmt_number(
-    columns = where(is.numeric),
-    decimals = 3
-  ) %>% 
-  gtsave("images/table S1.png")
 
 
 
@@ -260,9 +247,6 @@ caterpillarPred_summary = caterpillarPred_grid_long %>%
   mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) # converting back to raw values.
 
 
-
-
-
 CaterpillarPlot = ggplot(caterpillarPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
   geom_line(size = 1) +
   geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
@@ -273,6 +257,89 @@ CaterpillarPlot = ggplot(caterpillarPred_summary, aes(x = dev, y = p_median, col
   theme_minimal()
 
 CaterpillarPlot
+
+caterpillarSlopes = caterpillarPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    mean_low  = mean(slope_low),
+    se_low    = sd(slope_low),
+    ci_low_l  = quantile(slope_low, 0.025),
+    ci_low_u  = quantile(slope_low, 0.975),
+    
+    mean_mid  = mean(slope_mid),
+    se_mid    = sd(slope_mid),
+    ci_mid_l  = quantile(slope_mid, 0.025),
+    ci_mid_u  = quantile(slope_mid, 0.975),
+    
+    mean_high = mean(slope_high),
+    se_high   = sd(slope_high),
+    ci_high_l = quantile(slope_high, 0.025),
+    ci_high_u = quantile(slope_high, 0.975),
+    
+    # Bayesian tail-area p-values
+    p_low  = 2 * min(mean(slope_low  > 0), mean(slope_low  < 0)),
+    p_mid  = 2 * min(mean(slope_mid  > 0), mean(slope_mid  < 0)),
+    p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0))
+  )
+
+
+caterpillarSlopes_long = tibble(
+  Latitude = factor(c("low", "mid", "high"),
+                    levels = c("low","mid","high")),
+  Estimate = c(caterpillarSlopes$mean_low,
+               caterpillarSlopes$mean_mid,
+               caterpillarSlopes$mean_high),
+  SE       = c(caterpillarSlopes$se_low,
+               caterpillarSlopes$se_mid,
+               caterpillarSlopes$se_high),
+  CI_lower = c(caterpillarSlopes$ci_low_l,
+               caterpillarSlopes$ci_mid_l,
+               caterpillarSlopes$ci_high_l),
+  CI_upper = c(caterpillarSlopes$ci_low_u,
+               caterpillarSlopes$ci_mid_u,
+               caterpillarSlopes$ci_high_u),
+  p_value  = c(caterpillarSlopes$p_low,
+               caterpillarSlopes$p_mid,
+               caterpillarSlopes$p_high)
+)
+
+
+caterpillarSlopes_long
+
+caterpillar_slope_draws = caterpillarPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    Low  = beta_dev + beta_int * -1,
+    Mid  = beta_dev + beta_int * 0,
+    High = beta_dev + beta_int * 1
+  ) %>%
+  dplyr::select(Low, Mid, High) %>%   
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "Latitude",
+    values_to = "Slope"
+  ) %>% 
+  mutate(Latitude = factor(Latitude, 
+                                  levels= c("Low","Mid","High")))
+
+
+ggplot(caterpillar_slope_draws, aes(x = Slope, y = Latitude, fill = Latitude)) +
+  stat_halfeye(.width = 0.95) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(
+    x = "Urbanization effect",
+    y = "",
+    title = "Caterpillars: Posterior slopes by latitude"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_minimal()
+
 
 ################################################################################
 # spider
@@ -322,6 +389,84 @@ spiderPlot = ggplot(spiderPred_summary, aes(x = dev, y = p_median, color = facto
   annotation_raster(spiderImage, ymin = .29, ymax = .35, xmin = 60, xmax = 100) +
   theme_minimal()
 
+spiderSlopes = spiderPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    mean_low  = mean(slope_low),
+    se_low    = sd(slope_low),
+    ci_low_l  = quantile(slope_low, 0.025),
+    ci_low_u  = quantile(slope_low, 0.975),
+    
+    mean_mid  = mean(slope_mid),
+    se_mid    = sd(slope_mid),
+    ci_mid_l  = quantile(slope_mid, 0.025),
+    ci_mid_u  = quantile(slope_mid, 0.975),
+    
+    mean_high = mean(slope_high),
+    se_high   = sd(slope_high),
+    ci_high_l = quantile(slope_high, 0.025),
+    ci_high_u = quantile(slope_high, 0.975),
+    
+    # Bayesian p-values (two-tailed)
+    p_low  = 2 * min(mean(slope_low  > 0), mean(slope_low  < 0)),
+    p_mid  = 2 * min(mean(slope_mid  > 0), mean(slope_mid  < 0)),
+    p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
+
+spiderSlopes_long = tibble(
+  Latitude = factor(c("low", "mid", "high"),
+                    levels = c("low","mid","high")),
+  Estimate = c(spiderSlopes$mean_low,
+               spiderSlopes$mean_mid,
+               spiderSlopes$mean_high),
+  SE       = c(spiderSlopes$se_low,
+               spiderSlopes$se_mid,
+               spiderSlopes$se_high),
+  CI_lower = c(spiderSlopes$ci_low_l,
+               spiderSlopes$ci_mid_l,
+               spiderSlopes$ci_high_l),
+  CI_upper = c(spiderSlopes$ci_low_u,
+               spiderSlopes$ci_mid_u,
+               spiderSlopes$ci_high_u),
+  p_value  = c(spiderSlopes$p_low,
+               spiderSlopes$p_mid,
+               spiderSlopes$p_high))
+
+spiderSlopes_long
+
+
+spider_slope_draws = spiderPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    Low  = beta_dev + beta_int * -1,
+    Mid  = beta_dev + beta_int * 0,
+    High = beta_dev + beta_int * 1
+  ) %>%
+  dplyr::select(Low, Mid, High) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "Latitude",
+    values_to = "Slope"
+  ) %>%
+  mutate(Latitude = factor(Latitude,
+                           levels = c("Low","Mid","High")))
+
+
+ggplot(spider_slope_draws,
+       aes(x = Slope, y = Latitude, fill = Latitude)) +
+  stat_halfeye(.width = 0.95) +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(
+    x = "Urbanization effect",
+    y = "",
+    title = "Spiders: Posterior slopes by latitude"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_minimal()
 
 ################################################################################
 # beetle
@@ -369,6 +514,102 @@ beetlePlot = ggplot(beetlePred_summary, aes(x = dev, y = p_median, color = facto
   scale_fill_viridis_d(name = "Latitude") +
   labs(x = "% Urban Development", y = "Prop. of surveys with beetle presence") +
   annotation_raster(beetleImage, ymin = .28, ymax = .30, xmin = 60, xmax = 100)  +
+  theme_minimal()
+
+
+
+beetlePost_draws %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    P_low  = mean(slope_low  > 0),
+    P_mid  = mean(slope_mid  > 0),
+    P_high = mean(slope_high > 0)
+  )
+
+
+
+
+beetleSlopes = beetlePost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    mean_low  = mean(slope_low),
+    se_low    = sd(slope_low),
+    ci_low_l  = quantile(slope_low, 0.025),
+    ci_low_u  = quantile(slope_low, 0.975),
+    
+    mean_mid  = mean(slope_mid),
+    se_mid    = sd(slope_mid),
+    ci_mid_l  = quantile(slope_mid, 0.025),
+    ci_mid_u  = quantile(slope_mid, 0.975),
+    
+    mean_high = mean(slope_high),
+    se_high   = sd(slope_high),
+    ci_high_l = quantile(slope_high, 0.025),
+    ci_high_u = quantile(slope_high, 0.975),
+    
+    # Bayesian p-values (two-tailed)
+    p_low  = 2 * min(mean(slope_low  > 0), mean(slope_low  < 0)),
+    p_mid  = 2 * min(mean(slope_mid  > 0), mean(slope_mid  < 0)),
+    p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
+
+beetleSlopes_long = tibble(
+  Latitude = factor(c("low", "mid", "high"),
+                    levels = c("low","mid","high")),
+  Estimate = c(beetleSlopes$mean_low,
+               beetleSlopes$mean_mid,
+               beetleSlopes$mean_high),
+  SE       = c(beetleSlopes$se_low,
+               beetleSlopes$se_mid,
+               beetleSlopes$se_high),
+  CI_lower = c(beetleSlopes$ci_low_l,
+               beetleSlopes$ci_mid_l,
+               beetleSlopes$ci_high_l),
+  CI_upper = c(beetleSlopes$ci_low_u,
+               beetleSlopes$ci_mid_u,
+               beetleSlopes$ci_high_u),
+  p_value  = c(beetleSlopes$p_low,
+               beetleSlopes$p_mid,
+               beetleSlopes$p_high))
+
+beetleSlopes_long
+
+
+beetle_slope_draws = beetlePost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    Low  = beta_dev + beta_int * -1,
+    Mid  = beta_dev + beta_int * 0,
+    High = beta_dev + beta_int * 1
+  ) %>%
+  dplyr::select(Low, Mid, High) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "Latitude",
+    values_to = "Slope"
+  ) %>%
+  mutate(Latitude = factor(Latitude,
+                           levels = c("Low","Mid","High")))
+
+
+ggplot(beetle_slope_draws,
+       aes(x = Slope, y = Latitude, fill = Latitude)) +
+  stat_halfeye(.width = 0.95) +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(
+    x = "Urbanization effect",
+    y = "",
+    title = "beetles: Posterior slopes by latitude"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
   theme_minimal()
 
 
@@ -423,6 +664,87 @@ truebugPlot = ggplot(truebugPred_summary, aes(x = dev, y = p_median, color = fac
   theme_minimal()
 
 
+truebugSlopes = truebugPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    mean_low  = mean(slope_low),
+    se_low    = sd(slope_low),
+    ci_low_l  = quantile(slope_low, 0.025),
+    ci_low_u  = quantile(slope_low, 0.975),
+    
+    mean_mid  = mean(slope_mid),
+    se_mid    = sd(slope_mid),
+    ci_mid_l  = quantile(slope_mid, 0.025),
+    ci_mid_u  = quantile(slope_mid, 0.975),
+    
+    mean_high = mean(slope_high),
+    se_high   = sd(slope_high),
+    ci_high_l = quantile(slope_high, 0.025),
+    ci_high_u = quantile(slope_high, 0.975),
+    
+    # Bayesian p-values (two-tailed)
+    p_low  = 2 * min(mean(slope_low  > 0), mean(slope_low  < 0)),
+    p_mid  = 2 * min(mean(slope_mid  > 0), mean(slope_mid  < 0)),
+    p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
+
+truebugSlopes_long = tibble(
+  Latitude = factor(c("low", "mid", "high"),
+                    levels = c("low","mid","high")),
+  Estimate = c(truebugSlopes$mean_low,
+               truebugSlopes$mean_mid,
+               truebugSlopes$mean_high),
+  SE       = c(truebugSlopes$se_low,
+               truebugSlopes$se_mid,
+               truebugSlopes$se_high),
+  CI_lower = c(truebugSlopes$ci_low_l,
+               truebugSlopes$ci_mid_l,
+               truebugSlopes$ci_high_l),
+  CI_upper = c(truebugSlopes$ci_low_u,
+               truebugSlopes$ci_mid_u,
+               truebugSlopes$ci_high_u),
+  p_value  = c(truebugSlopes$p_low,
+               truebugSlopes$p_mid,
+               truebugSlopes$p_high))
+
+truebugSlopes_long
+
+
+truebug_slope_draws = truebugPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    Low  = beta_dev + beta_int * -1,
+    Mid  = beta_dev + beta_int * 0,
+    High = beta_dev + beta_int * 1
+  ) %>%
+  dplyr::select(Low, Mid, High) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "Latitude",
+    values_to = "Slope"
+  ) %>%
+  mutate(Latitude = factor(Latitude,
+                           levels = c("Low","Mid","High")))
+
+
+ggplot(truebug_slope_draws,
+       aes(x = Slope, y = Latitude, fill = Latitude)) +
+  stat_halfeye(.width = 0.95) +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(
+    x = "Urbanization effect",
+    y = "",
+    title = "truebugs: Posterior slopes by latitude"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_minimal()
+
+
+
 ################################################################################
 # hopper
 ################################################################################
@@ -471,6 +793,87 @@ hopperPlot = ggplot(hopperPred_summary, aes(x = dev, y = p_median, color = facto
   theme_minimal()
 
 
+hopperSlopes = hopperPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    mean_low  = mean(slope_low),
+    se_low    = sd(slope_low),
+    ci_low_l  = quantile(slope_low, 0.025),
+    ci_low_u  = quantile(slope_low, 0.975),
+    
+    mean_mid  = mean(slope_mid),
+    se_mid    = sd(slope_mid),
+    ci_mid_l  = quantile(slope_mid, 0.025),
+    ci_mid_u  = quantile(slope_mid, 0.975),
+    
+    mean_high = mean(slope_high),
+    se_high   = sd(slope_high),
+    ci_high_l = quantile(slope_high, 0.025),
+    ci_high_u = quantile(slope_high, 0.975),
+    
+    # Bayesian p-values (two-tailed)
+    p_low  = 2 * min(mean(slope_low  > 0), mean(slope_low  < 0)),
+    p_mid  = 2 * min(mean(slope_mid  > 0), mean(slope_mid  < 0)),
+    p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
+
+hopperSlopes_long = tibble(
+  Latitude = factor(c("low", "mid", "high"),
+                    levels = c("low","mid","high")),
+  Estimate = c(hopperSlopes$mean_low,
+               hopperSlopes$mean_mid,
+               hopperSlopes$mean_high),
+  SE       = c(hopperSlopes$se_low,
+               hopperSlopes$se_mid,
+               hopperSlopes$se_high),
+  CI_lower = c(hopperSlopes$ci_low_l,
+               hopperSlopes$ci_mid_l,
+               hopperSlopes$ci_high_l),
+  CI_upper = c(hopperSlopes$ci_low_u,
+               hopperSlopes$ci_mid_u,
+               hopperSlopes$ci_high_u),
+  p_value  = c(hopperSlopes$p_low,
+               hopperSlopes$p_mid,
+               hopperSlopes$p_high))
+
+hopperSlopes_long
+
+
+hopper_slope_draws = hopperPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    Low  = beta_dev + beta_int * -1,
+    Mid  = beta_dev + beta_int * 0,
+    High = beta_dev + beta_int * 1
+  ) %>%
+  dplyr::select(Low, Mid, High) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "Latitude",
+    values_to = "Slope"
+  ) %>%
+  mutate(Latitude = factor(Latitude,
+                           levels = c("Low","Mid","High")))
+
+
+ggplot(hopper_slope_draws,
+       aes(x = Slope, y = Latitude, fill = Latitude)) +
+  stat_halfeye(.width = 0.95) +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(
+    x = "Urbanization effect",
+    y = "",
+    title = "hoppers: Posterior slopes by latitude"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_minimal()
+
+
+
 ################################################################################
 # ant
 ################################################################################
@@ -517,6 +920,87 @@ antPlot = ggplot(antPred_summary, aes(x = dev, y = p_median, color = factor(Lati
   scale_fill_viridis_d(name = "Latitude") +
   labs(x = "% Urban Development", y = "Prop. of surveys with ant presence") +
   annotation_raster(antImage, ymin = .14, ymax = .16, xmin = 60, xmax = 99)  +
+  theme_minimal()
+
+
+
+antSlopes = antPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    mean_low  = mean(slope_low),
+    se_low    = sd(slope_low),
+    ci_low_l  = quantile(slope_low, 0.025),
+    ci_low_u  = quantile(slope_low, 0.975),
+    
+    mean_mid  = mean(slope_mid),
+    se_mid    = sd(slope_mid),
+    ci_mid_l  = quantile(slope_mid, 0.025),
+    ci_mid_u  = quantile(slope_mid, 0.975),
+    
+    mean_high = mean(slope_high),
+    se_high   = sd(slope_high),
+    ci_high_l = quantile(slope_high, 0.025),
+    ci_high_u = quantile(slope_high, 0.975),
+    
+    # Bayesian p-values (two-tailed)
+    p_low  = 2 * min(mean(slope_low  > 0), mean(slope_low  < 0)),
+    p_mid  = 2 * min(mean(slope_mid  > 0), mean(slope_mid  < 0)),
+    p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
+
+antSlopes_long = tibble(
+  Latitude = factor(c("low", "mid", "high"),
+                    levels = c("low","mid","high")),
+  Estimate = c(antSlopes$mean_low,
+               antSlopes$mean_mid,
+               antSlopes$mean_high),
+  SE       = c(antSlopes$se_low,
+               antSlopes$se_mid,
+               antSlopes$se_high),
+  CI_lower = c(antSlopes$ci_low_l,
+               antSlopes$ci_mid_l,
+               antSlopes$ci_high_l),
+  CI_upper = c(antSlopes$ci_low_u,
+               antSlopes$ci_mid_u,
+               antSlopes$ci_high_u),
+  p_value  = c(antSlopes$p_low,
+               antSlopes$p_mid,
+               antSlopes$p_high))
+
+antSlopes_long
+
+
+ant_slope_draws = antPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    Low  = beta_dev + beta_int * -1,
+    Mid  = beta_dev + beta_int * 0,
+    High = beta_dev + beta_int * 1
+  ) %>%
+  dplyr::select(Low, Mid, High) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "Latitude",
+    values_to = "Slope"
+  ) %>%
+  mutate(Latitude = factor(Latitude,
+                           levels = c("Low","Mid","High")))
+
+
+ggplot(ant_slope_draws,
+       aes(x = Slope, y = Latitude, fill = Latitude)) +
+  stat_halfeye(.width = 0.95) +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(
+    x = "Urbanization effect",
+    y = "",
+    title = "ants: Posterior slopes by latitude"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
   theme_minimal()
 
 
@@ -571,6 +1055,87 @@ grasshopperPlot = ggplot(grasshopperPred_summary, aes(x = dev, y = p_median, col
 
 
 
+grasshopperSlopes = grasshopperPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    mean_low  = mean(slope_low),
+    se_low    = sd(slope_low),
+    ci_low_l  = quantile(slope_low, 0.025),
+    ci_low_u  = quantile(slope_low, 0.975),
+    
+    mean_mid  = mean(slope_mid),
+    se_mid    = sd(slope_mid),
+    ci_mid_l  = quantile(slope_mid, 0.025),
+    ci_mid_u  = quantile(slope_mid, 0.975),
+    
+    mean_high = mean(slope_high),
+    se_high   = sd(slope_high),
+    ci_high_l = quantile(slope_high, 0.025),
+    ci_high_u = quantile(slope_high, 0.975),
+    
+    # Bayesian p-values (two-tailed)
+    p_low  = 2 * min(mean(slope_low  > 0), mean(slope_low  < 0)),
+    p_mid  = 2 * min(mean(slope_mid  > 0), mean(slope_mid  < 0)),
+    p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
+
+grasshopperSlopes_long = tibble(
+  Latitude = factor(c("low", "mid", "high"),
+                    levels = c("low","mid","high")),
+  Estimate = c(grasshopperSlopes$mean_low,
+               grasshopperSlopes$mean_mid,
+               grasshopperSlopes$mean_high),
+  SE       = c(grasshopperSlopes$se_low,
+               grasshopperSlopes$se_mid,
+               grasshopperSlopes$se_high),
+  CI_lower = c(grasshopperSlopes$ci_low_l,
+               grasshopperSlopes$ci_mid_l,
+               grasshopperSlopes$ci_high_l),
+  CI_upper = c(grasshopperSlopes$ci_low_u,
+               grasshopperSlopes$ci_mid_u,
+               grasshopperSlopes$ci_high_u),
+  p_value  = c(grasshopperSlopes$p_low,
+               grasshopperSlopes$p_mid,
+               grasshopperSlopes$p_high))
+
+grasshopperSlopes_long
+
+
+grasshopper_slope_draws = grasshopperPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    Low  = beta_dev + beta_int * -1,
+    Mid  = beta_dev + beta_int * 0,
+    High = beta_dev + beta_int * 1
+  ) %>%
+  dplyr::select(Low, Mid, High) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "Latitude",
+    values_to = "Slope"
+  ) %>%
+  mutate(Latitude = factor(Latitude,
+                           levels = c("Low","Mid","High")))
+
+
+ggplot(grasshopper_slope_draws,
+       aes(x = Slope, y = Latitude, fill = Latitude)) +
+  stat_halfeye(.width = 0.95) +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(
+    x = "Urbanization effect",
+    y = "",
+    title = "grasshoppers: Posterior slopes by latitude"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_minimal()
+
+
+
 ################################################################################
 # fly
 ################################################################################
@@ -617,6 +1182,87 @@ flyPlot = ggplot(flyPred_summary, aes(x = dev, y = p_median, color = factor(Lati
   labs(x = "% Urban Development", y = "Prop. of surveys with fly presence") +
   annotation_raster(flyImage, ymin = .14, ymax = .16, xmin = 20, xmax = 60)  +
   theme_minimal()
+
+
+flySlopes = flyPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    mean_low  = mean(slope_low),
+    se_low    = sd(slope_low),
+    ci_low_l  = quantile(slope_low, 0.025),
+    ci_low_u  = quantile(slope_low, 0.975),
+    
+    mean_mid  = mean(slope_mid),
+    se_mid    = sd(slope_mid),
+    ci_mid_l  = quantile(slope_mid, 0.025),
+    ci_mid_u  = quantile(slope_mid, 0.975),
+    
+    mean_high = mean(slope_high),
+    se_high   = sd(slope_high),
+    ci_high_l = quantile(slope_high, 0.025),
+    ci_high_u = quantile(slope_high, 0.975),
+    
+    # Bayesian p-values (two-tailed)
+    p_low  = 2 * min(mean(slope_low  > 0), mean(slope_low  < 0)),
+    p_mid  = 2 * min(mean(slope_mid  > 0), mean(slope_mid  < 0)),
+    p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
+
+flySlopes_long = tibble(
+  Latitude = factor(c("low", "mid", "high"),
+                    levels = c("low","mid","high")),
+  Estimate = c(flySlopes$mean_low,
+               flySlopes$mean_mid,
+               flySlopes$mean_high),
+  SE       = c(flySlopes$se_low,
+               flySlopes$se_mid,
+               flySlopes$se_high),
+  CI_lower = c(flySlopes$ci_low_l,
+               flySlopes$ci_mid_l,
+               flySlopes$ci_high_l),
+  CI_upper = c(flySlopes$ci_low_u,
+               flySlopes$ci_mid_u,
+               flySlopes$ci_high_u),
+  p_value  = c(flySlopes$p_low,
+               flySlopes$p_mid,
+               flySlopes$p_high))
+
+flySlopes_long
+
+
+fly_slope_draws = flyPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    Low  = beta_dev + beta_int * -1,
+    Mid  = beta_dev + beta_int * 0,
+    High = beta_dev + beta_int * 1
+  ) %>%
+  dplyr::select(Low, Mid, High) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "Latitude",
+    values_to = "Slope"
+  ) %>%
+  mutate(Latitude = factor(Latitude,
+                           levels = c("Low","Mid","High")))
+
+
+ggplot(fly_slope_draws,
+       aes(x = Slope, y = Latitude, fill = Latitude)) +
+  stat_halfeye(.width = 0.95) +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(
+    x = "Urbanization effect",
+    y = "",
+    title = "flys: Posterior slopes by latitude"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_minimal()
+
 
 
 ################################################################################
@@ -669,6 +1315,88 @@ daddylonglegsPlot = ggplot(daddylonglegsPred_summary, aes(x = dev, y = p_median,
 
 
 
+daddylonglegsSlopes = daddylonglegsPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    mean_low  = mean(slope_low),
+    se_low    = sd(slope_low),
+    ci_low_l  = quantile(slope_low, 0.025),
+    ci_low_u  = quantile(slope_low, 0.975),
+    
+    mean_mid  = mean(slope_mid),
+    se_mid    = sd(slope_mid),
+    ci_mid_l  = quantile(slope_mid, 0.025),
+    ci_mid_u  = quantile(slope_mid, 0.975),
+    
+    mean_high = mean(slope_high),
+    se_high   = sd(slope_high),
+    ci_high_l = quantile(slope_high, 0.025),
+    ci_high_u = quantile(slope_high, 0.975),
+    
+    # Bayesian p-values (two-tailed)
+    p_low  = 2 * min(mean(slope_low  > 0), mean(slope_low  < 0)),
+    p_mid  = 2 * min(mean(slope_mid  > 0), mean(slope_mid  < 0)),
+    p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
+
+daddylonglegsSlopes_long = tibble(
+  Latitude = factor(c("low", "mid", "high"),
+                    levels = c("low","mid","high")),
+  Estimate = c(daddylonglegsSlopes$mean_low,
+               daddylonglegsSlopes$mean_mid,
+               daddylonglegsSlopes$mean_high),
+  SE       = c(daddylonglegsSlopes$se_low,
+               daddylonglegsSlopes$se_mid,
+               daddylonglegsSlopes$se_high),
+  CI_lower = c(daddylonglegsSlopes$ci_low_l,
+               daddylonglegsSlopes$ci_mid_l,
+               daddylonglegsSlopes$ci_high_l),
+  CI_upper = c(daddylonglegsSlopes$ci_low_u,
+               daddylonglegsSlopes$ci_mid_u,
+               daddylonglegsSlopes$ci_high_u),
+  p_value  = c(daddylonglegsSlopes$p_low,
+               daddylonglegsSlopes$p_mid,
+               daddylonglegsSlopes$p_high))
+
+daddylonglegsSlopes_long
+
+
+daddylonglegs_slope_draws = daddylonglegsPost_draws %>%
+  as.data.frame() %>%
+  mutate(
+    Low  = beta_dev + beta_int * -1,
+    Mid  = beta_dev + beta_int * 0,
+    High = beta_dev + beta_int * 1
+  ) %>%
+  dplyr::select(Low, Mid, High) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "Latitude",
+    values_to = "Slope"
+  ) %>%
+  mutate(Latitude = factor(Latitude,
+                           levels = c("Low","Mid","High")))
+
+
+ggplot(daddylonglegs_slope_draws,
+       aes(x = Slope, y = Latitude, fill = Latitude)) +
+  stat_halfeye(.width = 0.95) +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(
+    x = "Urbanization effect",
+    y = "",
+    title = "daddylonglegss: Posterior slopes by latitude"
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_minimal()
+
+
+
+
 ggarrange(CaterpillarPlot +
             annotate("text", x = I(0.05), y = I(0.95), label = "a", size = 8,
                      fontface = "bold"), 
@@ -695,9 +1423,60 @@ ggarrange(CaterpillarPlot +
 
 
 
+posteriorSlopes = bind_rows(
+  Caterpillar = caterpillarSlopes_long,
+  Beetle      = beetleSlopes_long,
+  Spider      = spiderSlopes_long,
+  TrueBug     = truebugSlopes_long,
+  Hopper      = hopperSlopes_long,
+  Ant         = antSlopes_long,
+  Grasshopper = grasshopperSlopes_long,
+  Daddylonglegs = daddylonglegsSlopes_long,
+  Fly        = flySlopes_long,
+  .id = "Arthropod"
+)
+
+posteriorSlopes %>% 
+  filter(!Arthropod %in% c("Fly", "Daddylonglegs")) %>% 
+  rename(
+         "2.5% CI" =  "CI_lower",
+         "97.5% CI" =  "CI_upper",
+  ) %>% 
+  gt() %>% 
+  tab_header(
+    title = "Table 1. Effect of urbanization on arthropod occurence at low, mid, and high latitudes"
+  ) %>% 
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 3
+  ) %>% 
+  gtsave("images/tableS2.png")
+
+ggplot(posteriorSlopes, aes(Estimate, Arthropod, color = Latitude)) +
+  geom_point(position = position_dodge(width = 0.5)) +
+  geom_errorbar(aes(xmin = CI_lower, xmax = CI_upper),
+                 position = position_dodge(width = 0.5)) +
+  scale_color_viridis_d(name = "Latitude") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme_minimal()
 
 
 
+diagnostics_table %>% 
+  filter(!model %in% c("Fly", "DaddyLonglegs")) %>% 
+  rename("Arthropod" = "model",
+         "2.5% CI" =  "CI_lower",
+         "97.5% CI" =  "CI_upper",
+  ) %>% 
+  gt() %>% 
+  tab_header(
+    title = "Table 1. Model summaries"
+  ) %>% 
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 3
+  ) %>% 
+  gtsave("images/table S1.png")
 
 ##################################################################################
 
