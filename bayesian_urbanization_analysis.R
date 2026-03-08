@@ -11,7 +11,8 @@ library(coda)
 library(gt) # to create tables
 library(posterior)
 library(ggdist)
-
+library(png)
+library(ggimage)
 # Load the rjags model fits saved as rds files ----
 
 caterpillarFit = readRDS("caterpillarFit.rds")
@@ -212,13 +213,15 @@ pred_grid = expand.grid(
 # Caterpillar
 ################################################################################
 
+yymax = 0.018
+xxmax = 40
 
 # Extract posterior draws
 caterpillarPost_draws = as.mcmc(do.call(rbind, caterpillarFit)) %>%
   as.data.frame()
 
 # For each posterior sample, calculate predicted probability
-caterpillarPred_grid_long <- pred_grid %>%
+caterpillarPred_grid_long = pred_grid %>%
   crossing(post_draw = 1:nrow(caterpillarPost_draws)) %>%
   mutate(
     beta_0      = caterpillarPost_draws$beta_0[post_draw],
@@ -227,36 +230,25 @@ caterpillarPred_grid_long <- pred_grid %>%
     beta_int    = caterpillarPost_draws$beta_int[post_draw],
     beta_method = caterpillarPost_draws$beta_method[post_draw],
     logit_p = beta_0 + beta_dev*dev_c + beta_lat*lat_c + beta_int*(dev_c*lat_c) + beta_method*method,
-    p       = plogis(logit_p)
+    p       = plogis(logit_p), # marginal estimates of dev
+    marginal_dev = p * (1 - p) * (beta_dev + beta_int * lat_c) # This is calculated on probability scale
   )
 
-caterpillarPred_summary = caterpillarPred_grid_long %>%
-  group_by(dev_c, lat_c) %>%
+caterpillarDevAME =  caterpillarPred_grid_long %>%
+  group_by(post_draw) %>%
+  summarise(AME = mean(marginal_dev), .groups = "drop") %>% 
   summarise(
-    p_median = median(p),
-    p_lower  = quantile(p, 0.025),
-    p_upper  = quantile(p, 0.975),
-    .groups = "drop"
-  ) %>% 
-  mutate(Latitude = case_when(
-    lat_c == -1 ~ "Low",
-    lat_c == 0  ~ "Mid",
-    lat_c == 1  ~ "High"
-  )) %>%
-  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
-  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) # converting back to raw values.
+    mean_AME = mean(AME),
+    CI_lower = quantile(AME, 0.025),
+    CI_upper = quantile(AME, 0.975)
+  )
 
+# AME is change in P divided by change in dev (for this case). dp/ddev.
+# see: https://clas.ucdenver.edu/marcelo-perraillon/content/marginal-effects-lisbon
+# Using the chain rule, ...dp/ddev = dp/dn * dn/ddev. dn is simply the linear predictors of the model
+# p(1-p) = dp/dn; beta_dev + beta_int * lat_c = dn/ddev. 
+# so, dp/ddev = p * (1 - p) * (beta_dev + beta_int * lat_c) 
 
-CaterpillarPlot = ggplot(caterpillarPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
-  labs(x = "% Urban Development", y = "Prop. of surveys with spider presence") +
-  annotation_raster(catImage, ymin = .085, ymax = .1, xmin = 60, xmax = 100) +
-  theme_minimal()
-
-CaterpillarPlot
 
 caterpillarSlopes = caterpillarPost_draws %>%
   as.data.frame() %>%
@@ -287,10 +279,11 @@ caterpillarSlopes = caterpillarPost_draws %>%
     p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0))
   )
 
+# Because the model produces samples from the posterior distribution, we can easily compute probabilities for any hypothesis about the parameter values. For example, we can estimate the probability that the effect of urbanization exceeds a biologically meaningful threshold (e.g., 0.028) by calculating the Proportion of posterior samples greater than that value. you can further compute P(a<slope<b∣data)
 
 caterpillarSlopes_long = tibble(
-  Latitude = factor(c("low", "mid", "high"),
-                    levels = c("low","mid","high")),
+  Latitude = factor(c("Low", "Mid", "High"),
+                    levels = c("Low", "Mid", "High")),
   Estimate = c(caterpillarSlopes$mean_low,
                caterpillarSlopes$mean_mid,
                caterpillarSlopes$mean_high),
@@ -306,10 +299,40 @@ caterpillarSlopes_long = tibble(
   p_value  = c(caterpillarSlopes$p_low,
                caterpillarSlopes$p_mid,
                caterpillarSlopes$p_high)
-)
+) %>% mutate(Significance = ifelse(p_value < 0.05, "sig", "n.s"))
 
 
 caterpillarSlopes_long
+
+caterpillarPred_summary = caterpillarPred_grid_long %>%
+  group_by(dev_c, lat_c) %>%
+  summarise(
+    p_median = median(p),
+    p_lower  = quantile(p, 0.025),
+    p_upper  = quantile(p, 0.975),
+    .groups = "drop"
+  ) %>% 
+  mutate(Latitude = case_when(
+    lat_c == -1 ~ "Low",
+    lat_c == 0  ~ "Mid",
+    lat_c == 1  ~ "High"
+  )) %>%
+  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
+  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) %>% # converting back to raw values.
+  left_join(caterpillarSlopes_long, by = "Latitude") %>% data.frame()
+
+
+CaterpillarPlot = ggplot(caterpillarPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+  geom_line(size = 1, aes(linetype = Significance)) +
+  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(x = "% Urban Development", y = "Proportion of surveys") +
+  annotation_raster(catImage, ymin = .085, ymax = .085 + yymax, xmin = 60, xmax = 60 + xxmax) +
+  theme_minimal()
+
+CaterpillarPlot
+
 
 caterpillar_slope_draws = caterpillarPost_draws %>%
   as.data.frame() %>%
@@ -341,6 +364,9 @@ ggplot(caterpillar_slope_draws, aes(x = Slope, y = Latitude, fill = Latitude)) +
   theme_minimal()
 
 
+
+
+
 ################################################################################
 # spider
 ################################################################################
@@ -360,34 +386,18 @@ spiderPred_grid_long <- pred_grid %>%
     beta_int    = spiderPost_draws$beta_int[post_draw],
     beta_method = spiderPost_draws$beta_method[post_draw],
     logit_p = beta_0 + beta_dev*dev_c + beta_lat*lat_c + beta_int*(dev_c*lat_c) + beta_method*method,
-    p       = plogis(logit_p)
+    p       = plogis(logit_p),
+    marginal_dev = p * (1 - p) * (beta_dev + beta_int * lat_c) # dev marginal estimate at probability scale
   )
 
-spiderPred_summary = spiderPred_grid_long %>%
-  group_by(dev_c, lat_c) %>%
+spiderDevAME =  spiderPred_grid_long %>%
+  group_by(post_draw) %>%
+  summarise(AME = mean(marginal_dev), .groups = "drop") %>% 
   summarise(
-    p_median = median(p),
-    p_lower  = quantile(p, 0.025),
-    p_upper  = quantile(p, 0.975),
-    .groups = "drop"
-  ) %>% 
-  mutate(Latitude = case_when(
-    lat_c == -1 ~ "Low",
-    lat_c == 0  ~ "Mid",
-    lat_c == 1  ~ "High"
-  )) %>%
-  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
-  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev))
-
-
-spiderPlot = ggplot(spiderPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
-  labs(x = "% Urban Development", y = "prop. of surveys with spider presence") +
-  annotation_raster(spiderImage, ymin = .29, ymax = .35, xmin = 60, xmax = 100) +
-  theme_minimal()
+    mean_AME = mean(AME),
+    CI_lower = quantile(AME, 0.025),
+    CI_upper = quantile(AME, 0.975)
+  )
 
 spiderSlopes = spiderPost_draws %>%
   as.data.frame() %>%
@@ -418,8 +428,8 @@ spiderSlopes = spiderPost_draws %>%
     p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
 
 spiderSlopes_long = tibble(
-  Latitude = factor(c("low", "mid", "high"),
-                    levels = c("low","mid","high")),
+  Latitude = factor(c("Low", "Mid", "High"),
+                    levels = c("Low", "Mid", "High")),
   Estimate = c(spiderSlopes$mean_low,
                spiderSlopes$mean_mid,
                spiderSlopes$mean_high),
@@ -434,10 +444,40 @@ spiderSlopes_long = tibble(
                spiderSlopes$ci_high_u),
   p_value  = c(spiderSlopes$p_low,
                spiderSlopes$p_mid,
-               spiderSlopes$p_high))
+               spiderSlopes$p_high)) %>% 
+  mutate(Significance = ifelse(p_value < 0.05, "sig", "n.s"))
 
 spiderSlopes_long
 
+spiderPred_summary = spiderPred_grid_long %>%
+  group_by(dev_c, lat_c) %>%
+  summarise(
+    p_median = median(p),
+    p_lower  = quantile(p, 0.025),
+    p_upper  = quantile(p, 0.975),
+    .groups = "drop"
+  ) %>% 
+  mutate(Latitude = case_when(
+    lat_c == -1 ~ "Low",
+    lat_c == 0  ~ "Mid",
+    lat_c == 1  ~ "High"
+  )) %>%
+  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
+  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) %>% 
+  left_join(spiderSlopes_long, by = "Latitude") %>% 
+  mutate(Significance = factor(Significance, levels = c("sig", "n.s")))
+
+
+spiderPlot = ggplot(spiderPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+  geom_line(size = 1, aes(linetype = Significance)) +
+  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(x = "% Urban Development", y = "Proportion of surveys") +
+  annotation_raster(spiderImage, ymin = .29, ymax = 0.33, xmin = 60, xmax = 60 + xxmax) +
+  theme_minimal()
+
+spiderPlot
 
 spider_slope_draws = spiderPost_draws %>%
   as.data.frame() %>%
@@ -487,49 +527,18 @@ beetlePred_grid_long <- pred_grid %>%
     beta_int    = beetlePost_draws$beta_int[post_draw],
     beta_method = beetlePost_draws$beta_method[post_draw],
     logit_p = beta_0 + beta_dev*dev_c + beta_lat*lat_c + beta_int*(dev_c*lat_c) + beta_method*method,
-    p       = plogis(logit_p)
+    p       = plogis(logit_p),
+    marginal_dev = p * (1 - p) * (beta_dev + beta_int * lat_c) # dev marginal estimate at probability scale
   )
 
-beetlePred_summary = beetlePred_grid_long %>%
-  group_by(dev_c, lat_c) %>%
+beetleDevAME =  beetlePred_grid_long %>%
+  group_by(post_draw) %>%
+  summarise(AME = mean(marginal_dev), .groups = "drop") %>% 
   summarise(
-    p_median = median(p),
-    p_lower  = quantile(p, 0.025),
-    p_upper  = quantile(p, 0.975),
-    .groups = "drop"
-  ) %>% 
-  mutate(Latitude = case_when(
-    lat_c == -1 ~ "Low",
-    lat_c == 0  ~ "Mid",
-    lat_c == 1  ~ "High"
-  )) %>%
-  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
-  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev))
-
-
-beetlePlot = ggplot(beetlePred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
-  labs(x = "% Urban Development", y = "Prop. of surveys with beetle presence") +
-  annotation_raster(beetleImage, ymin = .28, ymax = .30, xmin = 60, xmax = 100)  +
-  theme_minimal()
-
-
-
-beetlePost_draws %>%
-  mutate(
-    slope_low  = beta_dev + beta_int * -1,
-    slope_mid  = beta_dev + beta_int * 0,
-    slope_high = beta_dev + beta_int * 1
-  ) %>%
-  summarise(
-    P_low  = mean(slope_low  > 0),
-    P_mid  = mean(slope_mid  > 0),
-    P_high = mean(slope_high > 0)
+    mean_AME = mean(AME),
+    CI_lower = quantile(AME, 0.025),
+    CI_upper = quantile(AME, 0.975)
   )
-
 
 
 
@@ -562,8 +571,8 @@ beetleSlopes = beetlePost_draws %>%
     p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
 
 beetleSlopes_long = tibble(
-  Latitude = factor(c("low", "mid", "high"),
-                    levels = c("low","mid","high")),
+  Latitude = factor(c("Low", "Mid", "High"),
+                    levels = c("Low", "Mid", "High")),
   Estimate = c(beetleSlopes$mean_low,
                beetleSlopes$mean_mid,
                beetleSlopes$mean_high),
@@ -578,9 +587,57 @@ beetleSlopes_long = tibble(
                beetleSlopes$ci_high_u),
   p_value  = c(beetleSlopes$p_low,
                beetleSlopes$p_mid,
-               beetleSlopes$p_high))
+               beetleSlopes$p_high)) %>% 
+  mutate(Significance = ifelse(p_value < 0.05, "sig", "n.s"))
 
 beetleSlopes_long
+
+beetlePred_summary = beetlePred_grid_long %>%
+  group_by(dev_c, lat_c) %>%
+  summarise(
+    p_median = median(p),
+    p_lower  = quantile(p, 0.025),
+    p_upper  = quantile(p, 0.975),
+    .groups = "drop"
+  ) %>% 
+  mutate(Latitude = case_when(
+    lat_c == -1 ~ "Low",
+    lat_c == 0  ~ "Mid",
+    lat_c == 1  ~ "High"
+  )) %>%
+  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
+  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) %>% 
+  left_join(beetleSlopes_long, by = "Latitude") %>% 
+  mutate(Significance = factor(Significance, levels = c("sig", "n.s")))
+
+
+beetlePlot = ggplot(beetlePred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+  geom_line(size = 1, aes(linetype = Significance)) +
+  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(x = "% Urban Development", y = "Proportion of surveys") +
+  annotation_raster(beetleImage, ymin = .28, ymax = .28 + yymax, xmin = 60, xmax = 60 + xxmax -10)  +
+  theme_minimal()
+
+beetlePlot
+
+
+
+
+beetlePost_draws %>%
+  mutate(
+    slope_low  = beta_dev + beta_int * -1,
+    slope_mid  = beta_dev + beta_int * 0,
+    slope_high = beta_dev + beta_int * 1
+  ) %>%
+  summarise(
+    P_low  = mean(slope_low  > 0),
+    P_mid  = mean(slope_mid  > 0),
+    P_high = mean(slope_high > 0)
+  )
+
+
 
 
 beetle_slope_draws = beetlePost_draws %>%
@@ -634,34 +691,19 @@ truebugPred_grid_long <- pred_grid %>%
     beta_int    = truebugPost_draws$beta_int[post_draw],
     beta_method = truebugPost_draws$beta_method[post_draw],
     logit_p = beta_0 + beta_dev*dev_c + beta_lat*lat_c + beta_int*(dev_c*lat_c) + beta_method*method,
-    p       = plogis(logit_p)
+    p       = plogis(logit_p),
+    marginal_dev = p * (1 - p) * (beta_dev + beta_int * lat_c)  
   )
 
-truebugPred_summary = truebugPred_grid_long %>%
-  group_by(dev_c, lat_c) %>%
+truebugDevAME =  truebugPred_grid_long %>%
+  group_by(post_draw) %>%
+  summarise(AME = mean(marginal_dev), .groups = "drop") %>% 
   summarise(
-    p_median = median(p),
-    p_lower  = quantile(p, 0.025),
-    p_upper  = quantile(p, 0.975),
-    .groups = "drop"
-  ) %>% 
-  mutate(Latitude = case_when(
-    lat_c == -1 ~ "Low",
-    lat_c == 0  ~ "Mid",
-    lat_c == 1  ~ "High"
-  )) %>%
-  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
-  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev))
+    mean_AME = mean(AME),
+    CI_lower = quantile(AME, 0.025),
+    CI_upper = quantile(AME, 0.975)
+  )
 
-
-truebugPlot = ggplot(truebugPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
-  labs(x = "% Urban Development", y = "Prop. of surveys with truebug presence") +
-  annotation_raster(truebugImage, ymin = .09, ymax = .11, xmin = 0, xmax = 40)  +
-  theme_minimal()
 
 
 truebugSlopes = truebugPost_draws %>%
@@ -693,8 +735,8 @@ truebugSlopes = truebugPost_draws %>%
     p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
 
 truebugSlopes_long = tibble(
-  Latitude = factor(c("low", "mid", "high"),
-                    levels = c("low","mid","high")),
+  Latitude = factor(c("Low", "Mid", "High"),
+                    levels = c("Low", "Mid", "High")),
   Estimate = c(truebugSlopes$mean_low,
                truebugSlopes$mean_mid,
                truebugSlopes$mean_high),
@@ -709,10 +751,42 @@ truebugSlopes_long = tibble(
                truebugSlopes$ci_high_u),
   p_value  = c(truebugSlopes$p_low,
                truebugSlopes$p_mid,
-               truebugSlopes$p_high))
+               truebugSlopes$p_high)) %>% 
+  mutate(Significance = ifelse(p_value < 0.05, "sig", "n.s"))  
 
 truebugSlopes_long
 
+
+
+truebugPred_summary = truebugPred_grid_long %>%
+  group_by(dev_c, lat_c) %>%
+  summarise(
+    p_median = median(p),
+    p_lower  = quantile(p, 0.025),
+    p_upper  = quantile(p, 0.975),
+    .groups = "drop"
+  ) %>% 
+  mutate(Latitude = case_when(
+    lat_c == -1 ~ "Low",
+    lat_c == 0  ~ "Mid",
+    lat_c == 1  ~ "High"
+  )) %>%
+  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
+  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) %>% 
+  left_join(truebugSlopes_long, by = "Latitude") %>% 
+  mutate(Significance = factor(Significance, levels = c("n.s", "sig")))
+
+
+truebugPlot = ggplot(truebugPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+  geom_line(size = 1, aes(linetype = Significance)) +
+  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(x = "% Urban Development", y = "Proportion of surveys") +
+  annotation_raster(truebugImage, ymin = .09, ymax = .11, xmin = 0, xmax = 0 + xxmax) +
+  theme_minimal()
+
+truebugPlot
 
 truebug_slope_draws = truebugPost_draws %>%
   as.data.frame() %>%
@@ -763,34 +837,19 @@ hopperPred_grid_long <- pred_grid %>%
     beta_int    = hopperPost_draws$beta_int[post_draw],
     beta_method = hopperPost_draws$beta_method[post_draw],
     logit_p = beta_0 + beta_dev*dev_c + beta_lat*lat_c + beta_int*(dev_c*lat_c) + beta_method*method,
-    p       = plogis(logit_p)
+    p       = plogis(logit_p),
+    marginal_dev = p * (1 - p) * (beta_dev + beta_int * lat_c)  
   )
 
-hopperPred_summary = hopperPred_grid_long %>%
-  group_by(dev_c, lat_c) %>%
+hopperDevAME =  hopperPred_grid_long %>%
+  group_by(post_draw) %>%
+  summarise(AME = mean(marginal_dev), .groups = "drop") %>% 
   summarise(
-    p_median = median(p),
-    p_lower  = quantile(p, 0.025),
-    p_upper  = quantile(p, 0.975),
-    .groups = "drop"
-  ) %>% 
-  mutate(Latitude = case_when(
-    lat_c == -1 ~ "Low",
-    lat_c == 0  ~ "Mid",
-    lat_c == 1  ~ "High"
-  )) %>%
-  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
-  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev))
+    mean_AME = mean(AME),
+    CI_lower = quantile(AME, 0.025),
+    CI_upper = quantile(AME, 0.975)
+  )
 
-
-hopperPlot = ggplot(hopperPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
-  labs(x = "% Urban Development", y = "Prop. of surveys with truehopper presence") +
-  annotation_raster(hopperImage, ymin = .07, ymax = .095, xmin = 60, xmax = 100)  +
-  theme_minimal()
 
 
 hopperSlopes = hopperPost_draws %>%
@@ -822,8 +881,8 @@ hopperSlopes = hopperPost_draws %>%
     p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
 
 hopperSlopes_long = tibble(
-  Latitude = factor(c("low", "mid", "high"),
-                    levels = c("low","mid","high")),
+  Latitude = factor(c("Low", "Mid", "High"),
+                    levels = c("Low", "Mid", "High")),
   Estimate = c(hopperSlopes$mean_low,
                hopperSlopes$mean_mid,
                hopperSlopes$mean_high),
@@ -838,9 +897,40 @@ hopperSlopes_long = tibble(
                hopperSlopes$ci_high_u),
   p_value  = c(hopperSlopes$p_low,
                hopperSlopes$p_mid,
-               hopperSlopes$p_high))
+               hopperSlopes$p_high)) %>% 
+  mutate(Significance = ifelse(p_value < 0.05, "sig", "n.s")) 
 
 hopperSlopes_long
+
+
+hopperPred_summary = hopperPred_grid_long %>%
+  group_by(dev_c, lat_c) %>%
+  summarise(
+    p_median = median(p),
+    p_lower  = quantile(p, 0.025),
+    p_upper  = quantile(p, 0.975),
+    .groups = "drop"
+  ) %>% 
+  mutate(Latitude = case_when(
+    lat_c == -1 ~ "Low",
+    lat_c == 0  ~ "Mid",
+    lat_c == 1  ~ "High"
+  )) %>%
+  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
+  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) %>% 
+  left_join(hopperSlopes_long, by = "Latitude") %>% 
+  mutate(Significance = factor(Significance, levels = c("n.s", "sig")))
+
+
+hopperPlot = ggplot(hopperPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+  geom_line(size = 1, aes(linetype = Significance)) +
+  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(x = "% Urban Development", y = "Proportion of surveys") +
+  annotation_raster(hopperImage, ymin = .07, ymax = .095, xmin = 60, xmax = 60 + xxmax)  +
+  theme_minimal()
+hopperPlot
 
 
 hopper_slope_draws = hopperPost_draws %>%
@@ -893,35 +983,18 @@ antPred_grid_long <- pred_grid %>%
     beta_int    = antPost_draws$beta_int[post_draw],
     beta_method = antPost_draws$beta_method[post_draw],
     logit_p = beta_0 + beta_dev*dev_c + beta_lat*lat_c + beta_int*(dev_c*lat_c) + beta_method*method,
-    p       = plogis(logit_p)
+    p       = plogis(logit_p),
+    marginal_dev = p * (1 - p) * (beta_dev + beta_int * lat_c)  
   )
 
-antPred_summary = antPred_grid_long %>%
-  group_by(dev_c, lat_c) %>%
+antDevAME =  antPred_grid_long %>%
+  group_by(post_draw) %>%
+  summarise(AME = mean(marginal_dev), .groups = "drop") %>% 
   summarise(
-    p_median = median(p),
-    p_lower  = quantile(p, 0.025),
-    p_upper  = quantile(p, 0.975),
-    .groups = "drop"
-  ) %>% 
-  mutate(Latitude = case_when(
-    lat_c == -1 ~ "Low",
-    lat_c == 0  ~ "Mid",
-    lat_c == 1  ~ "High"
-  )) %>%
-  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
-  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev))
-
-
-antPlot = ggplot(antPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
-  labs(x = "% Urban Development", y = "Prop. of surveys with ant presence") +
-  annotation_raster(antImage, ymin = .14, ymax = .16, xmin = 60, xmax = 99)  +
-  theme_minimal()
-
+    mean_AME = mean(AME),
+    CI_lower = quantile(AME, 0.025),
+    CI_upper = quantile(AME, 0.975)
+  )
 
 
 antSlopes = antPost_draws %>%
@@ -953,8 +1026,8 @@ antSlopes = antPost_draws %>%
     p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
 
 antSlopes_long = tibble(
-  Latitude = factor(c("low", "mid", "high"),
-                    levels = c("low","mid","high")),
+  Latitude = factor(c("Low", "Mid", "High"),
+                    levels = c("Low", "Mid", "High")),
   Estimate = c(antSlopes$mean_low,
                antSlopes$mean_mid,
                antSlopes$mean_high),
@@ -969,9 +1042,40 @@ antSlopes_long = tibble(
                antSlopes$ci_high_u),
   p_value  = c(antSlopes$p_low,
                antSlopes$p_mid,
-               antSlopes$p_high))
+               antSlopes$p_high)) %>% 
+  mutate(Significance = ifelse(p_value < 0.05, "sig", "n.s"))
 
 antSlopes_long
+
+antPred_summary = antPred_grid_long %>%
+  group_by(dev_c, lat_c) %>%
+  summarise(
+    p_median = median(p),
+    p_lower  = quantile(p, 0.025),
+    p_upper  = quantile(p, 0.975),
+    .groups = "drop"
+  ) %>% 
+  mutate(Latitude = case_when(
+    lat_c == -1 ~ "Low",
+    lat_c == 0  ~ "Mid",
+    lat_c == 1  ~ "High"
+  )) %>%
+  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
+  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) %>% 
+  left_join(antSlopes_long, by = "Latitude") %>% 
+  mutate(Significance = factor(Significance, levels = c("sig", "n.s")))
+
+
+antPlot = ggplot(antPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+  geom_line(size = 1, aes(linetype = Significance)) +
+  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(x = "% Urban Development", y = "Proportion of surveys") +
+  annotation_raster(antImage, ymin = .14, ymax = .16, xmin = 59, xmax = 59 +xxmax)  +
+  theme_minimal()
+antPlot
+
 
 
 ant_slope_draws = antPost_draws %>%
@@ -1024,35 +1128,18 @@ grasshopperPred_grid_long <- pred_grid %>%
     beta_int    = grasshopperPost_draws$beta_int[post_draw],
     beta_method = grasshopperPost_draws$beta_method[post_draw],
     logit_p = beta_0 + beta_dev*dev_c + beta_lat*lat_c + beta_int*(dev_c*lat_c) + beta_method*method,
-    p       = plogis(logit_p)
+    p       = plogis(logit_p),
+    marginal_dev = p * (1 - p) * (beta_dev + beta_int * lat_c)  
   )
 
-grasshopperPred_summary = grasshopperPred_grid_long %>%
-  group_by(dev_c, lat_c) %>%
+grasshopperDevAME =  grasshopperPred_grid_long %>%
+  group_by(post_draw) %>%
+  summarise(AME = mean(marginal_dev), .groups = "drop") %>% 
   summarise(
-    p_median = median(p),
-    p_lower  = quantile(p, 0.025),
-    p_upper  = quantile(p, 0.975),
-    .groups = "drop"
-  ) %>% 
-  mutate(Latitude = case_when(
-    lat_c == -1 ~ "Low",
-    lat_c == 0  ~ "Mid",
-    lat_c == 1  ~ "High"
-  )) %>%
-  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
-  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev))
-
-
-grasshopperPlot = ggplot(grasshopperPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
-  labs(x = "% Urban Development", y = "Prop. of surveys with grasshopper presence") +
-  annotation_raster(grasshopperImage, ymin = .12, ymax = .16, xmin = 15, xmax = 60)  +
-  theme_minimal()
-
+    mean_AME = mean(AME),
+    CI_lower = quantile(AME, 0.025),
+    CI_upper = quantile(AME, 0.975)
+  )
 
 
 grasshopperSlopes = grasshopperPost_draws %>%
@@ -1084,8 +1171,8 @@ grasshopperSlopes = grasshopperPost_draws %>%
     p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
 
 grasshopperSlopes_long = tibble(
-  Latitude = factor(c("low", "mid", "high"),
-                    levels = c("low","mid","high")),
+  Latitude = factor(c("Low", "Mid", "High"),
+                    levels = c("Low", "Mid", "High")),
   Estimate = c(grasshopperSlopes$mean_low,
                grasshopperSlopes$mean_mid,
                grasshopperSlopes$mean_high),
@@ -1100,9 +1187,41 @@ grasshopperSlopes_long = tibble(
                grasshopperSlopes$ci_high_u),
   p_value  = c(grasshopperSlopes$p_low,
                grasshopperSlopes$p_mid,
-               grasshopperSlopes$p_high))
+               grasshopperSlopes$p_high)) %>% 
+  mutate(Significance = ifelse(p_value < 0.05, "sig", "n.s"))
 
 grasshopperSlopes_long
+
+
+grasshopperPred_summary = grasshopperPred_grid_long %>%
+  group_by(dev_c, lat_c) %>%
+  summarise(
+    p_median = median(p),
+    p_lower  = quantile(p, 0.025),
+    p_upper  = quantile(p, 0.975),
+    .groups = "drop"
+  ) %>% 
+  mutate(Latitude = case_when(
+    lat_c == -1 ~ "Low",
+    lat_c == 0  ~ "Mid",
+    lat_c == 1  ~ "High"
+  )) %>%
+  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
+  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) %>% 
+  left_join(grasshopperSlopes_long, by = "Latitude") %>% 
+  mutate(Significance = factor(Significance, levels = c("sig", "n.s")))
+
+
+grasshopperPlot = ggplot(grasshopperPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+  geom_line(size = 1, aes(linetype = Significance)) +
+  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(x = "% Urban Development", y = "Proportion of surveys") +
+  annotation_raster(grasshopperImage, ymin = .12, ymax = .16, xmin = 15, xmax = 15 + xxmax)  +
+  theme_minimal()
+grasshopperPlot
+
 
 
 grasshopper_slope_draws = grasshopperPost_draws %>%
@@ -1154,34 +1273,18 @@ flyPred_grid_long <- pred_grid %>%
     beta_int    = flyPost_draws$beta_int[post_draw],
     beta_method = flyPost_draws$beta_method[post_draw],
     logit_p = beta_0 + beta_dev*dev_c + beta_lat*lat_c + beta_int*(dev_c*lat_c) + beta_method*method,
-    p       = plogis(logit_p)
+    p       = plogis(logit_p),
+    marginal_dev = p * (1 - p) * (beta_dev + beta_int * lat_c)  
   )
 
-flyPred_summary = flyPred_grid_long %>%
-  group_by(dev_c, lat_c) %>%
+flyDevAME =  flyPred_grid_long %>%
+  group_by(post_draw) %>%
+  summarise(AME = mean(marginal_dev), .groups = "drop") %>% 
   summarise(
-    p_median = median(p),
-    p_lower  = quantile(p, 0.025),
-    p_upper  = quantile(p, 0.975),
-    .groups = "drop"
-  ) %>% 
-  mutate(Latitude = case_when(
-    lat_c == -1 ~ "Low",
-    lat_c == 0  ~ "Mid",
-    lat_c == 1  ~ "High"
-  )) %>%
-  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
-  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev))
-
-
-flyPlot = ggplot(flyPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
-  labs(x = "% Urban Development", y = "Prop. of surveys with fly presence") +
-  annotation_raster(flyImage, ymin = .14, ymax = .16, xmin = 20, xmax = 60)  +
-  theme_minimal()
+    mean_AME = mean(AME),
+    CI_lower = quantile(AME, 0.025),
+    CI_upper = quantile(AME, 0.975)
+  )
 
 
 flySlopes = flyPost_draws %>%
@@ -1213,8 +1316,8 @@ flySlopes = flyPost_draws %>%
     p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
 
 flySlopes_long = tibble(
-  Latitude = factor(c("low", "mid", "high"),
-                    levels = c("low","mid","high")),
+  Latitude = factor(c("Low", "Mid", "High"),
+                    levels = c("Low", "Mid", "High")),
   Estimate = c(flySlopes$mean_low,
                flySlopes$mean_mid,
                flySlopes$mean_high),
@@ -1229,9 +1332,40 @@ flySlopes_long = tibble(
                flySlopes$ci_high_u),
   p_value  = c(flySlopes$p_low,
                flySlopes$p_mid,
-               flySlopes$p_high))
+               flySlopes$p_high)) %>% 
+  mutate(Significance = ifelse(p_value < 0.05, "sig", "n.s"))
 
 flySlopes_long
+
+flyPred_summary = flyPred_grid_long %>%
+  group_by(dev_c, lat_c) %>%
+  summarise(
+    p_median = median(p),
+    p_lower  = quantile(p, 0.025),
+    p_upper  = quantile(p, 0.975),
+    .groups = "drop"
+  ) %>% 
+  mutate(Latitude = case_when(
+    lat_c == -1 ~ "Low",
+    lat_c == 0  ~ "Mid",
+    lat_c == 1  ~ "High"
+  )) %>%
+  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
+  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) %>% 
+  left_join(flySlopes_long, by = "Latitude") %>% 
+  mutate(Significance = factor(Significance, levels = c("sig", "n.s")))
+
+
+flyPlot = ggplot(flyPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+  geom_line(size = 1, aes(linetype = Significance)) +
+  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(x = "% Urban Development", y = "Proportion of surveys") +
+  annotation_raster(flyImage, ymin = .14, ymax = .16, xmin = 20, xmax = 20 + xxmax)  +
+  theme_minimal()
+
+flyPlot
 
 
 fly_slope_draws = flyPost_draws %>%
@@ -1284,36 +1418,18 @@ daddylonglegsPred_grid_long <- pred_grid %>%
     beta_int    = daddylonglegsPost_draws$beta_int[post_draw],
     beta_method = daddylonglegsPost_draws$beta_method[post_draw],
     logit_p = beta_0 + beta_dev*dev_c + beta_lat*lat_c + beta_int*(dev_c*lat_c) + beta_method*method,
-    p       = plogis(logit_p)
+    p       = plogis(logit_p),
+    marginal_dev = p * (1 - p) * (beta_dev + beta_int * lat_c)  
   )
 
-daddylonglegsPred_summary = daddylonglegsPred_grid_long %>%
-  group_by(dev_c, lat_c) %>%
+daddylonglegsDevAME =  daddylonglegsPred_grid_long %>%
+  group_by(post_draw) %>%
+  summarise(AME = mean(marginal_dev), .groups = "drop") %>% 
   summarise(
-    p_median = median(p),
-    p_lower  = quantile(p, 0.025),
-    p_upper  = quantile(p, 0.975),
-    .groups = "drop"
-  ) %>% 
-  mutate(Latitude = case_when(
-    lat_c == -1 ~ "Low",
-    lat_c == 0  ~ "Mid",
-    lat_c == 1  ~ "High"
-  )) %>%
-  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
-  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev))
-
-
-daddylonglegsPlot = ggplot(daddylonglegsPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
-  labs(x = "% Urban Development", y = "Prop. of surveys with harvestman presence") +
-  annotation_raster(daddylonglegImage, ymin = .04, ymax = .06, xmin = 60, xmax = 90)  +
-  theme_minimal()
-
-
+    mean_AME = mean(AME),
+    CI_lower = quantile(AME, 0.025),
+    CI_upper = quantile(AME, 0.975)
+  )
 
 daddylonglegsSlopes = daddylonglegsPost_draws %>%
   as.data.frame() %>%
@@ -1344,8 +1460,8 @@ daddylonglegsSlopes = daddylonglegsPost_draws %>%
     p_high = 2 * min(mean(slope_high > 0), mean(slope_high < 0)))
 
 daddylonglegsSlopes_long = tibble(
-  Latitude = factor(c("low", "mid", "high"),
-                    levels = c("low","mid","high")),
+  Latitude = factor(c("Low","Mid","High"),
+                    levels = c("Low","Mid","High")),
   Estimate = c(daddylonglegsSlopes$mean_low,
                daddylonglegsSlopes$mean_mid,
                daddylonglegsSlopes$mean_high),
@@ -1360,9 +1476,42 @@ daddylonglegsSlopes_long = tibble(
                daddylonglegsSlopes$ci_high_u),
   p_value  = c(daddylonglegsSlopes$p_low,
                daddylonglegsSlopes$p_mid,
-               daddylonglegsSlopes$p_high))
+               daddylonglegsSlopes$p_high)) %>% 
+  mutate(Significance = ifelse(p_value < 0.05, "sig", "n.s"))
 
 daddylonglegsSlopes_long
+
+
+daddylonglegsPred_summary = daddylonglegsPred_grid_long %>%
+  group_by(dev_c, lat_c) %>%
+  summarise(
+    p_median = median(p),
+    p_lower  = quantile(p, 0.025),
+    p_upper  = quantile(p, 0.975),
+    .groups = "drop"
+  ) %>% 
+  mutate(Latitude = case_when(
+    lat_c == -1 ~ "Low",
+    lat_c == 0  ~ "Mid",
+    lat_c == 1  ~ "High"
+  )) %>%
+  mutate(Latitude = factor(Latitude, levels = c("Low", "Mid", "High"))) %>% 
+  mutate(dev = dev_c * sd(dataset$dev) + mean(dataset$dev)) %>% 
+  left_join(daddylonglegsSlopes_long, by = "Latitude") %>% 
+  mutate(Significance, factor(Significance, levels = c("Sig", "n.s")))
+
+
+daddylonglegsPlot = ggplot(daddylonglegsPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+  geom_line(size = 1, aes(linetype = Significance)) +
+  geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
+  scale_color_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude") +
+  labs(x = "% Urban Development", y = "Proportion of surveys") +
+  annotation_raster(daddylonglegImage, ymin = .04, ymax = .06, xmin = 55, xmax = 55 + xxmax)  +
+  theme_minimal()
+daddylonglegsPlot
+
+
 
 
 daddylonglegs_slope_draws = daddylonglegsPost_draws %>%
@@ -1395,30 +1544,44 @@ ggplot(daddylonglegs_slope_draws,
   theme_minimal()
 
 
+antlegend = get_legend(antPlot + theme(legend.position = "right")) # choose ant because it has sig and n.s
 
+CaterpillarPlot  = CaterpillarPlot  + theme(legend.position = "none")
+spiderPlot       = spiderPlot       + theme(legend.position = "none")
+beetlePlot       = beetlePlot       + theme(legend.position = "none")
+truebugPlot      = truebugPlot      + theme(legend.position = "none")
+hopperPlot       = hopperPlot       + theme(legend.position = "none")
+antPlot          = antPlot          + theme(legend.position = "none")
+grasshopperPlot  = grasshopperPlot  + theme(legend.position = "none")
 
-ggarrange(CaterpillarPlot +
+ggarrange(CaterpillarPlot + # negative
             annotate("text", x = I(0.05), y = I(0.95), label = "a", size = 8,
                      fontface = "bold"), 
-          spiderPlot +
-            annotate("text", x = I(0.05), y = I(0.95), label = "b", size = 8,
-                     fontface = "bold"), 
-          beetlePlot +
-            annotate("text", x = I(0.05), y = I(0.95), label = "c", size = 8,
-                     fontface = "bold"), 
+          
           truebugPlot +
             annotate("text", x = I(0.05), y = I(0.95), label = "d", size = 8,
+                     fontface = "bold"), 
+          
+          spiderPlot +  # negative
+            annotate("text", x = I(0.05), y = I(0.95), label = "b", size = 8,
                      fontface = "bold"), 
           hopperPlot +
             annotate("text", x = I(0.05), y = I(0.95), label = "e", size = 8,
                      fontface = "bold"), 
+          
+          beetlePlot +  # negative
+            annotate("text", x = I(0.05), y = I(0.95), label = "c", size = 8,
+                     fontface = "bold"), 
+         
           antPlot +
             annotate("text", x = I(0.05), y = I(0.95), label = "f", size = 8,
                      fontface = "bold"),
+          antlegend,
            grasshopperPlot +
             annotate("text", x = I(0.05), y = I(0.95), label = "g", size = 8,
                      fontface = "bold"), 
-          ncol= 2, nrow= 4, common.legend = TRUE, legend = "right")
+          ncol= 2, nrow= 4)
+
 
 
 
@@ -1452,12 +1615,15 @@ posteriorSlopes %>%
   ) %>% 
   gtsave("images/tableS2.png")
 
-ggplot(posteriorSlopes, aes(Estimate, Arthropod, color = Latitude)) +
-  geom_point(position = position_dodge(width = 0.5)) +
+posteriorSlopes %>% 
+  filter(!Arthropod %in% c( "Daddylonglegs", "Fly")) %>% 
+ggplot( aes(Estimate, Arthropod, color = Latitude)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
   geom_errorbar(aes(xmin = CI_lower, xmax = CI_upper),
                  position = position_dodge(width = 0.5)) +
   scale_color_viridis_d(name = "Latitude") +
   geom_vline(xintercept = 0, linetype = "dashed") +
+  labs(x = "Estimates") +
   theme_minimal()
 
 
@@ -1478,19 +1644,73 @@ diagnostics_table %>%
   ) %>% 
   gtsave("images/table S1.png")
 
+
+# Average marginal effects
+
+
+
+AME = bind_rows(
+  Caterpillar = caterpillarDevAME,
+  Beetle      = beetleDevAME,
+  Spider      = spiderDevAME,
+  TrueBug     = truebugDevAME,
+  Hopper      = hopperDevAME,
+  Ant         = antDevAME,
+  Grasshopper = grasshopperDevAME,
+  Daddylonglegs = daddylonglegsDevAME,
+  Fly        = flyDevAME,
+  .id = "Arthropod"
+)
+
+AME %>% 
+  filter(!Arthropod %in% c("Daddylonglegs", "Fly")) %>% 
+ggplot(aes(x = mean_AME, y = reorder(Arthropod, mean_AME))) +
+  geom_point(size = 3) +
+  geom_errorbarh(aes(xmin = CI_lower, xmax = CI_upper), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  labs(
+    x = "Average Marginal Effect of Urbanization",
+    y = "Arthropod Group"
+  ) +
+  theme_minimal(base_size = 14)
 ##################################################################################
 
  
 
+AME_plot = AME %>%
+  mutate(image = case_when(
+    Arthropod == "Caterpillar"   ~ "images/caterpillar.png",
+    Arthropod == "Beetle"        ~ "images/beetle.png",
+    Arthropod == "Spider"        ~ "images/spider.png",
+    Arthropod == "TrueBug"       ~ "images/truebugs.png",
+    Arthropod == "Hopper"        ~ "images/leafhopper.png",
+    Arthropod == "Ant"           ~ "images/ant.png",
+    Arthropod == "Grasshopper"   ~ "images/grasshopper.png",
+    Arthropod == "Daddylonglegs" ~ "images/daddylongleg.png",
+    Arthropod == "Fly"           ~ "images/fly.png"
+  ))
 
 
 
 
-
-
-
-
-
+AME_plot %>%
+  filter(!Arthropod %in% c("Daddylonglegs", "Fly")) %>%
+  ggplot(aes(x = mean_AME,
+             y = reorder(Arthropod, mean_AME))) +
+  geom_errorbarh(aes(xmin = CI_lower, xmax = CI_upper), color = "darkgrey",  height = 0.2) +
+  geom_point(size = 3, color = "darkgrey") +
+  geom_image(
+    aes(image = image),
+    size = 0.06,
+    asp = 1.5, # aspect ratio
+    position = position_nudge(y = 0.3)
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  labs(
+    x = "Average Marginal Effect of Urbanization",
+    y = "Arthropod Group"
+  ) +
+  theme_minimal(base_size = 14)
 
 
 
