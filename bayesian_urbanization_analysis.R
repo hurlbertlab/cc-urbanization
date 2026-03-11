@@ -1673,6 +1673,22 @@ ggplot(aes(x = mean_AME, y = reorder(Arthropod, mean_AME))) +
     y = "Arthropod Group"
   ) +
   theme_minimal(base_size = 14)
+
+AME %>% 
+  filter(!Arthropod %in% c("Fly", "DaddyLonglegs")) %>% 
+  rename("2.5% CI" =  "CI_lower",
+         "97.5% CI" =  "CI_upper",
+         "Mean" = "mean_AME"
+  ) %>% 
+  gt() %>% 
+  tab_header(
+    title = "Average marginal effects of urban development (%)"
+  ) %>% 
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 3
+  ) %>% 
+  gtsave("images/table S3.png")
 ##################################################################################
 
  
