@@ -23,6 +23,7 @@ fullDataset <- read.csv(paste0(github_raw, latest_file))
 exp.id = read.csv("data/exp.csv") # what generates this data?
 # View(exp.id)
 
+sites = read.csv("data/sites.csv") # the site information (lat, lon, name, region, urban dev)
 
 fullDataset.ID = left_join(fullDataset %>% 
                              rename("key" = "arthID"), 
@@ -42,7 +43,7 @@ idClass <- fullDataset.ID %>%
   ) %>%
   filter(Rank %in% c("subfamily", "tribe", "subtribe", "genus", "subgenus", 
                      "species", "subspecies", "complex", "form", "section")) %>%
-  select(Group, TaxonName, Latitude, Longitude, Rank) %>%
+  dplyr::select(Group, TaxonName, Latitude, Longitude, Rank) %>%
   mutate(Taxon = word(TaxonName, 1)) %>%
   mutate(
     Rank = case_when(
@@ -442,15 +443,17 @@ fly.plot20
       y = "Taxa Score"
     )
   leafhopper.plot20
-  
-  
+
+
+  # Selecting the most important taxa within each arthropod group (up to 90% cumulative contribution),
+  # combining all groups, and then recalculating relative percentages within each group.
   
 minScore= 0.9
 
 filter_top_taxa <- function(df, group_name, minScore) {
   df %>%
-    { if (nrow(.) < 6) . 
-      else filter(., cum_Taxa_score_rel <= minScore) } %>%
+    { if (nrow(.) < 6) . # if the nrows is less than 6, keep everything
+      else filter(., cum_Taxa_score_rel <= minScore) } %>% # else use top 90% contributors (it was ranked!)
     mutate(Group = group_name)
 }
 
@@ -465,7 +468,7 @@ arthropodID <- bind_rows(
   filter_top_taxa(grasshopperID, "Grasshopper", minScore),
   filter_top_taxa(daddylonglegsID, "Daddylonglegs", minScore)
 ) %>%
-  mutate(
+  mutate( # Within each group, you rescale the remaining taxa so they sum to 100%
     Taxa_score_rel.100 = case_when(
       Group == "Ant" ~ Taxa_score / sum(Taxa_score[Group == "Ant"]) * 100,
       Group == "Caterpillar" ~ Taxa_score / sum(Taxa_score[Group == "Caterpillar"]) * 100,
@@ -524,27 +527,64 @@ arthropod_ranks_update
 # prepare data for wilcoxon ranked sum test. 
 # I do not trust this part of the analysis.
 
-rank.data <- left_join(arthropod_ranks_update %>% select(Group, Rank_update, Herbivore.score), 
-                       species_score.d %>% 
-                         select(Group, Rank) %>% 
-                         mutate(Group = c("Caterpillar",
-                                          "Spider",
-                                          "Beetle",
-                                          "Truebugs",
-                                          "Leafhopper",
-                                          "Ant",
-                                          "Fly",
-                                          "Grasshopper",
-                                          "Daddylonglegs"
-                                          )),
-                       by = "Group") # from the RDA result
 
-wilcox.test(
-  as.numeric(rank.data$Rank_update),
-  as.numeric(rank.data$Rank),
-  exact = FALSE
-)
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
+allID = idClass %>%
+  group_by(Group, Rank, Taxon) %>%
+  summarise(
+    nofCount = sum(nofCount),
+    Prop_count = nofCount / sum(nofCount),
+    nSite = n_distinct(Name),
+    prop_site_pa = nSite / n_distinct(idClass$Name),
+    Taxa_score = Prop_count * prop_site_pa,
+    .groups = "drop"
+  ) %>%
+  arrange(Group, desc(Taxa_score)) %>%
+  group_by(Group) %>%
+  mutate(
+    Taxon = factor(Taxon, levels = unique(Taxon))
+  ) %>%
+  ungroup()
+
+top20_allID = allID %>%
+  group_by(Group) %>%
+  slice_max(order_by = Taxa_score, n = 20) %>%
+  ungroup()
+
+Cat.Bet.Spi = ggplot(
+  top20_allID %>% filter(Group %in% c("beetle", "caterpillar", "spider")),
+  aes(x = reorder(Taxon, -Taxa_score), y = Taxa_score)
+) +
+  geom_bar(stat = "identity", alpha = 0.6,
+           aes(colour = Rank, fill = Rank)) +
+  facet_wrap(~ Group, scales = "free_x", nrow = 3, ncol = 1) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 85, hjust = 1, vjust = 1)
+  ) +
+  labs(
+    x = "",
+    y = "Taxa Score"
+  )
+Cat.Bet.Spi
 
 
+
+ant.grasshop.truebug.leafhop = ggplot(
+  top20_allID %>% filter(Group %in% c("ant", "grasshopper", "leafhopper", "truebugs")),
+  aes(x = reorder(Taxon, -Taxa_score), y = Taxa_score)
+) +
+  geom_bar(stat = "identity", alpha = 0.6,
+           aes(colour = Rank, fill = Rank)) +
+  facet_wrap(~ Group, scales = "free_x", nrow = 4, ncol = 1) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 85, hjust = 1, vjust = 1)
+  ) +
+  labs(
+    x = "",
+    y = "Taxa Score"
+  )
+ant.grasshop.truebug.leafhop

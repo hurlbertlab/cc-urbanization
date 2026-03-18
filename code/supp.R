@@ -277,3 +277,18 @@ ggplot(
     labs(subtitle = "alienRatio = alien/native per site")+
     theme_bw()
 
+  
+  
+statusPersite =   ccdata %>% 
+    group_by(Latitude, dev) %>% 
+    summarise(nSurvs = mean(nSurvs),
+              alienRatio = sum(plantOrigin == "alien", na.rm = TRUE) /
+                sum(plantOrigin == "native", na.rm = TRUE),
+              alienProp = sum(plantOrigin == "alien", na.rm = TRUE)/ nSurvs,
+              nativeProp =  sum(plantOrigin == "native", na.rm = TRUE)/ nSurvs) %>% 
+    as.data.frame()
+  
+  
+alien.dev = glm(alienProp  ~ dev + Latitude, 
+                   data = statusPersite, weights = nSurvs,  family = "binomial")
+summary(alien.dev)
