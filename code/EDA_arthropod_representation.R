@@ -499,29 +499,30 @@ topID_feed <- left_join(arthropodID, feed_top, by = "Taxon") %>%
   mutate(Herbivore.score = Herbivore *Taxa_score_rel.100,
          Detritivore.score = Detritivore * Taxa_score_rel.100,
          Scavangers.score = Scavangers * Taxa_score_rel.100,
-         Predator.score = Predator * Taxa_score_rel.100)
+         Predator.score = Predator * Taxa_score_rel.100,
+         Flight_disperse.score = Dispersal_Flight * Taxa_score_rel.100)
 
 summary.topID_feed  <- topID_feed %>% 
   group_by(Group) %>% 
   summarise(Herbivore.score = sum(Herbivore.score),
             Detritivore.score = sum(Detritivore.score),
             Scavangers.score = sum(Scavangers.score),
-            Predator.score = sum(Predator.score)
+            Predator.score = sum(Predator.score),
+            Flight_disperse.score = sum(Flight_disperse.score)
             ) %>% 
   arrange(desc(Herbivore.score))
 
 topID_feed %>% 
-  select(Group, Herbivore, Herbivore.score, Taxa_score_rel.100)
+  select(Group, Herbivore, Herbivore.score, Flight_disperse.score,Taxa_score_rel.100)
 
-topID_feed %>% select(Group, Herbivore.score)
+topID_feed %>% select(Group, Herbivore.score, Flight_disperse.score)
 
 
 
 
 arthropod_ranks_update = summary.topID_feed %>% 
-  select(Group, Herbivore.score) %>% 
-  mutate(Rank_update = rownames(summary.topID_feed),
-         ) %>% as.data.frame()
+  select(Group, Herbivore.score, Flight_disperse.score) %>% as.data.frame()
+ # mutate(Rank_update = rownames(summary.topID_feed),) %>% 
 
 arthropod_ranks_update
 # prepare data for wilcoxon ranked sum test. 
