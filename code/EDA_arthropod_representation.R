@@ -46,7 +46,7 @@ idClass <- fullDataset.ID %>%
   dplyr::select(Group, TaxonName, Latitude, Longitude, Rank) %>%
   mutate(Taxon = word(TaxonName, 1)) %>%
   mutate(
-    Rank = case_when(
+    Rank = case_when( # collaps genus and below to genus (for simplicity)
       Rank %in% c("subgenus", "species", "subspecies", "complex", "form", "section") ~ "genus",
       TRUE ~ Rank
     )
@@ -55,10 +55,10 @@ idClass <- fullDataset.ID %>%
     sites %>% distinct(Latitude, .keep_all = TRUE),
     by = "Latitude"
   ) %>%
-  group_by(Group, Name, Rank, Taxon) %>%
+  group_by(Group, Name, Rank, Taxon) %>% 
   summarise(
     nOfTaxon = n_distinct(TaxonName, na.rm = TRUE),
-    nofCount = n(),
+    nofCount = n(), #take the number of times the taxon was mentioned
     .groups = "drop"
   )
 
@@ -445,10 +445,10 @@ fly.plot20
   leafhopper.plot20
 
 
-  # Selecting the most important taxa within each arthropod group (up to 90% cumulative contribution),
+  # Selecting the most important taxa within each arthropod group (up to 95% cumulative contribution),
   # combining all groups, and then recalculating relative percentages within each group.
   
-minScore= 0.9
+minScore= 0.95
 
 filter_top_taxa <- function(df, group_name, minScore) {
   df %>%
@@ -492,36 +492,36 @@ sum(arthropodID [arthropodID$Group == "Spider",]$Taxa_score_rel.100)
  
 
 
-feed_top <- read_excel("data/topId feeding guild.xlsx") %>% 
-  select(-c(Rank, Group,))
+feed_top <- read_excel("data/topId feeding guild.xlsx", sheet = "topID2") %>% 
+  dplyr::select(-c(Rank, Group,))
 
 topID_feed <- left_join(arthropodID, feed_top, by = "Taxon") %>% 
   mutate(Herbivore.score = Herbivore *Taxa_score_rel.100,
-         Detritivore.score = Detritivore * Taxa_score_rel.100,
-         Scavangers.score = Scavangers * Taxa_score_rel.100,
+         # Detritivore.score = Detritivore * Taxa_score_rel.100,
+         # Scavangers.score = Scavangers * Taxa_score_rel.100,
          Predator.score = Predator * Taxa_score_rel.100,
          Flight_disperse.score = Dispersal_Flight * Taxa_score_rel.100)
 
 summary.topID_feed  <- topID_feed %>% 
   group_by(Group) %>% 
   summarise(Herbivore.score = sum(Herbivore.score),
-            Detritivore.score = sum(Detritivore.score),
-            Scavangers.score = sum(Scavangers.score),
+            # Detritivore.score = sum(Detritivore.score),
+            # Scavangers.score = sum(Scavangers.score),
             Predator.score = sum(Predator.score),
             Flight_disperse.score = sum(Flight_disperse.score)
             ) %>% 
   arrange(desc(Herbivore.score))
 
 topID_feed %>% 
-  select(Group, Herbivore, Herbivore.score, Flight_disperse.score,Taxa_score_rel.100)
+  dplyr::select(Group, Herbivore, Herbivore.score, Flight_disperse.score,Taxa_score_rel.100)
 
-topID_feed %>% select(Group, Herbivore.score, Flight_disperse.score)
+topID_feed %>% dplyr::select(Group, Herbivore.score, Flight_disperse.score)
 
 
 
 
 arthropod_ranks_update = summary.topID_feed %>% 
-  select(Group, Herbivore.score, Flight_disperse.score) %>% as.data.frame()
+  dplyr::select(Group, Herbivore.score, Flight_disperse.score) %>% as.data.frame()
  # mutate(Rank_update = rownames(summary.topID_feed),) %>% 
 
 arthropod_ranks_update

@@ -289,6 +289,6 @@ statusPersite =   ccdata %>%
     as.data.frame()
   
   
-alien.dev = glm(alienProp  ~ dev + Latitude, 
+alien.dev = glm(alienProp  ~ dev * Latitude, 
                    data = statusPersite, weights = nSurvs,  family = "binomial")
 summary(alien.dev)
