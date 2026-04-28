@@ -474,7 +474,7 @@ spiderPlot = ggplot(spiderPred_summary, aes(x = dev, y = p_median, color = facto
   scale_color_viridis_d(name = "Latitude") +
   scale_fill_viridis_d(name = "Latitude") +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
-  annotation_raster(spiderImage, ymin = .29, ymax = 0.33, xmin = 60, xmax = 60 + xxmax) +
+  annotation_raster(spiderImage, ymin = .29, ymax = 0.35, xmin = 60, xmax = 60 + xxmax) +
   theme_minimal()
 
 spiderPlot
@@ -617,7 +617,7 @@ beetlePlot = ggplot(beetlePred_summary, aes(x = dev, y = p_median, color = facto
   scale_color_viridis_d(name = "Latitude") +
   scale_fill_viridis_d(name = "Latitude") +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
-  annotation_raster(beetleImage, ymin = .28, ymax = .28 + yymax, xmin = 60, xmax = 60 + xxmax -10)  +
+  annotation_raster(beetleImage, ymin = .28, ymax = .30 + yymax, xmin = 65, xmax = 60 + xxmax -10)  +
   theme_minimal()
 
 beetlePlot
@@ -783,7 +783,7 @@ truebugPlot = ggplot(truebugPred_summary, aes(x = dev, y = p_median, color = fac
   scale_color_viridis_d(name = "Latitude") +
   scale_fill_viridis_d(name = "Latitude") +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
-  annotation_raster(truebugImage, ymin = .09, ymax = .11, xmin = 0, xmax = 0 + xxmax) +
+  annotation_raster(truebugImage, ymin = .1, ymax = .128, xmin = 0, xmax = 0 + xxmax) +
   theme_minimal()
 
 truebugPlot
@@ -928,7 +928,7 @@ hopperPlot = ggplot(hopperPred_summary, aes(x = dev, y = p_median, color = facto
   scale_color_viridis_d(name = "Latitude") +
   scale_fill_viridis_d(name = "Latitude") +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
-  annotation_raster(hopperImage, ymin = .07, ymax = .095, xmin = 60, xmax = 60 + xxmax)  +
+  annotation_raster(hopperImage, ymin = .07, ymax = .1, xmin = 60, xmax = 60 + xxmax)  +
   theme_minimal()
 hopperPlot
 
@@ -1066,13 +1066,14 @@ antPred_summary = antPred_grid_long %>%
   mutate(Significance = factor(Significance, levels = c("sig", "n.s")))
 
 
-antPlot = ggplot(antPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
+antPlot = ggplot(antPred_summary %>% mutate(Significance = ifelse(Significance== "n.s", "p > 0.05", "p < 0.05")),
+                 aes(x = dev, y = p_median, color = factor(Latitude))) +
   geom_line(size = 1, aes(linetype = Significance)) +
   geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
   scale_color_viridis_d(name = "Latitude") +
   scale_fill_viridis_d(name = "Latitude") +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
-  annotation_raster(antImage, ymin = .14, ymax = .16, xmin = 59, xmax = 59 +xxmax)  +
+  annotation_raster(antImage, ymin = .13, ymax = .152, xmin = 59, xmax = 59 +xxmax)  +
   theme_minimal()
 antPlot
 
@@ -1218,10 +1219,11 @@ grasshopperPlot = ggplot(grasshopperPred_summary, aes(x = dev, y = p_median, col
   scale_color_viridis_d(name = "Latitude") +
   scale_fill_viridis_d(name = "Latitude") +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
-  annotation_raster(grasshopperImage, ymin = .12, ymax = .16, xmin = 15, xmax = 15 + xxmax)  +
+  annotation_raster(grasshopperImage, ymin = .125, ymax = .16, xmin = 5, xmax = xxmax-10)  +
   theme_minimal()
 grasshopperPlot
 
+#xxmax 
 
 
 grasshopper_slope_draws = grasshopperPost_draws %>%
@@ -1554,35 +1556,35 @@ hopperPlot       = hopperPlot       + theme(legend.position = "none")
 antPlot          = antPlot          + theme(legend.position = "none")
 grasshopperPlot  = grasshopperPlot  + theme(legend.position = "none")
 
+
+
 ggarrange(CaterpillarPlot + # negative
             annotate("text", x = I(0.05), y = I(0.95), label = "a", size = 8,
                      fontface = "bold"), 
           
-          truebugPlot +
+          grasshopperPlot +
             annotate("text", x = I(0.05), y = I(0.95), label = "d", size = 8,
                      fontface = "bold"), 
           
           spiderPlot +  # negative
             annotate("text", x = I(0.05), y = I(0.95), label = "b", size = 8,
                      fontface = "bold"), 
-          hopperPlot +
+          antPlot +
             annotate("text", x = I(0.05), y = I(0.95), label = "e", size = 8,
                      fontface = "bold"), 
           
           beetlePlot +  # negative
             annotate("text", x = I(0.05), y = I(0.95), label = "c", size = 8,
                      fontface = "bold"), 
-         
-          antPlot +
-            annotate("text", x = I(0.05), y = I(0.95), label = "f", size = 8,
+          
+          hopperPlot +
+            annotate("text", x = I(0.05), y = I(0.93), label = "f", size = 8,
                      fontface = "bold"),
-          antlegend,
-           grasshopperPlot +
+          antlegend,# this is for the legend
+          truebugPlot +
             annotate("text", x = I(0.05), y = I(0.95), label = "g", size = 8,
                      fontface = "bold"), 
           ncol= 2, nrow= 4)
-
-
 
 
 
@@ -1694,27 +1696,40 @@ AME %>%
  
 
 AME_plot = AME %>%
-  mutate(image = case_when(
-    Arthropod == "Caterpillar"   ~ "images/caterpillar.png",
-    Arthropod == "Beetle"        ~ "images/beetle.png",
-    Arthropod == "Spider"        ~ "images/spider.png",
-    Arthropod == "TrueBug"       ~ "images/truebugs.png",
-    Arthropod == "Hopper"        ~ "images/leafhopper.png",
-    Arthropod == "Ant"           ~ "images/ant.png",
-    Arthropod == "Grasshopper"   ~ "images/grasshopper.png",
-    Arthropod == "Daddylonglegs" ~ "images/daddylongleg.png",
-    Arthropod == "Fly"           ~ "images/fly.png"
-  ))
+  mutate(
+    image = case_when(
+      Arthropod == "Caterpillar"   ~ "images/caterpillar.png",
+      Arthropod == "Beetle"        ~ "images/beetle.png",
+      Arthropod == "Spider"        ~ "images/spider.png",
+      Arthropod == "TrueBug"       ~ "images/truebugs.png",
+      Arthropod == "Hopper"        ~ "images/leafhopper.png",
+      Arthropod == "Ant"           ~ "images/ant.png",
+      Arthropod == "Grasshopper"   ~ "images/grasshopper.png",
+      Arthropod == "Daddylonglegs" ~ "images/daddylongleg.png",
+      Arthropod == "Fly"           ~ "images/fly.png"
+    ),
+    Arthropod = case_when(
+      Arthropod == "Caterpillar"   ~ "Caterpillars",
+      Arthropod == "Beetle"        ~ "Beetles",
+      Arthropod == "Spider"        ~ "Spiders",
+      Arthropod == "TrueBug"       ~ "True bugs",
+      Arthropod == "Hopper"        ~ "Hoppers & Cicadas",
+      Arthropod == "Ant"           ~ "Ants",
+      Arthropod == "Grasshopper"   ~ "Orthopterans",
+      Arthropod == "Daddylonglegs" ~ "Daddylonglegs",
+      Arthropod == "Fly"           ~ "Flies"
+    )
+  )
 
 
 
 
 AME_plot %>%
-  filter(!Arthropod %in% c("Daddylonglegs", "Fly")) %>%
+  filter(!Arthropod %in% c("Daddylonglegs", "Flies")) %>%
   ggplot(aes(x = mean_AME,
              y = reorder(Arthropod, mean_AME))) +
-  geom_errorbarh(aes(xmin = CI_lower, xmax = CI_upper), color = "darkgrey",  height = 0.2) +
-  geom_point(size = 3, color = "darkgrey") +
+  geom_errorbarh(aes(xmin = CI_lower, xmax = CI_upper), color = "grey20",  height = 0.2) +
+  geom_point(size = 3, color = "grey20") +
   geom_image(
     aes(image = image),
     size = 0.06,

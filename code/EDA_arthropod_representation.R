@@ -70,7 +70,10 @@ total_sites= length(unique(idClass$Name))
 spider_sites = length(unique(idClass[idClass$Group=="spider",]$Name))
 prop_spider_site = spider_sites/total_sites
 
+idClassFilter = idClass %>%  # remove the group that do not make it to the manuscript
+  filter(!Group %in% c("daddylonglegs", "fly"))
 
+ sum(idClassFilter$nofCount) # total number of survey with ID at the genus, subfamily, tribe level in good data
 
 # Spider
   spiderID <- idClass %>% 
