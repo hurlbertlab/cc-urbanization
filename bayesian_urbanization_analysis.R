@@ -156,7 +156,7 @@ plot_data <- rbind(
   simulate_lines( 1.3, 0,    "Positive effect, no UHI"),
   simulate_lines(-1.3, 1.25, "Negative effect, UHI"),
   simulate_lines(-1.3, 0,    "Negative effect, no UHI")
-) %>% mutate(Latitude = factor(Latitude, levels= c("High", "Mid", "Low")))
+) %>% mutate(Latitude = factor(Latitude, levels= c("Low", "Mid", "High")))
 
 
 hypothesisPlot = ggplot(plot_data, aes(dev, response, color = Latitude)) +
