@@ -13,6 +13,7 @@ library(posterior)
 library(ggdist)
 library(png)
 library(ggimage)
+library(sf)
 # Load the rjags model fits saved as rds files ----
 
 caterpillarFit = readRDS("caterpillarFit.rds")
@@ -161,7 +162,7 @@ plot_data <- rbind(
 
 hypothesisPlot = ggplot(plot_data, aes(dev, response, color = Latitude)) +
   geom_line(linewidth = 2) +
-  scale_color_viridis_d() +
+  scale_color_viridis_d(direction = -1) +
   facet_wrap(~Scenario, ncol = 2) +
   theme_bw(base_size = 13) +
   theme(
@@ -191,6 +192,23 @@ hypothesisPlot +
             vjust = 1.5,
             size = 5,
             fontface = "bold")
+
+plot_data %>% 
+  filter(Scenario %in% c("Positive effect, UHI", "Negative effect, UHI")) %>% 
+  ggplot(aes(dev, response, color = Latitude)) +
+  geom_line(linewidth = 2) +
+  scale_color_viridis_d(direction = -1) +
+  facet_wrap(~Scenario, ncol = 2) +
+  theme_bw(base_size = 13) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    y = "Proportion of survey with arthropod",
+    x = "% Urban development"
+  )
 
 ################################################################################
 
@@ -325,8 +343,8 @@ caterpillarPred_summary = caterpillarPred_grid_long %>%
 CaterpillarPlot = ggplot(caterpillarPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
   geom_line(size = 1, aes(linetype = Significance)) +
   geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
+  scale_color_viridis_d(name = "Latitude", direction = -1) +
+  scale_fill_viridis_d(name = "Latitude", direction = -1) +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
   annotation_raster(catImage, ymin = .085, ymax = .085 + yymax, xmin = 60, xmax = 60 + xxmax) +
   theme_minimal()
@@ -353,8 +371,8 @@ caterpillar_slope_draws = caterpillarPost_draws %>%
 
 ggplot(caterpillar_slope_draws, aes(x = Slope, y = Latitude, fill = Latitude)) +
   stat_halfeye(.width = 0.95) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
+  scale_color_viridis_d(name = "Latitude", direction = -1) +
+  scale_fill_viridis_d(name = "Latitude", direction = -1) +
   labs(
     x = "Urbanization effect",
     y = "",
@@ -471,8 +489,8 @@ spiderPred_summary = spiderPred_grid_long %>%
 spiderPlot = ggplot(spiderPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
   geom_line(size = 1, aes(linetype = Significance)) +
   geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
+  scale_color_viridis_d(name = "Latitude", direction = -1) +
+  scale_fill_viridis_d(name = "Latitude", direction = -1) +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
   annotation_raster(spiderImage, ymin = .29, ymax = 0.35, xmin = 60, xmax = 60 + xxmax) +
   theme_minimal()
@@ -499,7 +517,7 @@ spider_slope_draws = spiderPost_draws %>%
 ggplot(spider_slope_draws,
        aes(x = Slope, y = Latitude, fill = Latitude)) +
   stat_halfeye(.width = 0.95) +
-  scale_fill_viridis_d(name = "Latitude") +
+  scale_fill_viridis_d(name = "Latitude", direction = -1) +
   labs(
     x = "Urbanization effect",
     y = "",
@@ -614,8 +632,8 @@ beetlePred_summary = beetlePred_grid_long %>%
 beetlePlot = ggplot(beetlePred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
   geom_line(size = 1, aes(linetype = Significance)) +
   geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
+  scale_color_viridis_d(name = "Latitude", direction = -1) +
+  scale_fill_viridis_d(name = "Latitude", direction = -1) +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
   annotation_raster(beetleImage, ymin = .28, ymax = .30 + yymax, xmin = 65, xmax = 60 + xxmax -10)  +
   theme_minimal()
@@ -780,8 +798,8 @@ truebugPred_summary = truebugPred_grid_long %>%
 truebugPlot = ggplot(truebugPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
   geom_line(size = 1, aes(linetype = Significance)) +
   geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
+  scale_color_viridis_d(name = "Latitude", direction = -1) +
+  scale_fill_viridis_d(name = "Latitude", direction = -1) +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
   annotation_raster(truebugImage, ymin = .1, ymax = .128, xmin = 0, xmax = 0 + xxmax) +
   theme_minimal()
@@ -925,8 +943,8 @@ hopperPred_summary = hopperPred_grid_long %>%
 hopperPlot = ggplot(hopperPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
   geom_line(size = 1, aes(linetype = Significance)) +
   geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
+  scale_color_viridis_d(name = "Latitude", direction = -1) +
+  scale_fill_viridis_d(name = "Latitude", direction = -1) +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
   annotation_raster(hopperImage, ymin = .07, ymax = .1, xmin = 60, xmax = 60 + xxmax)  +
   theme_minimal()
@@ -1070,8 +1088,8 @@ antPlot = ggplot(antPred_summary %>% mutate(Significance = ifelse(Significance==
                  aes(x = dev, y = p_median, color = factor(Latitude))) +
   geom_line(size = 1, aes(linetype = Significance)) +
   geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
+  scale_color_viridis_d(name = "Latitude", direction = -1) +
+  scale_fill_viridis_d(name = "Latitude", direction = -1) +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
   annotation_raster(antImage, ymin = .13, ymax = .152, xmin = 59, xmax = 59 +xxmax)  +
   theme_minimal()
@@ -1216,8 +1234,8 @@ grasshopperPred_summary = grasshopperPred_grid_long %>%
 grasshopperPlot = ggplot(grasshopperPred_summary, aes(x = dev, y = p_median, color = factor(Latitude))) +
   geom_line(size = 1, aes(linetype = Significance)) +
   geom_ribbon(aes(ymin = p_lower, ymax = p_upper, fill = Latitude), alpha = 0.2, color = NA) +
-  scale_color_viridis_d(name = "Latitude") +
-  scale_fill_viridis_d(name = "Latitude") +
+  scale_color_viridis_d(name = "Latitude", direction = -1) +
+  scale_fill_viridis_d(name = "Latitude", direction = -1) +
   labs(x = "% Urban Development", y = "Proportion of surveys") +
   annotation_raster(grasshopperImage, ymin = .125, ymax = .16, xmin = 5, xmax = xxmax-10)  +
   theme_minimal()
@@ -1677,14 +1695,14 @@ ggplot(aes(x = mean_AME, y = reorder(Arthropod, mean_AME))) +
   theme_minimal(base_size = 14)
 
 AME %>% 
-  filter(!Arthropod %in% c("Fly", "DaddyLonglegs")) %>% 
+  filter(!Arthropod %in% c("Fly", "Daddylonglegs")) %>% 
   rename("2.5% CI" =  "CI_lower",
          "97.5% CI" =  "CI_upper",
          "Mean" = "mean_AME"
   ) %>% 
   gt() %>% 
   tab_header(
-    title = "Average marginal effects of urban development (%)"
+    title = "Table S3: Average marginal effects of urban development (%)"
   ) %>% 
   fmt_number(
     columns = where(is.numeric),
