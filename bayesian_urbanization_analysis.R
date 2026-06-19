@@ -14,6 +14,25 @@ library(ggdist)
 library(png)
 library(ggimage)
 library(sf)
+
+library(geodata)
+library(terra)
+library(rvest)
+library(stringr)
+library(lubridate)
+library(terra)
+library(ggplot2)
+library(interactions)
+library(ggpubr)
+library(png)
+library(maps)
+library(viridisLite)
+library(vioplot)
+library(tibble)
+library(jsonlite)
+library(magick)
+require(vegan)
+
 # Load the rjags model fits saved as rds files ----
 
 caterpillarFit = readRDS("caterpillarFit.rds")
@@ -160,6 +179,7 @@ plot_data <- rbind(
 ) %>% mutate(Latitude = factor(Latitude, levels= c("Low", "Mid", "High")))
 
 
+
 hypothesisPlot = ggplot(plot_data, aes(dev, response, color = Latitude)) +
   geom_line(linewidth = 2) +
   scale_color_viridis_d(direction = -1) +
@@ -210,6 +230,91 @@ plot_data %>%
     x = "% Urban development"
   )
 
+################### Trying the plotting again-------------------
+
+base_plot = list( # this is just a template list
+  geom_line(linewidth = 2),
+  scale_color_manual(
+    values = c(
+      "Low"  = "grey85",
+      "Mid"  = "grey35",
+      "High" = "black"
+    )
+  ),
+  theme_bw(base_size = 13),
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  ),
+  labs(
+    y = "Arthropod occurence (%)",
+    x = "% Urban development"
+  ))
+
+positive_uhi = plot_data %>%
+  filter(Scenario == "Positive effect, UHI") %>%
+  ggplot(aes(dev, response, color = Latitude)) +
+  base_plot +
+  ggtitle(" Positive urbanization effect that is stronger at higher latitude")
+
+positive_no_uhi <- plot_data %>%
+  filter(Scenario == "Positive effect, no UHI") %>%
+  ggplot(aes(dev, response, color = Latitude)) +
+  base_plot +
+  ggtitle(" Positive effect, no UHI")
+
+negative_uhi <- plot_data %>%
+  filter(Scenario == "Negative effect, UHI") %>%
+  ggplot(aes(dev, response, color = Latitude)) +
+  base_plot +
+  ggtitle(" Negative Urbanization effect that is stronger at lower latitude")
+
+negative_no_uhi <- plot_data %>%
+  filter(Scenario == "Negative effect, no UHI") %>%
+  ggplot(aes(dev, response, color = Latitude)) +
+  base_plot +
+  ggtitle(" Negative effect, no UHI")
+
+positive_uhi_negInt = plot_data %>%
+  filter(Scenario == "Positive effect, UHI") %>%
+  ggplot(aes(dev, response, color = Latitude)) +
+  geom_line(linewidth = 2)+
+  scale_color_manual(
+    values = c(
+      "Low"  = "black",
+      "Mid"  = "grey35",
+      "High" = "grey85"
+    )
+  )+
+theme_bw(base_size = 13) +
+theme(
+  axis.text = element_blank(),
+  axis.ticks = element_blank(),
+  panel.grid = element_blank()) +
+labs(
+  y = "Arthropod occurence (%)",
+  x = "% Urban development"
+)+ ggtitle(" Positive urbanization effect that is stronger at lower latitude")
+
+positive_uhi
+negative_uhi
+positive_uhi_negInt
+
+
+hypothesis_plot2 <- ggarrange(
+  negative_uhi,
+  positive_uhi,
+  positive_uhi_negInt,
+  ncol = 1,
+  nrow = 3,
+  labels = c("A)", "B)", "C)"),
+  common.legend = TRUE,
+  legend = "right"
+)
+
+hypothesis_plot2
+
 ################################################################################
 
 dataset$dev_c = as.numeric(scale(dataset$dev))
@@ -221,6 +326,10 @@ dataset$method = as.numeric(dataset$ObservationMethod == "Visual")
 # Three latitude levels: -1 SD, mean (0), +1 SD
 lat_levels = c(-1, 0, 1)
 
+# levels of urbanization to compare: 95% and 5%
+
+dev_low  <- quantile(dataset$dev_c, 0.05)
+dev_high <- quantile(dataset$dev_c, 0.95)
 pred_grid = expand.grid(
   dev_c = seq(min(dataset$dev_c), max(dataset$dev_c), length.out = 50),
   lat_c = lat_levels,
@@ -382,8 +491,90 @@ ggplot(caterpillar_slope_draws, aes(x = Slope, y = Latitude, fill = Latitude)) +
   theme_minimal()
 
 
+caterpillarPercent_grid = dataset %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat_c, method) %>%
+  tidyr::crossing(post_draw = 1:nrow(caterpillarPost_draws)) %>%
+  mutate( # for each posterior draw, pull the corresponding regression coefficients
+    beta_0      = caterpillarPost_draws$beta_0[post_draw],
+    beta_dev    = caterpillarPost_draws$beta_dev[post_draw],
+    beta_lat    = caterpillarPost_draws$beta_lat[post_draw],
+    beta_int    = caterpillarPost_draws$beta_int[post_draw],
+    beta_method = caterpillarPost_draws$beta_method[post_draw],
+    
+    eta_low = # log odds at low urbanization
+      beta_0 +
+      beta_dev * dev_low +
+      beta_lat * lat_c +
+      beta_int * (dev_low * lat_c) +
+      beta_method * method,
+    
+    eta_high = # log odds at high urbanization
+      beta_0 +
+      beta_dev * dev_high +
+      beta_lat * lat_c +
+      beta_int * (dev_high * lat_c) +
+      beta_method * method,
+    # Convert log-odds → probabilities
+    p_low  = plogis(eta_low),
+    p_high = plogis(eta_high),
+    
+    PercentChange =
+      100 * (p_high - p_low) / p_low )
 
 
+caterpillarPercentAME =
+  caterpillarPercent_grid %>%
+  group_by(post_draw) %>%
+  summarise(
+    PercentChange = mean(PercentChange),
+    .groups="drop") %>%
+  summarise(
+    Mean = mean(PercentChange),
+    Lower = quantile(PercentChange,.025),
+    Upper = quantile(PercentChange,.975))
+
+
+###  Percentage change at low mid and high latitude
+percent_change <- lapply(latitudes, function(L){
+  
+  ## Prediction at minimum observed urbanization
+  eta_low <-
+    caterpillarPost_draws$beta_0 +
+    caterpillarPost_draws$beta_dev * dev_low +
+    caterpillarPost_draws$beta_lat * L +
+    caterpillarPost_draws$beta_int * (dev_low * L) +
+    caterpillarPost_draws$beta_method * 0
+  
+  ## Prediction at maximum observed urbanization
+  eta_high <-
+    caterpillarPost_draws$beta_0 +
+    caterpillarPost_draws$beta_dev * dev_high +
+    caterpillarPost_draws$beta_lat * L +
+    caterpillarPost_draws$beta_int * (dev_high * L) +
+    caterpillarPost_draws$beta_method * 0
+  
+  p_low  <- plogis(eta_low)
+  p_high <- plogis(eta_high)
+  
+  tibble(
+    Latitude = factor(L,
+                      levels = c(-1,0,1),
+                      labels = c("Low","Mid","High")),
+    PercentChange =
+      100 * (p_high - p_low) / p_low
+  )
+  
+}) %>%
+  bind_rows()
+
+percent_change %>%
+  group_by(Latitude) %>%
+  summarise(
+    Mean  = mean(PercentChange),
+    Lower = quantile(PercentChange, 0.025),
+    Upper = quantile(PercentChange, 0.975)
+  )
 
 ################################################################################
 # spider
@@ -526,6 +717,48 @@ ggplot(spider_slope_draws,
   geom_vline(xintercept = 0, linetype = "dashed") +
   theme_minimal()
 
+spiderPercent_grid = dataset %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat_c, method) %>%
+  tidyr::crossing(post_draw = 1:nrow(spiderPost_draws)) %>%
+  mutate( # for each posterior draw, pull the corresponding regression coefficients
+    beta_0      = spiderPost_draws$beta_0[post_draw],
+    beta_dev    = spiderPost_draws$beta_dev[post_draw],
+    beta_lat    = spiderPost_draws$beta_lat[post_draw],
+    beta_int    = spiderPost_draws$beta_int[post_draw],
+    beta_method = spiderPost_draws$beta_method[post_draw],
+    
+    eta_low = # log odds at low urbanization
+      beta_0 +
+      beta_dev * dev_low +
+      beta_lat * lat_c +
+      beta_int * (dev_low * lat_c) +
+      beta_method * method,
+    
+    eta_high = # log odds at high urbanization
+      beta_0 +
+      beta_dev * dev_high +
+      beta_lat * lat_c +
+      beta_int * (dev_high * lat_c) +
+      beta_method * method,
+    # Convert log-odds → probabilities
+    p_low  = plogis(eta_low),
+    p_high = plogis(eta_high),
+    
+    PercentChange =
+      100 * (p_high - p_low) / p_low )
+
+
+spiderPercentAME =
+  spiderPercent_grid %>%
+  group_by(post_draw) %>%
+  summarise(
+    PercentChange = mean(PercentChange),
+    .groups="drop") %>%
+  summarise(
+    Mean = mean(PercentChange),
+    Lower = quantile(PercentChange,.025),
+    Upper = quantile(PercentChange,.975))
 ################################################################################
 # beetle
 ################################################################################
@@ -688,6 +921,50 @@ ggplot(beetle_slope_draws,
   theme_minimal()
 
 
+# Average marginal percentage change in predicted probability
+
+beetlePercent_grid = dataset %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat_c, method) %>%
+  tidyr::crossing(post_draw = 1:nrow(beetlePost_draws)) %>%
+  mutate( # for each posterior draw, pull the corresponding regression coefficients
+    beta_0      = beetlePost_draws$beta_0[post_draw],
+    beta_dev    = beetlePost_draws$beta_dev[post_draw],
+    beta_lat    = beetlePost_draws$beta_lat[post_draw],
+    beta_int    = beetlePost_draws$beta_int[post_draw],
+    beta_method = beetlePost_draws$beta_method[post_draw],
+    
+    eta_low = # log odds at low urbanization
+      beta_0 +
+      beta_dev * dev_low +
+      beta_lat * lat_c +
+      beta_int * (dev_low * lat_c) +
+      beta_method * method,
+    
+    eta_high = # log odds at high urbanization
+      beta_0 +
+      beta_dev * dev_high +
+      beta_lat * lat_c +
+      beta_int * (dev_high * lat_c) +
+      beta_method * method,
+    # Convert log-odds → probabilities
+    p_low  = plogis(eta_low),
+    p_high = plogis(eta_high),
+    
+    PercentChange =
+      100 * (p_high - p_low) / p_low )
+
+
+beetlePercentAME =
+  beetlePercent_grid %>%
+  group_by(post_draw) %>%
+  summarise(
+    PercentChange = mean(PercentChange),
+    .groups="drop") %>%
+  summarise(
+    Mean = mean(PercentChange),
+    Lower = quantile(PercentChange,.025),
+    Upper = quantile(PercentChange,.975))
 
 
 ################################################################################
@@ -835,6 +1112,50 @@ ggplot(truebug_slope_draws,
   geom_vline(xintercept = 0, linetype = "dashed") +
   theme_minimal()
 
+# Average marginal percentage change in predicted probability
+
+truebugPercent_grid = dataset %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat_c, method) %>%
+  tidyr::crossing(post_draw = 1:nrow(truebugPost_draws)) %>%
+  mutate( # for each posterior draw, pull the corresponding regression coefficients
+    beta_0      = truebugPost_draws$beta_0[post_draw],
+    beta_dev    = truebugPost_draws$beta_dev[post_draw],
+    beta_lat    = truebugPost_draws$beta_lat[post_draw],
+    beta_int    = truebugPost_draws$beta_int[post_draw],
+    beta_method = truebugPost_draws$beta_method[post_draw],
+    
+    eta_low = # log odds at low urbanization
+      beta_0 +
+      beta_dev * dev_low +
+      beta_lat * lat_c +
+      beta_int * (dev_low * lat_c) +
+      beta_method * method,
+    
+    eta_high = # log odds at high urbanization
+      beta_0 +
+      beta_dev * dev_high +
+      beta_lat * lat_c +
+      beta_int * (dev_high * lat_c) +
+      beta_method * method,
+    # Convert log-odds → probabilities
+    p_low  = plogis(eta_low),
+    p_high = plogis(eta_high),
+    
+    PercentChange =
+      100 * (p_high - p_low) / p_low )
+
+
+truebugPercentAME =
+  truebugPercent_grid %>%
+  group_by(post_draw) %>%
+  summarise(
+    PercentChange = mean(PercentChange),
+    .groups="drop") %>%
+  summarise(
+    Mean = mean(PercentChange),
+    Lower = quantile(PercentChange,.025),
+    Upper = quantile(PercentChange,.975))
 
 
 ################################################################################
@@ -980,6 +1301,50 @@ ggplot(hopper_slope_draws,
   geom_vline(xintercept = 0, linetype = "dashed") +
   theme_minimal()
 
+# Average marginal percentage change in predicted probability
+
+hopperPercent_grid = dataset %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat_c, method) %>%
+  tidyr::crossing(post_draw = 1:nrow(hopperPost_draws)) %>%
+  mutate( # for each posterior draw, pull the corresponding regression coefficients
+    beta_0      = hopperPost_draws$beta_0[post_draw],
+    beta_dev    = hopperPost_draws$beta_dev[post_draw],
+    beta_lat    = hopperPost_draws$beta_lat[post_draw],
+    beta_int    = hopperPost_draws$beta_int[post_draw],
+    beta_method = hopperPost_draws$beta_method[post_draw],
+    
+    eta_low = # log odds at low urbanization
+      beta_0 +
+      beta_dev * dev_low +
+      beta_lat * lat_c +
+      beta_int * (dev_low * lat_c) +
+      beta_method * method,
+    
+    eta_high = # log odds at high urbanization
+      beta_0 +
+      beta_dev * dev_high +
+      beta_lat * lat_c +
+      beta_int * (dev_high * lat_c) +
+      beta_method * method,
+    # Convert log-odds → probabilities
+    p_low  = plogis(eta_low),
+    p_high = plogis(eta_high),
+    
+    PercentChange =
+      100 * (p_high - p_low) / p_low )
+
+
+hopperPercentAME =
+  hopperPercent_grid %>%
+  group_by(post_draw) %>%
+  summarise(
+    PercentChange = mean(PercentChange),
+    .groups="drop") %>%
+  summarise(
+    Mean = mean(PercentChange),
+    Lower = quantile(PercentChange,.025),
+    Upper = quantile(PercentChange,.975))
 
 
 ################################################################################
@@ -1127,6 +1492,51 @@ ggplot(ant_slope_draws,
   theme_minimal()
 
 
+# Average marginal percentage change in predicted probability
+
+antPercent_grid = dataset %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat_c, method) %>%
+  tidyr::crossing(post_draw = 1:nrow(antPost_draws)) %>%
+  mutate( # for each posterior draw, pull the corresponding regression coefficients
+    beta_0      = antPost_draws$beta_0[post_draw],
+    beta_dev    = antPost_draws$beta_dev[post_draw],
+    beta_lat    = antPost_draws$beta_lat[post_draw],
+    beta_int    = antPost_draws$beta_int[post_draw],
+    beta_method = antPost_draws$beta_method[post_draw],
+    
+    eta_low = # log odds at low urbanization
+      beta_0 +
+      beta_dev * dev_low +
+      beta_lat * lat_c +
+      beta_int * (dev_low * lat_c) +
+      beta_method * method,
+    
+    eta_high = # log odds at high urbanization
+      beta_0 +
+      beta_dev * dev_high +
+      beta_lat * lat_c +
+      beta_int * (dev_high * lat_c) +
+      beta_method * method,
+    # Convert log-odds → probabilities
+    p_low  = plogis(eta_low),
+    p_high = plogis(eta_high),
+    
+    PercentChange =
+      100 * (p_high - p_low) / p_low )
+
+
+antPercentAME =
+  antPercent_grid %>%
+  group_by(post_draw) %>%
+  summarise(
+    PercentChange = mean(PercentChange),
+    .groups="drop") %>%
+  summarise(
+    Mean = mean(PercentChange),
+    Lower = quantile(PercentChange,.025),
+    Upper = quantile(PercentChange,.975))
+
 
 ################################################################################
 # grasshopper
@@ -1273,6 +1683,50 @@ ggplot(grasshopper_slope_draws,
   geom_vline(xintercept = 0, linetype = "dashed") +
   theme_minimal()
 
+# Average marginal percentage change in predicted probability
+
+grasshopperPercent_grid = dataset %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat_c, method) %>%
+  tidyr::crossing(post_draw = 1:nrow(grasshopperPost_draws)) %>%
+  mutate( # for each posterior draw, pull the corresponding regression coefficients
+    beta_0      = grasshopperPost_draws$beta_0[post_draw],
+    beta_dev    = grasshopperPost_draws$beta_dev[post_draw],
+    beta_lat    = grasshopperPost_draws$beta_lat[post_draw],
+    beta_int    = grasshopperPost_draws$beta_int[post_draw],
+    beta_method = grasshopperPost_draws$beta_method[post_draw],
+    
+    eta_low = # log odds at low urbanization
+      beta_0 +
+      beta_dev * dev_low +
+      beta_lat * lat_c +
+      beta_int * (dev_low * lat_c) +
+      beta_method * method,
+    
+    eta_high = # log odds at high urbanization
+      beta_0 +
+      beta_dev * dev_high +
+      beta_lat * lat_c +
+      beta_int * (dev_high * lat_c) +
+      beta_method * method,
+    # Convert log-odds → probabilities
+    p_low  = plogis(eta_low),
+    p_high = plogis(eta_high),
+    
+    PercentChange =
+      100 * (p_high - p_low) / p_low )
+
+
+grasshopperPercentAME =
+  grasshopperPercent_grid %>%
+  group_by(post_draw) %>%
+  summarise(
+    PercentChange = mean(PercentChange),
+    .groups="drop") %>%
+  summarise(
+    Mean = mean(PercentChange),
+    Lower = quantile(PercentChange,.025),
+    Upper = quantile(PercentChange,.975))
 
 
 ################################################################################
@@ -1418,6 +1872,50 @@ ggplot(fly_slope_draws,
   theme_minimal()
 
 
+# Average marginal percentage change in predicted probability
+
+flyPercent_grid = dataset %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat_c, method) %>%
+  tidyr::crossing(post_draw = 1:nrow(flyPost_draws)) %>%
+  mutate( # for each posterior draw, pull the corresponding regression coefficients
+    beta_0      = flyPost_draws$beta_0[post_draw],
+    beta_dev    = flyPost_draws$beta_dev[post_draw],
+    beta_lat    = flyPost_draws$beta_lat[post_draw],
+    beta_int    = flyPost_draws$beta_int[post_draw],
+    beta_method = flyPost_draws$beta_method[post_draw],
+    
+    eta_low = # log odds at low urbanization
+      beta_0 +
+      beta_dev * dev_low +
+      beta_lat * lat_c +
+      beta_int * (dev_low * lat_c) +
+      beta_method * method,
+    
+    eta_high = # log odds at high urbanization
+      beta_0 +
+      beta_dev * dev_high +
+      beta_lat * lat_c +
+      beta_int * (dev_high * lat_c) +
+      beta_method * method,
+    # Convert log-odds → probabilities
+    p_low  = plogis(eta_low),
+    p_high = plogis(eta_high),
+    
+    PercentChange =
+      100 * (p_high - p_low) / p_low )
+
+
+flyPercentAME =
+  flyPercent_grid %>%
+  group_by(post_draw) %>%
+  summarise(
+    PercentChange = mean(PercentChange),
+    .groups="drop") %>%
+  summarise(
+    Mean = mean(PercentChange),
+    Lower = quantile(PercentChange,.025),
+    Upper = quantile(PercentChange,.975))
 
 ################################################################################
 # daddylonglegs
@@ -1562,6 +2060,51 @@ ggplot(daddylonglegs_slope_draws,
   ) +
   geom_vline(xintercept = 0, linetype = "dashed") +
   theme_minimal()
+
+# Average marginal percentage change in predicted probability
+
+daddylonglegsPercent_grid = dataset %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat_c, method) %>%
+  tidyr::crossing(post_draw = 1:nrow(daddylonglegsPost_draws)) %>%
+  mutate( # for each posterior draw, pull the corresponding regression coefficients
+    beta_0      = daddylonglegsPost_draws$beta_0[post_draw],
+    beta_dev    = daddylonglegsPost_draws$beta_dev[post_draw],
+    beta_lat    = daddylonglegsPost_draws$beta_lat[post_draw],
+    beta_int    = daddylonglegsPost_draws$beta_int[post_draw],
+    beta_method = daddylonglegsPost_draws$beta_method[post_draw],
+    
+    eta_low = # log odds at low urbanization
+      beta_0 +
+      beta_dev * dev_low +
+      beta_lat * lat_c +
+      beta_int * (dev_low * lat_c) +
+      beta_method * method,
+    
+    eta_high = # log odds at high urbanization
+      beta_0 +
+      beta_dev * dev_high +
+      beta_lat * lat_c +
+      beta_int * (dev_high * lat_c) +
+      beta_method * method,
+    # Convert log-odds → probabilities
+    p_low  = plogis(eta_low),
+    p_high = plogis(eta_high),
+    
+    PercentChange =
+      100 * (p_high - p_low) / p_low )
+
+
+daddylonglegsPercentAME =
+  daddylonglegsPercent_grid %>%
+  group_by(post_draw) %>%
+  summarise(
+    PercentChange = mean(PercentChange),
+    .groups="drop") %>%
+  summarise(
+    Mean = mean(PercentChange),
+    Lower = quantile(PercentChange,.025),
+    Upper = quantile(PercentChange,.975))
 
 
 antlegend = get_legend(antPlot + theme(legend.position = "right")) # choose ant because it has sig and n.s
@@ -1746,7 +2289,7 @@ AME_plot %>%
   filter(!Arthropod %in% c("Daddylonglegs", "Flies")) %>%
   ggplot(aes(x = mean_AME,
              y = reorder(Arthropod, mean_AME))) +
-  geom_errorbarh(aes(xmin = CI_lower, xmax = CI_upper), color = "grey20",  height = 0.2) +
+  geom_errorbarh(aes(xmin = CI_lower, xmax = CI_upper), color = "grey20",  width = 0.2) +
   geom_point(size = 3, color = "grey20") +
   geom_image(
     aes(image = image),
@@ -1768,14 +2311,71 @@ AME_plot %>%
 
 
 
+percentAME = bind_rows(
+  Caterpillar = caterpillarPercentAME,
+  Beetle      = beetlePercentAME,
+  Spider      = spiderPercentAME,
+  TrueBug     = truebugPercentAME,
+  Hopper      = hopperPercentAME,
+  Ant         = antPercentAME,
+  Grasshopper = grasshopperPercentAME,
+  Daddylonglegs = daddylonglegsPercentAME,
+  Fly        = flyPercentAME,
+  .id = "Arthropod"
+)
+
+
+
+
+percentAME_plot = percentAME %>%
+  mutate(
+    image = case_when(
+      Arthropod == "Caterpillar"   ~ "images/caterpillar.png",
+      Arthropod == "Beetle"        ~ "images/beetle.png",
+      Arthropod == "Spider"        ~ "images/spider.png",
+      Arthropod == "TrueBug"       ~ "images/truebugs.png",
+      Arthropod == "Hopper"        ~ "images/leafhopper.png",
+      Arthropod == "Ant"           ~ "images/ant.png",
+      Arthropod == "Grasshopper"   ~ "images/grasshopper.png",
+      Arthropod == "Daddylonglegs" ~ "images/daddylongleg.png",
+      Arthropod == "Fly"           ~ "images/fly.png"
+    ),
+    Arthropod = case_when(
+      Arthropod == "Caterpillar"   ~ "Caterpillars",
+      Arthropod == "Beetle"        ~ "Beetles",
+      Arthropod == "Spider"        ~ "Spiders",
+      Arthropod == "TrueBug"       ~ "True bugs",
+      Arthropod == "Hopper"        ~ "Hoppers & Cicadas",
+      Arthropod == "Ant"           ~ "Ants",
+      Arthropod == "Grasshopper"   ~ "Orthopterans",
+      Arthropod == "Daddylonglegs" ~ "Daddylonglegs",
+      Arthropod == "Fly"           ~ "Flies"
+    )
+  )
 
 
 
 
 
-
-
-
+percentAME_plot %>%
+  filter(!Arthropod %in% c("Daddylonglegs", "Flies")) %>%
+  ggplot(aes(x = Mean,
+             y = reorder(Arthropod, Mean))) +
+  geom_errorbarh(aes(xmin = Lower, xmax = Upper), color = "grey20",  width = 0.2) +
+  geom_point(size = 3, color = "grey20") +
+  geom_image(
+    aes(image = image),
+    size = 0.06,
+    asp = 1.5, # aspect ratio
+    position = position_nudge(y = 0.3)
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_x_continuous(limits = c(-50, NA)) +
+  labs(
+    x = "Average marginal change in occurence (%)",
+    y = "Arthropod Group"
+  ) +
+  theme_minimal(base_size = 14)
 
 
 
