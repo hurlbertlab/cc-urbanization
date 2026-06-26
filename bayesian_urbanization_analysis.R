@@ -35,15 +35,26 @@ require(vegan)
 
 # Load the rjags model fits saved as rds files ----
 
-caterpillarFit = readRDS("caterpillarFit.rds")
-spiderFit      = readRDS("spiderFit.rds")
-beetleFit      = readRDS("beetleFit.rds")
-truebugFit     = readRDS("truebugFit.rds")
-hopperFit      = readRDS("hopperFit.rds")
-antFit         = readRDS("antFit.rds")
-grasshopperFit = readRDS("grasshopperFit.rds")
-flyFit         = readRDS("flyFit.rds")
-daddylonglegsFit = readRDS("daddylonglegsFit.rds")
+# caterpillarFit = readRDS("caterpillarFit.rds")
+# spiderFit      = readRDS("spiderFit.rds")
+# beetleFit      = readRDS("beetleFit.rds")
+# truebugFit     = readRDS("truebugFit.rds")
+# hopperFit      = readRDS("hopperFit.rds")
+# antFit         = readRDS("antFit.rds")
+# grasshopperFit = readRDS("grasshopperFit.rds")
+# flyFit         = readRDS("flyFit.rds")
+# daddylonglegsFit = readRDS("daddylonglegsFit.rds")
+
+
+caterpillarFit = readRDS("caterpillarFit500.rds")
+spiderFit      = readRDS("spiderFit500.rds")
+beetleFit      = readRDS("beetleFit500.rds")
+truebugFit     = readRDS("truebugFit500.rds")
+hopperFit      = readRDS("hopperFit500.rds")
+antFit         = readRDS("antFit500.rds")
+grasshopperFit = readRDS("grasshopperFit500.rds")
+flyFit         = readRDS("flyFit500.rds")
+daddylonglegsFit = readRDS("daddylonglegsFit500.rds")
 
 
 get_mcmc_diagnostics = function(fit, model_name) {
@@ -325,7 +336,7 @@ dataset$method = as.numeric(dataset$ObservationMethod == "Visual")
 
 # Three latitude levels: -1 SD, mean (0), +1 SD
 lat_levels = c(-1, 0, 1)
-
+latitudes = c(-1, 0, 1)
 # levels of urbanization to compare: 95% and 5%
 
 dev_low  <- quantile(dataset$dev_c, 0.05)
@@ -2377,6 +2388,26 @@ percentAME_plot %>%
   ) +
   theme_minimal(base_size = 14)
 
+
+percentAME_plot %>%
+  filter(!Arthropod %in% c("Daddylonglegs", "Flies")) %>%
+  ggplot(aes(x = Mean,
+             y = reorder(Arthropod, Mean))) +
+  geom_errorbarh(aes(xmin = Lower, xmax = Upper), color = "grey20",  width = 0.2) +
+  geom_point(size = 3, color = "grey20") +
+  geom_image(
+    aes(image = image),
+    size = 0.06,
+    asp = 1.5, # aspect ratio
+    position = position_nudge(y = 0.3)
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_x_continuous(limits = c(-60, NA)) +
+  labs(
+    x = "Average marginal change in occurence (%)",
+    y = "Arthropod Group"
+  ) +
+  theme_minimal(base_size = 14)
 
 
 

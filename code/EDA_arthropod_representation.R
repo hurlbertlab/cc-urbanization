@@ -592,3 +592,93 @@ ant.grasshop.truebug.leafhop = ggplot(
     y = "Taxa Score"
   )
 ant.grasshop.truebug.leafhop
+
+#################################################################################
+# Using Temperature to frame prediction on urbanization effect on foliage arthropods
+
+# A. using data from the Nature paper (Hoz et al., 2026)
+proteinMeltTemp = read_excel("largeFile/Meltdata_FINAL.xlsx") %>% 
+  filter(Order %in% c("Lepidoptera", "Hemiptera", "Coleoptera", "Hymenoptera", "Orthoptera" )) %>% 
+  select(Species, Order, Family, Genus, Tm)
+# Find a way to get the expert id directly form the github page.
+exp.id = read.csv("data/exp.csv") # what generates this data?
+ID = read.csv("data/2026-06-12_ExpertIdentification.csv") %>%
+  mutate(taxon = word(TaxonName, 1))
+
+IDGenus = ID %>%
+  mutate(
+    RankGenus = ifelse(
+      Rank %in% c("genus", "subgenus", "species", "subspecies"),
+      "genus",
+      NA_character_)) %>% 
+  filter(!is.na(RankGenus))
+
+sites = dplyr::distinct(fullDataset, Name, Region, Latitude, Longitude)
+
+proteinMeltTempSummary = proteinMeltTemp %>% 
+  group_by(Order, Family, Genus, Species) %>% 
+  summarise(Tm = mean(Tm, na.rm = TRUE))
+
+proteinMeltTempFamily = proteinMeltTempSummary %>% 
+  group_by(Family) %>% 
+  summarise(Tm = mean(Tm, na.rm = TRUE)) 
+
+proteinMeltTempGenus = proteinMeltTemp %>% 
+  group_by(Genus) %>% 
+  summarise(Tm = mean(Tm, na.rm = TRUE))
+
+ccTmFamily = inner_join(proteinMeltTempFamily, exp.id, by = "Family")
+
+ccTmGenus = inner_join(proteinMeltTempGenus, IDGenus, by = c("Genus" ="taxon"))
+
+ccTmFamily %>% 
+  group_by(StandardGroup) %>% 
+  summarise(TmMean = mean(Tm),
+            TmSD = sd(Tm))
+
+ggplot(ccTmFamily %>% filter(StandardGroup %in% c("grasshopper", "truebugs", "beetle", "leafhopper",
+                                                  "caterpillar", "ant" )), 
+       aes(x = StandardGroup, y = Tm)) +
+  geom_boxplot() +
+  labs(
+    x = "Standard Group",
+    y = "Protein melting temperature (Tm)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1))
+
+ccTmGenus %>% 
+  group_by(StandardGroup) %>% 
+  summarise(TmMean = mean(Tm),
+            TmSD = sd(Tm))
+
+
+ggplot(proteinMeltTempSummary, aes(x = Order, y = Tm)) +
+  geom_boxplot() +
+  labs(
+    x = "Order",
+    y = "Protein melting temperature (Tm)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+# B. data from GlobTherm
+
+globTherm = read.csv('data/GlobalTherm_upload_02_11_17.csv')
+
+globFamily = globTherm %>% 
+  filter(Phylum == "Arthropoda") %>% 
+  filter(max_metric == "ctmax") %>% 
+  group_by(Order, Family) %>% 
+  summarise(Tmax = mean(Tmax, na.rm = TRUE)) %>% data.frame()
+
+ccglobFamily = inner_join(globFamily, exp.id, by = "Family")
+
+ccglobFamily %>% 
+  group_by(StandardGroup) %>% 
+  summarise(TmaxMean = mean(Tmax),
+            TmaxSD = sd(Tmax))

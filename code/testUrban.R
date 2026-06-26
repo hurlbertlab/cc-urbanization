@@ -45,7 +45,12 @@ github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-analys
 fullDataset <- read.csv(paste0(github_raw, latest_file))  %>% filter(Year <= 2025)
 
 
+# urban500m = read.csv("data/urbanization_USA_Canada_500m.csv") %>% 
+#   rename(dev = urban_percent) %>% dplyr::select(-ID, -X, -Longitude)
 
+
+urban1km = read.csv("data/urbanization_USA_Canada_1km.csv") %>% 
+  rename(dev = urban_percent) %>% dplyr::select(-ID, -X, -Longitude)
 
 # (2) Filter dataset ----
 # to sites east of 100W with a minimum of 50 branch surveys during June and July (juliandays 152-213)
@@ -85,9 +90,14 @@ goodData = goodSites %>%
                         daddylonglegs = ifelse(sum(Group == "daddylonglegs", na.rm = TRUE) > 0, 1, 0)),
             by = c("Name", "ObservationMethod")
   )
-sites = distinct(fullDataset, Name, Region, Longitude, Latitude)
+sites = distinct(fullDataset, Name, Region, Longitude, Latitude) %>% 
+  inner_join(urban1km, by = c("Name", "Latitude"))
+  
 
-dataset = left_join(goodData, sites, by = 'Name')
+dataset = inner_join(goodData, sites, by = 'Name') %>% 
+  filter(!is.na(ID))
+
+
 
 dataset %>% 
   filter(nSurvs < minSurveys) # All good!
@@ -126,103 +136,6 @@ prop_fullDataset = fullDataset %>%
             nSurv = sum(nSurv))  
 
 
-
-# (4) Read in maps and Landcover data----
-#     Sources: NLCD
-#              Canada Land Cover 2020
-
-# This raster is in geographic coverage, but at 3 km resolution
-us_devo3km_geog = rast('data/devo_geographic_3km.tif')
-
-# Rasters at 1 km resolution
-canada_devo_1km = rast('data/devo_1km_toronto.tif')
-us_devo_1km = rast('data/devo_1km_east.tif')
-canada_forest_1km = rast('data/forest_1km_toronto.tif')
-us_forest_1km = rast('data/forest_1km_east.tif')
-
-us_devo_geog = project(us_devo_1km, crs(us_devo3km_geog))
-can_devo_geog = project(canada_devo_1km, crs(us_devo_geog))
-can_devo_albers = project(canada_devo_1km, crs(us_devo_1km))
-
-can_forest_geog = project(canada_forest_1km, crs(us_devo_geog))
-us_forest_geog = project(us_forest_1km, crs(us_devo_geog))
-
-
-
-northam = st_read("data/na_base_Lambert_Azimuthal.shp")
-
-us_devo_la = project(us_devo_1km, crs(northam))
-
-us_devo_na <- clamp(us_devo_1km, lower=0.0001, value=FALSE)
-
-northam_geom = st_cast(northam$geometry,"POLYGON")
-
-northam_albers = st_transform(northam_geom, crs(us_devo_1km))
-
-northam_albers_vect = vect(northam_albers)
-
-# Crop out ocean
-us_devo_crop <- crop(us_devo_1km, northam_albers_vect, mask= T)
-can_devo_crop <- crop(can_devo_albers, northam_albers_vect, mask= T)
-
-# Crop to similar bounding box
-e <- ext(-1e+06, 2.5e+06, 170000, 3.1e+06)
-
-us_devo_ext = extend(us_devo_crop, can_devo_crop, snap = "out") %>%
-  crop(e, snap = "out")
-
-can_devo_ext = extend(can_devo_crop, us_devo_crop, snap = "in") %>%
-  crop(e, snap = "out")
-
-# Still not working because even after projecting to same projection,
-# resolution and extents end up differing
-
-# nam_devo = us_devo_ext + can_devo_ext
-
-
-# Mosaic not working at the moment, as projected rasters don't have the same resolution. Need to fix...
-#devo1km = terra::mosaic(can_devo_geog, us_devo_geog)
-
-
-sites = distinct(fullDataset, Name, Region, Longitude, Latitude)
-
-## Add urban cover and forest covrer information to sites
-CAN_sites = sites[sites$Region %in% c('AB', 'ON'),]
-US_sites = sites[!sites$Region %in% c('AB', 'ON'),]
-
-us_devo = terra::extract(us_devo_geog, US_sites[, c('Longitude', 'Latitude')])
-can_devo = terra::extract(can_devo_geog, CAN_sites[, c('Longitude', 'Latitude')])
-
-us_forest = terra::extract(us_forest_geog, US_sites[, c('Longitude', 'Latitude')])
-can_forest = terra::extract(can_forest_geog, CAN_sites[, c('Longitude', 'Latitude')])
-
-
-CAN_sites$dev = can_devo$Canada2020                     
-CAN_sites$forest = can_forest$Canada2020
-US_sites$dev = us_devo$`NLCD Land Cover Class`
-US_sites$forest = us_forest$`NLCD Land Cover Class`
-
-sites = rbind(US_sites, CAN_sites)
-
-write.csv(sites, file = "data/sites.csv") # keep a local copy.
-
-sites_sf <- st_as_sf(sites[sites$Name %in% goodSites$Name, ], 
-                     coords = c("Longitude", "Latitude"), crs = 4326) %>%
-  st_transform(crs(us_devo_1km))
-
-us_devo_df = as.data.frame(us_devo_crop, xy = TRUE)
-
-
-# Doesn't currently include Canada landcover but good enough for now.
-ggplot() +
-  geom_raster(data = us_devo_df, aes(x = x, y = y, fill = `NLCD Land Cover Class`)) + 
-  scale_fill_gradientn(colors = viridis(10)) + 
-  geom_sf(data = sites_sf, col = "magenta", size = 2.5)
-
-
-dataset = left_join(goodData, sites, by = 'Name')
-
-head(dataset)
 
 
 # Bayesian analysis----
@@ -282,17 +195,17 @@ fit_arthropod_model <- function(response_var) {
   model <- jags.model(
     file = "urbanDevLat.jags",
     data = jags_data,
-    n.chains = 4
+    n.chains = 3
   )
   
-  update(model, 2000) # I think this burn-in takes to much computation time
+  update(model, 1000) # I think this burn-in takes to much computation time
   
   fit <- coda.samples(
     model,
     variable.names = c("beta_0","beta_dev",
                        "beta_lat","beta_int",
                        "beta_method"),
-    n.iter = 5000
+    n.iter = 2000
   )
   
   return(fit)
@@ -305,8 +218,8 @@ truebugFit      = fit_arthropod_model("truebug")
 hopperFit       = fit_arthropod_model("hopper")
 antFit          = fit_arthropod_model("ant")
 grasshopperFit  = fit_arthropod_model("grasshopper")
-flyFit          = fit_arthropod_model("fly")
-daddylonglegsFit = fit_arthropod_model("daddylonglegs")
+# flyFit          = fit_arthropod_model("fly")
+# daddylonglegsFit = fit_arthropod_model("daddylonglegs")
 
 all_fits = list(
   caterpillar = caterpillarFit,
@@ -315,13 +228,13 @@ all_fits = list(
   truebug = truebugFit,
   hopper = hopperFit,
   ant = antFit,
-  grasshopper = grasshopperFit,
-  fly = flyFit,
-  daddylonglegs = daddylonglegsFit
+  grasshopper = grasshopperFit
+  # fly = flyFit,
+  # daddylonglegs = daddylonglegsFit
 )
 
 saveRDS(all_fits, "arthropod_fits_all.rds")
- 
+
 
 lapply(all_fits, gelman.diag)
 lapply(all_fits, effectiveSize)
@@ -338,13 +251,13 @@ dev.off()
 
 
 # Save each fit as an .rds file
-saveRDS(caterpillarFit, file = "caterpillarFit.rds")
-saveRDS(spiderFit, file = "spiderFit.rds")
-saveRDS(beetleFit, file = "beetleFit.rds")
-saveRDS(truebugFit, file = "truebugFit.rds")
-saveRDS(hopperFit, file = "hopperFit.rds")
-saveRDS(antFit, file = "antFit.rds")
-saveRDS(grasshopperFit, file = "grasshopperFit.rds")
-saveRDS(flyFit, file = "flyFit.rds")
-saveRDS(daddylonglegsFit, file = "daddylonglegsFit.rds")
+saveRDS(caterpillarFit, file = "caterpillarFit1000.rds")
+saveRDS(spiderFit, file = "spiderFit1000.rds")
+saveRDS(beetleFit, file = "beetleFit1000.rds")
+saveRDS(truebugFit, file = "truebugFit1000.rds")
+saveRDS(hopperFit, file = "hopperFit1000.rds")
+saveRDS(antFit, file = "antFit1000.rds")
+saveRDS(grasshopperFit, file = "grasshopperFit1000.rds")
+# saveRDS(flyFit, file = "flyFit500.rds") # so, fly and daddylongleg might have the old and wrong urbanization analysis saved in it.
+# saveRDS(daddylonglegsFit, file = "daddylonglegsFit500.rds") # right now, I do not care about it, so to save time I will not run them.
 
