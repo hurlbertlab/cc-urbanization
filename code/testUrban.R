@@ -88,16 +88,13 @@ goodData = goodSites %>%
                         grasshopper = ifelse(sum(Group == "grasshopper", na.rm = TRUE) > 0, 1, 0),
                         fly = ifelse(sum(Group == "fly", na.rm = TRUE) > 0, 1, 0),
                         daddylonglegs = ifelse(sum(Group == "daddylonglegs", na.rm = TRUE) > 0, 1, 0)),
-            by = c("Name", "ObservationMethod")
-  )
+            by = c("Name", "ObservationMethod"))
+
 sites = distinct(fullDataset, Name, Region, Longitude, Latitude) %>% 
   inner_join(urban1km, by = c("Name", "Latitude"))
   
-
 dataset = inner_join(goodData, sites, by = 'Name') %>% 
   filter(!is.na(ID))
-
-
 
 dataset %>% 
   filter(nSurvs < minSurveys) # All good!
