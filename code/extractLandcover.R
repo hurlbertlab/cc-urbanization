@@ -3,6 +3,7 @@
 
 usethis::use_git_ignore("largeFile/")
 
+library(jsonlite)
 library(rnaturalearth)
 library(terra)
 library(sf)
@@ -243,15 +244,15 @@ na_crop <- st_intersection(northAmerica, crop_poly) # Clip the N.America country
 
 # -----------------------------
 ggplot() +
-  geom_sf(data = na_crop, fill = "gray95", color = "white") +
-  geom_sf(data = states_crop, fill = NA, color = "gray70", linewidth = 0.3) +
-  geom_sf(data = provinces_crop, fill = NA, color = "gray50", linewidth = 0.3) +
-  geom_sf(data = sites_crop, color = "blue", size = 3) +
+  geom_sf(data = na_crop, fill = "white", color = "white") +
+  geom_sf(data = states_crop, fill = NA, color = "black", linewidth = 0.3) +
+  geom_sf(data = provinces_crop, fill = NA, color = "white", linewidth = 0.3) +
+  geom_sf(data = sites_crop, color = "darkgreen", size = 3) +
   coord_sf(
     xlim = c(-100, -65),
-    ylim = c(25, 50),
+    ylim = c(25, 46),
     expand = FALSE) +
-  theme_minimal() +
+  theme_classic() +
   labs(title = "")
 
 

@@ -1,4 +1,6 @@
 
+usethis::use_git_ignore("largeFile/")
+
 library(mgcv)
 library(gratia)
 library(patchwork)
@@ -54,7 +56,7 @@ clim2081_2100 <- stack("largeFile/climate/wc2.1_10m_bioc_ACCESS-CM2_ssp245_2081-
 myCRS1 = CRS("+init=epsg:4326") # WGS 84
 
 
-clim_hist_list = list.files("largeFile/climate/Historical_10m",pattern=".tif$",full.names = T)
+clim_hist_list = list.files("largeFile/climate/wc2.1_30s_bio",pattern=".tif$",full.names = T)
 clim_hist = raster::stack(clim_hist_list) 
 names(clim_hist) = gsub("wc2.1_10m_","",names(clim_hist))
 
@@ -171,15 +173,15 @@ dataset = inner_join(goodData, sites, by = 'Name') %>%
 dataset %>% 
   filter(nSurvs < minSurveys) # All good!
 
-# 
+
 # clim2021_2040_30s <- cmip6_world(
 #   var = "bio",
 #   model = "ACCESS-CM2",
 #   ssp = "245",
 #   time = "2061-2080",
 #   res = 0.5,
-#   path = "largeFile/climate"
-# )
+#   path = "largeFile/climate")
+
 # The geodata server is temporary out of service for maintenance. It should be back on 22 June
 
 
@@ -188,7 +190,7 @@ catBIO10 <- gam(caterpillar ~ dev + s(BIO10,  k = 4) + ObservationMethod,
   data = dataset)
 
 summary(catBIO10)
-draw(catBIO10, select = "s(BIO10)")+
+gratia::draw(catBIO10, select = "s(BIO10)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -196,14 +198,14 @@ catBIO05 <- gam(caterpillar ~ dev + s(BIO05,  k = 4) + ObservationMethod,
                 family = binomial(link = "logit"),
                 data = dataset)
 summary(catBIO05)
-draw(catBIO05, select = "s(BIO05)")+
+gratia::draw(catBIO05, select = "s(BIO05)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 spiBIO10 <- gam(spider ~ dev + s(BIO10,  k = 4) + ObservationMethod,
                 family = binomial(link = "logit"),
                 data = dataset)
 summary(spiBIO10)
-draw(spiBIO10, select = "s(BIO10)")+
+gratia::draw(spiBIO10, select = "s(BIO10)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -212,7 +214,7 @@ spiBIO05 <- gam(spider ~ dev + s(BIO05,  k = 4) + ObservationMethod,
                 family = binomial(link = "logit"),
                 data = dataset)
 summary(spiBIO05)
-draw(spiBIO05, select = "s(BIO05)")+
+gratia::draw(spiBIO05, select = "s(BIO05)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -220,7 +222,7 @@ antBIO10 <- gam(ant ~ dev + s(BIO10,  k = 4) + ObservationMethod,
                 family = binomial(link = "logit"),
                 data = dataset)
 summary(antBIO10)
-draw(antBIO10, select = "s(BIO10)")+
+gratia::draw(antBIO10, select = "s(BIO10)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -228,7 +230,7 @@ antBIO05 <- gam(ant ~ dev + s(BIO05,  k = 4) + ObservationMethod,
                 family = binomial(link = "logit"),
                 data = dataset)
 summary(antBIO05)
-draw(antBIO05, select = "s(BIO05)")+
+gratia::draw(antBIO05, select = "s(BIO05)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -238,7 +240,7 @@ truebugBIO10 <- gam(truebug ~ dev + s(BIO10,  k = 4) + ObservationMethod,
                 family = binomial(link = "logit"),
                 data = dataset)
 summary(truebugBIO10)
-draw(truebugBIO10, select = "s(BIO10)")+
+gratia::draw(truebugBIO10, select = "s(BIO10)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -247,7 +249,7 @@ truebugBIO05 <- gam(truebug ~ dev + s(BIO05,  k = 4) + ObservationMethod,
                 data = dataset)
 summary(truebugBIO05)
 
-draw(truebugBIO05, select = "s(BIO05)") +
+gratia::draw(truebugBIO05, select = "s(BIO05)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -255,7 +257,7 @@ hopperBIO10 <- gam(hopper ~ dev + s(BIO10,  k = 4) + ObservationMethod,
                     family = binomial(link = "logit"),
                     data = dataset)
 summary(hopperBIO10)
-draw(hopperBIO10, select = "s(BIO10)")+
+gratia::draw(hopperBIO10, select = "s(BIO10)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -264,14 +266,14 @@ hopperBIO05 <- gam(hopper ~ dev + s(BIO05,  k = 4) + ObservationMethod,
                     data = dataset)
 summary(hopperBIO05)
 
-draw(hopperBIO05, select = "s(BIO05)") +
+gratia::draw(hopperBIO05, select = "s(BIO05)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 
 grasshopperBIO10 <- gam(grasshopper ~ dev + s(BIO10,  k = 4) + ObservationMethod,
                    family = binomial(link = "logit"),
                    data = dataset)
 summary(grasshopperBIO10)
-draw(grasshopperBIO10, select = "s(BIO10)")+
+gratia::draw(grasshopperBIO10, select = "s(BIO10)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -280,7 +282,7 @@ grasshopperBIO05 <- gam(grasshopper ~ dev + s(BIO05,  k = 4) + ObservationMethod
                    data = dataset)
 summary(grasshopperBIO05)
 
-draw(grasshopperBIO05, select = "s(BIO05)") +
+gratia::draw(grasshopperBIO05, select = "s(BIO05)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -289,7 +291,7 @@ beetleBIO10 <- gam(beetle ~ dev + s(BIO10,  k = 4) + ObservationMethod,
                    family = binomial(link = "logit"),
                    data = dataset)
 summary(beetleBIO10)
-draw(beetleBIO10, select = "s(BIO10)")+
+gratia::draw(beetleBIO10, select = "s(BIO10)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -298,7 +300,7 @@ beetleBIO05 <- gam(beetle ~ dev + s(BIO05,  k = 4) + ObservationMethod,
                    data = dataset)
 summary(beetleBIO05)
 
-draw(beetleBIO05, select = "s(BIO05)") +
+gratia::draw(beetleBIO05, select = "s(BIO05)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -394,7 +396,7 @@ catBIO10_2021_2040 <- gam(caterpillar ~ dev + s(BIO10_2021_2040,  k = 4) + Obser
                           data = dataset)
 
 summary(catBIO10_2021_2040)
-draw(catBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
+gratia::draw(catBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -402,14 +404,14 @@ catBIO05_2021_2040 <- gam(caterpillar ~ dev + s(BIO05_2021_2040,  k = 4) + Obser
                           family = binomial(link = "logit"),
                           data = dataset)
 summary(catBIO05_2021_2040)
-draw(catBIO05_2021_2040, select = "s(BIO05_2021_2040)")+
+gratia::draw(catBIO05_2021_2040, select = "s(BIO05_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 spiBIO10_2021_2040 <- gam(spider ~ dev + s(BIO10_2021_2040,  k = 4) + ObservationMethod,
                           family = binomial(link = "logit"),
                           data = dataset)
 summary(spiBIO10_2021_2040)
-draw(spiBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
+gratia::draw(spiBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -418,7 +420,7 @@ spiBIO05_2021_2040 <- gam(spider ~ dev + s(BIO05_2021_2040,  k = 4) + Observatio
                           family = binomial(link = "logit"),
                           data = dataset)
 summary(spiBIO05_2021_2040)
-draw(spiBIO05_2021_2040, select = "s(BIO05_2021_2040)")+
+gratia::draw(spiBIO05_2021_2040, select = "s(BIO05_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -426,7 +428,7 @@ antBIO10_2021_2040 <- gam(ant ~ dev + s(BIO10_2021_2040,  k = 4) + ObservationMe
                           family = binomial(link = "logit"),
                           data = dataset)
 summary(antBIO10_2021_2040)
-draw(antBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
+gratia::draw(antBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -434,7 +436,7 @@ antBIO05_2021_2040 <- gam(ant ~ dev + s(BIO05_2021_2040,  k = 4) + ObservationMe
                           family = binomial(link = "logit"),
                           data = dataset)
 summary(antBIO05_2021_2040)
-draw(antBIO05_2021_2040, select = "s(BIO05_2021_2040)")+
+gratia::draw(antBIO05_2021_2040, select = "s(BIO05_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -444,7 +446,7 @@ truebugBIO10_2021_2040 <- gam(truebug ~ dev + s(BIO10_2021_2040,  k = 4) + Obser
                               family = binomial(link = "logit"),
                               data = dataset)
 summary(truebugBIO10_2021_2040)
-draw(truebugBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
+gratia::draw(truebugBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -453,7 +455,7 @@ truebugBIO05_2021_2040 <- gam(truebug ~ dev + s(BIO05_2021_2040,  k = 4) + Obser
                               data = dataset)
 summary(truebugBIO05_2021_2040)
 
-draw(truebugBIO05_2021_2040, select = "s(BIO05_2021_2040)") +
+gratia::draw(truebugBIO05_2021_2040, select = "s(BIO05_2021_2040)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -461,7 +463,7 @@ hopperBIO10_2021_2040 <- gam(hopper ~ dev + s(BIO10_2021_2040,  k = 4) + Observa
                              family = binomial(link = "logit"),
                              data = dataset)
 summary(hopperBIO10_2021_2040)
-draw(hopperBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
+gratia::draw(hopperBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -470,14 +472,14 @@ hopperBIO05_2021_2040 <- gam(hopper ~ dev + s(BIO05_2021_2040,  k = 4) + Observa
                              data = dataset)
 summary(hopperBIO05_2021_2040)
 
-draw(hopperBIO05_2021_2040, select = "s(BIO05_2021_2040)") +
+gratia::draw(hopperBIO05_2021_2040, select = "s(BIO05_2021_2040)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 
 grasshopperBIO10_2021_2040 <- gam(grasshopper ~ dev + s(BIO10_2021_2040,  k = 4) + ObservationMethod,
                                   family = binomial(link = "logit"),
                                   data = dataset)
 summary(grasshopperBIO10_2021_2040)
-draw(grasshopperBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
+gratia::draw(grasshopperBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -486,7 +488,7 @@ grasshopperBIO05_2021_2040 <- gam(grasshopper ~ dev + s(BIO05_2021_2040,  k = 4)
                                   data = dataset)
 summary(grasshopperBIO05_2021_2040)
 
-draw(grasshopperBIO05_2021_2040, select = "s(BIO05_2021_2040)") +
+gratia::draw(grasshopperBIO05_2021_2040, select = "s(BIO05_2021_2040)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -495,7 +497,7 @@ beetleBIO10_2021_2040 <- gam(beetle ~ dev + s(BIO10_2021_2040,  k = 4) + Observa
                              family = binomial(link = "logit"),
                              data = dataset)
 summary(beetleBIO10_2021_2040)
-draw(beetleBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
+gratia::draw(beetleBIO10_2021_2040, select = "s(BIO10_2021_2040)")+
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
@@ -504,7 +506,7 @@ beetleBIO05_2021_2040 <- gam(beetle ~ dev + s(BIO05_2021_2040,  k = 4) + Observa
                              data = dataset)
 summary(beetleBIO05_2021_2040)
 
-draw(beetleBIO05_2021_2040, select = "s(BIO05_2021_2040)") +
+gratia::draw(beetleBIO05_2021_2040, select = "s(BIO05_2021_2040)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 
 
