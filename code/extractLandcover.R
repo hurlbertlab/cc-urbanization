@@ -244,13 +244,13 @@ na_crop <- st_intersection(northAmerica, crop_poly) # Clip the N.America country
 
 # -----------------------------
 ggplot() +
-  geom_sf(data = na_crop, fill = "white", color = "white") +
+  geom_sf(data = na_crop, fill = "white", color = "grey") +
   geom_sf(data = states_crop, fill = NA, color = "black", linewidth = 0.3) +
-  geom_sf(data = provinces_crop, fill = NA, color = "white", linewidth = 0.3) +
+  geom_sf(data = provinces_crop, fill = NA, color = "black", linewidth = 0.3) +
   geom_sf(data = sites_crop, color = "darkgreen", size = 3) +
   coord_sf(
     xlim = c(-100, -65),
-    ylim = c(25, 46),
+    ylim = c(25, 50),
     expand = FALSE) +
   theme_classic() +
   labs(title = "")
