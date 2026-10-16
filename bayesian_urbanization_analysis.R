@@ -1,6 +1,6 @@
 
 # load 'dataset' object first
-
+# daddylonglegs and flies are excluded because of errors in sampling.(see Citation)
 # Load libraries ----
 library(tidyverse)
 library(tidybayes)
@@ -96,7 +96,18 @@ diagnostics_table = bind_rows(
   lapply(names(fits), function(name) {
     get_mcmc_diagnostics(fits[[name]], name)
   })
-) %>% as.data.frame()
+) %>% as.data.frame() |> 
+  mutate(model =   case_when(
+    model == "Caterpillar"   ~ "caterpillars",
+    model == "Beetle"        ~ "beetles",
+    model == "Spider"        ~ "spiders",
+    model == "TrueBug"       ~ "true bugs",
+    model == "Hopper"        ~ "hoppers",
+    model == "Ant"           ~ "ants",
+    model == "Grasshopper"   ~ "orthopterans",
+    model == "DaddyLonglegs" ~ "DaddyLonglegs", # intentionally left out becuase we don't use them in this project
+    model == "Fly"           ~ "Fly"
+  ))
 
 diagnostics_table
 
@@ -349,7 +360,7 @@ pred_grid = expand.grid(
 
 latitude_colors <- c(
   "Low"  = "#F2B134",  # orange-yellow
-  "Mid"  = "#2A9D8F",  # green/teal
+  "Mid"  = "#56B4E9",  # sky blue
   "High" = "#1D4E89"   # dark blue
 )
 ################################################################################
@@ -2733,13 +2744,13 @@ ggsave(
   height = 10,  units = "in", dpi = 600)
 
 posteriorSlopes = bind_rows(
-  Caterpillar = caterpillarSlopes_long,
-  Beetle      = beetleSlopes_long,
-  Spider      = spiderSlopes_long,
-  TrueBug     = truebugSlopes_long,
-  Hopper      = hopperSlopes_long,
-  Ant         = antSlopes_long,
-  Grasshopper = grasshopperSlopes_long,
+  caterpillar = caterpillarSlopes_long,
+  beetle      = beetleSlopes_long,
+  spider      = spiderSlopes_long,
+  trueBug     = truebugSlopes_long,
+  hopper      = hopperSlopes_long,
+  ant         = antSlopes_long,
+  orthopterans = grasshopperSlopes_long,
   Daddylonglegs = daddylonglegsSlopes_long,
   Fly        = flySlopes_long,
   .id = "Arthropod"
@@ -2747,19 +2758,20 @@ posteriorSlopes = bind_rows(
 
 posteriorSlopes %>% 
   filter(!Arthropod %in% c("Fly", "Daddylonglegs")) %>% 
+  dplyr::select(-p_value) %>% 
   rename(
          "2.5% CI" =  "CI_lower",
          "97.5% CI" =  "CI_upper",
   ) %>% 
   gt() %>% 
-  tab_header(
-    title = "Table 1. Effect of urbanization on arthropod occurence at low, mid, and high latitudes"
-  ) %>% 
+ # tab_header(
+ #   title = "Table 1. Effect of urbanization on arthropod occurence at low, mid, and high latitudes"
+ # ) %>% 
   fmt_number(
     columns = where(is.numeric),
     decimals = 3
   ) %>% 
-  gtsave("images/tableS2.png")
+  gtsave("images/table S2.png")
 
 posteriorSlopes %>% 
   filter(!Arthropod %in% c( "Daddylonglegs", "Fly")) %>% 
@@ -2781,9 +2793,9 @@ diagnostics_table %>%
          "97.5% CI" =  "CI_upper",
   ) %>% 
   gt() %>% 
-  tab_header(
-    title = "Table 1. Model summaries"
-  ) %>% 
+  # tab_header(
+  #   title = "Table 1. Model summaries"
+  # ) %>% 
   fmt_number(
     columns = where(is.numeric),
     decimals = 3
@@ -2796,13 +2808,13 @@ diagnostics_table %>%
 
 
 AME = bind_rows(
-  Caterpillar = caterpillarDevAME,
-  Beetle      = beetleDevAME,
-  Spider      = spiderDevAME,
-  TrueBug     = truebugDevAME,
-  Hopper      = hopperDevAME,
-  Ant         = antDevAME,
-  Grasshopper = grasshopperDevAME,
+  caterpillars = caterpillarDevAME,
+  beetles      = beetleDevAME,
+  spiders      = spiderDevAME,
+  `true bugs`  = truebugDevAME,
+  hoppers      = hopperDevAME,
+  ants         = antDevAME,
+  orthopterans = grasshopperDevAME,
   Daddylonglegs = daddylonglegsDevAME,
   Fly        = flyDevAME,
   .id = "Arthropod"
@@ -2827,9 +2839,9 @@ AME %>%
          "Mean" = "mean_AME"
   ) %>% 
   gt() %>% 
-  tab_header(
-    title = "Table S3: Average marginal effects of urban development (%)"
-  ) %>% 
+  # tab_header(
+  #   title = "Table S3: Average marginal effects of urban development (%)"
+  # ) %>% 
   fmt_number(
     columns = where(is.numeric),
     decimals = 3
@@ -2842,24 +2854,24 @@ AME %>%
 AME_plot = AME %>%
   mutate(
     image = case_when(
-      Arthropod == "Caterpillar"   ~ "images/caterpillar.png",
-      Arthropod == "Beetle"        ~ "images/beetle.png",
-      Arthropod == "Spider"        ~ "images/spider.png",
-      Arthropod == "TrueBug"       ~ "images/truebugs.png",
-      Arthropod == "Hopper"        ~ "images/leafhopper.png",
-      Arthropod == "Ant"           ~ "images/ant.png",
-      Arthropod == "Grasshopper"   ~ "images/grasshopper.png",
+      Arthropod == "caterpillars"   ~ "images/caterpillar.png",
+      Arthropod == "beetles"        ~ "images/beetle.png",
+      Arthropod == "spiders"        ~ "images/spider.png",
+      Arthropod == "true bugs"       ~ "images/truebugs.png",
+      Arthropod == "hoppers"        ~ "images/leafhopper.png",
+      Arthropod == "ants"           ~ "images/ant.png",
+      Arthropod == "orthopterans"   ~ "images/grasshopper.png",
       Arthropod == "Daddylonglegs" ~ "images/daddylongleg.png",
       Arthropod == "Fly"           ~ "images/fly.png"
     ),
     Arthropod = case_when(
-      Arthropod == "Caterpillar"   ~ "Caterpillars",
-      Arthropod == "Beetle"        ~ "Beetles",
-      Arthropod == "Spider"        ~ "Spiders",
-      Arthropod == "TrueBug"       ~ "True bugs",
-      Arthropod == "Hopper"        ~ "Hoppers & Cicadas",
-      Arthropod == "Ant"           ~ "Ants",
-      Arthropod == "Grasshopper"   ~ "Orthopterans",
+      Arthropod == "caterpillars"   ~ "caterpillars",
+      Arthropod == "beetles"        ~ "beetles",
+      Arthropod == "spiders"        ~ "spiders",
+      Arthropod == "true bugs"       ~ "true bugs",
+      Arthropod == "hoppers"        ~ "hoppers",
+      Arthropod == "ants"           ~ "ants",
+      Arthropod == "orthopterans"   ~ "orthopterans",
       Arthropod == "Daddylonglegs" ~ "Daddylonglegs",
       Arthropod == "Fly"           ~ "Flies"
     )
@@ -2868,7 +2880,7 @@ AME_plot = AME %>%
 
 
 
-AME_plot %>%
+AMEplot = AME_plot %>%
   filter(!Arthropod %in% c("Daddylonglegs", "Flies")) %>%
   ggplot(aes(x = mean_AME,
              y = reorder(Arthropod, mean_AME))) +
@@ -2878,16 +2890,19 @@ AME_plot %>%
     aes(image = image),
     size = 0.06,
     asp = 1.5, # aspect ratio
-    position = position_nudge(y = 0.3)
+    position = position_nudge(y = 0.35)
   ) +
   geom_vline(xintercept = 0, linetype = "dashed") +
   labs(
     x = "Average Marginal Effect of Urbanization",
-    y = "Arthropod Group"
+    y = ""
   ) +
-  theme_minimal(base_size = 14)
+  theme_minimal(base_size = 20)
 
-
+ggsave(
+  "images/AMEplot.jpeg",
+  plot = AMEplot,  width = 7.5,
+  height = 6.2,  units = "in", dpi = 600)
 
 
 
@@ -2895,13 +2910,13 @@ AME_plot %>%
 
 
 percentAME = bind_rows(
-  Caterpillar = caterpillarPercentAME,
-  Beetle      = beetlePercentAME,
-  Spider      = spiderPercentAME,
-  TrueBug     = truebugPercentAME,
-  Hopper      = hopperPercentAME,
-  Ant         = antPercentAME,
-  Grasshopper = grasshopperPercentAME,
+  caterpillars = caterpillarPercentAME,
+  beetles      = beetlePercentAME,
+  spiders      = spiderPercentAME,
+  `true bugs`     = truebugPercentAME,
+  hoppers      = hopperPercentAME,
+  ants         = antPercentAME,
+  orthopterans = grasshopperPercentAME,
   Daddylonglegs = daddylonglegsPercentAME,
   Fly        = flyPercentAME,
   .id = "Arthropod"
@@ -2913,28 +2928,29 @@ percentAME = bind_rows(
 percentAME_plot_data = percentAME %>%
   mutate(
     image = case_when(
-      Arthropod == "Caterpillar"   ~ "images/caterpillar.png",
-      Arthropod == "Beetle"        ~ "images/beetle.png",
-      Arthropod == "Spider"        ~ "images/spider.png",
-      Arthropod == "TrueBug"       ~ "images/truebugs.png",
-      Arthropod == "Hopper"        ~ "images/leafhopper.png",
-      Arthropod == "Ant"           ~ "images/ant.png",
-      Arthropod == "Grasshopper"   ~ "images/grasshopper.png",
+      Arthropod == "caterpillars"   ~ "images/caterpillar.png",
+      Arthropod == "beetles"        ~ "images/beetle.png",
+      Arthropod == "spiders"        ~ "images/spider.png",
+      Arthropod == "true bugs"       ~ "images/truebugs.png",
+      Arthropod == "hoppers"        ~ "images/leafhopper.png",
+      Arthropod == "ants"           ~ "images/ant.png",
+      Arthropod == "orthopterans"   ~ "images/grasshopper.png",
       Arthropod == "Daddylonglegs" ~ "images/daddylongleg.png",
       Arthropod == "Fly"           ~ "images/fly.png"
     ),
     Arthropod = case_when(
-      Arthropod == "Caterpillar"   ~ "Caterpillars",
-      Arthropod == "Beetle"        ~ "Beetles",
-      Arthropod == "Spider"        ~ "Spiders",
-      Arthropod == "TrueBug"       ~ "True bugs",
-      Arthropod == "Hopper"        ~ "Hoppers",
-      Arthropod == "Ant"           ~ "Ants",
-      Arthropod == "Grasshopper"   ~ "Orthopterans",
+      Arthropod == "caterpillars"   ~ "caterpillars",
+      Arthropod == "beetles"        ~ "beetles",
+      Arthropod == "spiders"        ~ "spiders",
+      Arthropod == "true bugs"       ~ "true bugs",
+      Arthropod == "hoppers"        ~ "hoppers",
+      Arthropod == "ants"           ~ "ants",
+      Arthropod == "orthopterans"   ~ "orthopterans",
       Arthropod == "Daddylonglegs" ~ "Daddylonglegs",
       Arthropod == "Fly"           ~ "Flies"
     )
   )
+
 
 
 
@@ -2950,7 +2966,7 @@ percentAME_plot = percentAME_plot_data %>%
     aes(image = image),
     size = 0.08,
     asp = 1.5, # aspect ratio
-    position = position_nudge(y = 0.35)
+    position = position_nudge(y = 0.37)
   ) +
   geom_vline(xintercept = 0, linetype = "dashed") +
   scale_x_continuous(limits = c(-50, NA)) +
@@ -2958,35 +2974,50 @@ percentAME_plot = percentAME_plot_data %>%
     x = "Average marginal change in occurrence (%)",
     y = ""
   ) +
-  theme_minimal(base_size = 14)
+  theme_minimal(base_size = 21)
 
 ggsave(
   "images/percentAME_plot.jpeg",
-  plot = percentAME_plot,  width = 7,
-  height = 6,  units = "in", dpi = 600)
+  plot = percentAME_plot,  width = 7.2,
+  height = 7,  units = "in", dpi = 600)
 
-percentAME_plot_data %>%
+
+
+percentAME_plot_data_rakedByUpperTherm = percentAME_plot_data %>%
   filter(!Arthropod %in% c("Daddylonglegs", "Flies")) %>%
+  mutate(
+    number = case_when(
+      Arthropod == "caterpillars" ~ 5, # ranking based on expected upper thermal limits
+      Arthropod == "beetles" ~ 4,
+      Arthropod == "spiders" ~ 3,
+      Arthropod == "ants" ~ 6,
+      Arthropod == "hoppers" ~ 1,
+      Arthropod == "true bugs" ~ 2,
+      Arthropod == "orthopterans" ~ 7
+    )
+  ) %>% 
   ggplot(aes(x = Mean,
-             y = reorder(Arthropod, Mean))) +
+             y = reorder(Arthropod, number))) +
   geom_errorbarh(aes(xmin = Lower, xmax = Upper), color = "grey20",  width = 0.2) +
   geom_point(size = 3, color = "grey20") +
   geom_image(
     aes(image = image),
     size = 0.06,
     asp = 1.5, # aspect ratio
-    position = position_nudge(y = 0.3)
+    position = position_nudge(y = 0.37)
   ) +
   geom_vline(xintercept = 0, linetype = "dashed") +
-  scale_x_continuous(limits = c(-60, NA)) +
+  scale_x_continuous(limits = c(-52, NA)) +
   labs(
     x = "Average marginal change in occurence (%)",
-    y = "Arthropod Group"
+    y = ""
   ) +
-  theme_minimal(base_size = 14)
+  theme_minimal(base_size = 22)
 
-
-
+ggsave(
+  "images/percentAME_plot_data_rakedByUpperTherm.jpeg",
+  plot = percentAME_plot_data_rakedByUpperTherm,  width = 7.8,
+  height = 7.5,  units = "in", dpi = 600)
 
 
 
