@@ -46,7 +46,7 @@ require(vegan)
  daddylonglegsFit = readRDS("daddylonglegsFit.rds")
 
 # urban cover data that I estracted and modelled myself are the ones that end with 500 or 1000.
-# caterpillarFit = readRDS("caterpillarFit500.rds")   # also the ones that end in 1000 are the 1000m rds.
+# caterpillarFit = readRDS("caterpillarFit500.rds")   # also the ones that end in 1000 are the (new, but not used in this paper)1000m rds.
 # spiderFit      = readRDS("spiderFit500.rds")
 # beetleFit      = readRDS("beetleFit500.rds")
 # truebugFit     = readRDS("truebugFit500.rds")
@@ -3022,10 +3022,169 @@ ggsave(
 
 
 
+rank = percentAME_plot_data %>%
+  filter(!Arthropod %in% c("Daddylonglegs", "Flies")) %>%
+  mutate(
+    number = case_when(
+      Arthropod == "caterpillars" ~ 5, # ranking based on expected upper thermal limits
+      Arthropod == "beetles" ~ 4,
+      Arthropod == "spiders" ~ 3,
+      Arthropod == "ants" ~ 6,
+      Arthropod == "hoppers" ~ 1,
+      Arthropod == "true bugs" ~ 2,
+      Arthropod == "orthopterans" ~ 7
+    )
+  ) |> 
+  dplyr::select(-c(Lower, Upper, image))
+
+
+cor(x = rank$Mean, y = rank$number, method = "spearman" )
 
 
 
+# Making comparison to 500m urban resolution.
+
+caterpillarFit500 = readRDS("caterpillarFit500.rds")    
+spiderFit500      = readRDS("spiderFit500.rds")
+beetleFit500      = readRDS("beetleFit500.rds")
+truebugFit500     = readRDS("truebugFit500.rds")
+hopperFit500      = readRDS("hopperFit500.rds")
+antFit500         = readRDS("antFit500.rds")
+grasshopperFit500 = readRDS("grasshopperFit500.rds")
 
 
 
+get_mcmc_diagnostics500 = function(fit, model_name) {
+  
+  rhat <- gelman.diag(fit, autoburnin = FALSE)$psrf[,1]
+  
+  ess <- effectiveSize(fit)
+  
+  
+  
+  summary_stats <- summary(fit)$statistics
+  quantiles <- summary(fit)$quantiles
+  
+  tibble(
+    model = model_name,
+    Parameter = names(rhat),
+    Mean = summary_stats[, "Mean"],
+    SE = summary_stats[, "SD"],      # posterior SD
+    CI_lower = quantiles[, "2.5%"],
+    CI_upper = quantiles[, "97.5%"],
+    Rhat = as.numeric(rhat),
+    ESS = as.numeric(ess)
+  )
+}
 
+fits500 = list(
+  Caterpillar = caterpillarFit500,
+  Spider = spiderFit500,
+  Beetle = beetleFit500,
+  TrueBug = truebugFit500,
+  Hopper = hopperFit500,
+  Ant = antFit500,
+  Grasshopper = grasshopperFit500)
+
+diagnostics_table500 = bind_rows(
+  lapply(names(fits500), function(name) {
+    get_mcmc_diagnostics500(fits500[[name]], name)
+  })
+) %>% as.data.frame() |> 
+  mutate(model =   case_when(
+    model == "Caterpillar"   ~ "caterpillars",
+    model == "Beetle"        ~ "beetles",
+    model == "Spider"        ~ "spiders",
+    model == "TrueBug"       ~ "true bugs",
+    model == "Hopper"        ~ "hoppers",
+    model == "Ant"           ~ "ants",
+    model == "Grasshopper"   ~ "orthopterans"
+  ))
+
+diagnostics_table500 |> as.data.frame()
+
+diagnostics_table |> filter(model != "DaddyLonglegs") |> 
+  filter( model != "Fly") |> 
+  as.data.frame() |> 
+  dplyr::select(-Rhat, -ESS)
+
+
+
+# Combine the two model tables, excluding flies and daddy longlegs
+compare500m_to_1000m_data <- bind_rows(
+  diagnostics_table |>
+    filter(!model %in% c("DaddyLonglegs", "Fly")) |>
+    mutate(Model = "1000m"),
+  
+  diagnostics_table500 |>
+    filter(!model %in% c("DaddyLonglegs", "Fly")) |>
+    mutate(Model = "500m")
+) |>
+  mutate(
+    Arthropod = factor(
+      model,
+      levels = c(
+        "caterpillars", "spiders", "beetles",
+        "true bugs", "hoppers", "ants", "orthopterans"
+      )
+    ),
+    Parameter = factor(
+      Parameter,
+      levels = c(
+        "beta_0", "beta_dev", "beta_int",
+        "beta_lat", "beta_method"
+      ),
+      labels = c(
+        "Intercept", "Urbanization",
+        "Urbanization × latitude",
+        "Latitude", "Survey method"
+      )
+    ),
+    Model = factor(Model, levels = c("1000m", "500m"))
+  )
+
+# Plot
+compare500m_to_1000m = ggplot(
+  compare500m_to_1000m_data,
+  aes(x = Mean, y = Parameter, colour = Model, shape = Model)
+) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    colour = "grey60"
+  ) +
+  geom_errorbar(
+    aes(xmin = CI_lower, xmax = CI_upper),
+    orientation = "y",
+    width = 0.2,
+    position = position_dodge(width = 0.5)
+  ) +
+  geom_point(
+    position = position_dodge(width = 0.5),
+    size = 2.5
+  ) +
+  facet_wrap(~ Arthropod, scales = "free_x", ncol = 2) +
+  scale_colour_manual(
+    values = c("1000m" = "#0072B2", "500m" = "#D55E00")
+  ) +
+  labs(
+    x = "Posterior mean (95% credible interval)",
+    y = NULL,
+    colour = "Urban scale",
+    shape = "Urban scale",
+    title = ""
+  )+
+  theme_bw(base_size = 16) +
+  theme(
+    legend.position = "bottom",
+    strip.background = element_rect(fill = "grey95"),
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_text(size = 9)
+  )
+
+print(compare500m_to_1000m)
+
+ggsave(
+  "images/compare500m_to_1000m.jpeg",
+  plot = compare500m_to_1000m,  width = 6,
+  height = 10.5,  units = "in", dpi = 600)

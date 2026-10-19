@@ -256,7 +256,7 @@ ggplot() +
   labs(title = "")
 
 
-ggplot() +
+mapUrban = ggplot() +
   geom_sf(data = na_crop, fill = "gray95", color = "white") +
   geom_sf(data = states_crop, fill = NA, color = "gray70", linewidth = 0.3) +
   geom_sf(data = provinces_crop, fill = NA, color = "gray50", linewidth = 0.3) +
@@ -269,10 +269,18 @@ ggplot() +
     xlim = c(-100, -65),
     ylim = c(25, 50),
     expand = FALSE) +
-  theme_minimal() +
+  theme_minimal(base_size = 18) +
   labs(
     color = "Urban (%)",
     title = "")
+
+ggsave(
+  "images/mapUrban.jpeg",
+  plot = mapUrban,  width = 7,
+  height = 7,  units = "in", dpi = 600)
+
+
+
 
 sum(!is.na(sites_crop$urban_percent))
 table(is.na(sites_crop$urban_percent))

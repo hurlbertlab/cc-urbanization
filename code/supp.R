@@ -17,13 +17,16 @@ latest_file <- dataset_file[1]
 
 github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-analysis-public/master/data/"
 
-fullDataset <- read.csv(paste0(github_raw, latest_file))
+fullDataset <- read.csv(paste0(github_raw, latest_file))  %>% 
+  filter(Year <= 2025)
 
 # Read in plant files (up-to-date versions in caterpillars-count-data repo)
 officialPlantList = read.csv('data/officialPlantList2024-10-04.csv')
 inferredPlantNames = read.csv('data/inferredPlantNames_2024-08-20.csv')
 plantOrigin = read.csv('data/plant_origin_status.csv') %>%
-  select(scientificName, nativeStatus, plantOrigin)
+  dplyr::select(scientificName, nativeStatus, plantOrigin)
+
+sites = read.csv('data/sites.csv')
 
 ccPlants = fullDataset %>%
   left_join(inferredPlantNames[, c('PlantFK', 'InferredSciName', 'NameConfidence')], by = 'PlantFK') %>%
@@ -35,14 +38,14 @@ sum(is.na(ccPlants$plantOrigin)) # 6931 branch surveys we do not know their plan
 # Plants with unknown status and the number of sites they appear
 ccPlants %>% 
   filter(is.na(plantOrigin)) %>%
-  select(Name, PlantSpecies) %>% 
+  dplyr::select(Name, PlantSpecies) %>% 
   group_by(PlantSpecies) %>% 
   summarise(nSite = n_distinct(Name)) %>% 
   data.frame()
 
 
 ccplants_dev = ccPlants %>% 
-  left_join(sites %>% select(-Name), by = c("Latitude", "Longitude"))%>%
+  left_join(sites %>% dplyr::select(-Name), by = c("Latitude", "Longitude"))%>%
   filter(julianday %in% julianWindow,
          Longitude > -100,
          WetLeaves == 0) 
@@ -83,7 +86,7 @@ scale(ccdata$dev)
 cat.Dev.Latitude.origin = glm(caterpillar ~ dev + Latitude + dev*Latitude + ObservationMethod +plantOrigin , 
                        data = ccdata, family = "binomial")
 summary(cat.Dev.Latitude.origin)
-summary(cat.Dev.Latitude)
+
 
 
 
@@ -234,10 +237,10 @@ Dev_sims2018.2025 =
         levels = c("Low", "Mid", "High")
       )
     ) %>%
-  select(Group, LatLevel, Est = Est.) %>%
+  dplyr::select(Group, LatLevel, Est = Est.) %>%
   inner_join(
     Dev_sims2018.2025 %>%
-      select(Group, LatLevel, Est_2018_2025 = Est.),
+      dplyr::select(Group, LatLevel, Est_2018_2025 = Est.),
     by = c("Group", "LatLevel")) %>% 
 ggplot(
        aes(x = Est, y = Est_2018_2025, color = Group)) +
@@ -277,7 +280,107 @@ ggplot(
     labs(subtitle = "alienRatio = alien/native per site")+
     theme_bw()
 
+  ccdata %>% 
+    group_by(Latitude, dev) %>% 
+    summarise(
+      nSurvs = mean(nSurvs),
+      alienProportion = sum(plantOrigin == "alien", na.rm = TRUE) /
+        sum(plantOrigin %in% c("alien", "native"), na.rm = TRUE),
+      .groups = "drop"
+    ) %>% 
+    ggplot(aes(x = dev, y = alienProportion, colour = Latitude)) +
+    scale_color_gradientn(
+      colours = c("orange", "green", "blue"),
+      name = "Latitude (°)"
+    ) +
+    geom_jitter(
+      aes(size = nSurvs),
+      width = 0.5,
+      height = 0.005,
+      alpha = 0.8
+    ) +
+    geom_smooth(
+      aes(group = 1),
+      method = "lm",
+      se = TRUE,
+      colour = "black",
+      inherit.aes = TRUE
+    ) +
+    guides(size = "none") +
+    labs(
+      x = "% Urban Development",
+      y = "Proportion of Alien Plants",
+      subtitle = ""
+    ) +
+    theme_bw(base_size = 20)
   
+  
+  
+  
+  
+  
+  plotData <- ccdata %>% 
+    group_by(Latitude, dev) %>% 
+    summarise(
+      nSurvs = mean(nSurvs),
+      alienProportion = sum(plantOrigin == "alien", na.rm = TRUE) /
+        sum(plantOrigin %in% c("alien", "native"), na.rm = TRUE),
+      .groups = "drop"
+    )
+  
+  # Fit overall linear regression
+  model <- lm(alienProportion ~ dev, data = plotData)
+  
+  # Extract statistics
+  r2 <- summary(model)$r.squared
+  slope <- coef(model)[["dev"]]
+  p <- summary(model)$coefficients["dev", "Pr(>|t|)"]
+  
+  # Create annotation
+  statsLabel <- sprintf(
+    "Slope = %.4f\nR² = %.3f\np = %.3g",
+    slope, r2, p
+  )
+  
+ alienProp =  ggplot(plotData, aes(x = dev, y = alienProportion, colour = Latitude)) +
+    scale_color_gradientn(
+      colours = c("#F2B134", "#56B4E9", "#1D4E89"),
+      name = "Latitude (°)"
+    ) +
+    geom_jitter(
+      aes(size = nSurvs),
+      width = 0.5,
+      height = 0.005,
+      alpha = 0.8
+    ) +
+    geom_smooth(
+      aes(group = 1),
+      method = "lm",
+      se = TRUE,
+      colour = "black"
+    ) +
+    annotate(
+      "text",
+      x = Inf, y = Inf,
+      label = statsLabel,
+      hjust = 1.1, vjust = 1.2,
+      colour = "black",
+      size = 5
+    ) +
+    guides(size = "none") +
+    labs(
+      x = "% Urban Development",
+      y = "Proportion of Alien Plants",
+      subtitle = ""
+    ) +
+    theme_bw(base_size = 20)
+ 
+ ggsave(
+   "images/alienProp.jpeg",
+   plot = alienProp,  width = 6.5,
+   height = 5.2,  units = "in", dpi = 600)
+ 
+ 
   
 statusPersite =   ccdata %>% 
     group_by(Latitude, dev) %>% 
