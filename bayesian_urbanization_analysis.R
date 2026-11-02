@@ -32,7 +32,8 @@ library(tibble)
 library(jsonlite)
 library(magick)
 require(vegan)
-
+library(flextable)
+library(officer)
 # Load the rjags model fits saved as rds files ----
 
  caterpillarFit = readRDS("caterpillarFit.rds")
@@ -2773,6 +2774,34 @@ posteriorSlopes %>%
   ) %>% 
   gtsave("images/table S2.png")
 
+
+ftS2 = posteriorSlopes %>% 
+  filter(!Arthropod %in% c("Fly", "Daddylonglegs")) %>% 
+  dplyr::select(-p_value) %>% 
+  rename(
+    `2.5% CI` = CI_lower,
+    `97.5% CI` = CI_upper
+  ) %>% 
+  mutate(
+    across(
+      where(is.numeric),
+      ~ round(.x, 3)
+    )
+  ) %>% 
+  flextable() %>% 
+  merge_v(j = "Arthropod") %>% 
+  valign(j = "Arthropod", valign = "center") %>% 
+  autofit()
+
+doc_tableS2 = read_docx() %>%
+  body_add_par(
+    "Table S2. Effects of urbanization on arthropod occurrence at low, mid, and high latitudes",
+    style = "heading 1"
+  ) %>%
+  body_add_flextable(ftS2)
+
+print(doc_tableS2, target = "images/Table_S2.docx")
+
 posteriorSlopes %>% 
   filter(!Arthropod %in% c( "Daddylonglegs", "Fly")) %>% 
 ggplot( aes(Estimate, Arthropod, color = Latitude)) +
@@ -2803,8 +2832,77 @@ diagnostics_table %>%
   gtsave("images/table S1.png")
 
 
-# Average marginal effects
+tabS1 = diagnostics_table %>% 
+  filter(!model %in% c("Fly", "DaddyLonglegs")) %>% 
+  rename(
+    Arthropod = model,
+    `2.5% CI` = CI_lower,
+    `97.5% CI` = CI_upper
+  ) %>% 
+  mutate(
+    Parameter = recode(
+      Parameter,
+      beta_0 = "Intercept",
+      beta_dev = "Urbanization",
+      beta_lat = "Latitude",
+      beta_int = "Urbanization × Latitude",
+      beta_method = "Survey method"
+    )
+  ) %>% 
+  gt() %>% 
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 3
+  ) %>% 
+  gtsave("images/table S1.png")
 
+
+
+
+ftS1 = diagnostics_table %>% 
+  filter(!model %in% c("Fly", "DaddyLonglegs")) %>% 
+  rename(
+    Arthropod = model,
+    `2.5% CI` = CI_lower,
+    `97.5% CI` = CI_upper
+  ) %>% 
+  mutate(
+    Parameter = recode(
+      Parameter,
+      beta_0 = "Intercept",
+      beta_dev = "Urbanization",
+      beta_lat = "Latitude",
+      beta_int = "Urbanization × Latitude",
+      beta_method = "Survey method"
+    )
+  ) %>% 
+  mutate(
+    across(
+      c(Mean, SE, `2.5% CI`, `97.5% CI`, Rhat, ESS),
+      ~ round(.x, 3)
+    )
+  ) %>% 
+  flextable() %>% 
+  merge_v(j = "Arthropod") %>% 
+  valign(j = "Arthropod", valign = "center") %>% 
+  autofit()
+
+doc_tableS1 = read_docx() %>%
+  body_add_par(
+    "Table S1. Posterior summaries and convergence diagnostics",
+    style = "heading 1"
+  ) %>%
+  body_add_flextable(ftS1)
+
+print(doc_tableS1, target = "images/Table_S1.docx")
+
+
+
+
+
+
+
+# Average marginal effects
 
 
 AME = bind_rows(
@@ -2847,6 +2945,44 @@ AME %>%
     decimals = 3
   ) %>% 
   gtsave("images/table S3.png")
+
+
+ftS3 = AME %>% 
+  filter(!Arthropod %in% c("Fly", "Daddylonglegs")) %>% 
+  rename(
+    `2.5% CI` = CI_lower,
+    `97.5% CI` = CI_upper,
+    Mean = mean_AME
+  ) %>% 
+  mutate(
+    across(
+      where(is.numeric),
+      ~ round(.x, 3)
+    )
+  ) %>% 
+  flextable() %>% 
+  merge_v(j = "Arthropod") %>% 
+  valign(j = "Arthropod", valign = "center") %>% 
+  autofit()
+
+doc_tableS3 = read_docx() %>%
+  body_add_par(
+    "Table S3. Average marginal effects of urban development (%)",
+    style = "heading 1"
+  ) %>%
+  body_add_flextable(ftS3)
+
+print(doc_tableS3, target = "images/Table_S3.docx")
+
+
+
+
+
+
+
+
+
+
 ##################################################################################
 
  

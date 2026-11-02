@@ -47,6 +47,22 @@ ggplot(df, aes(temp, performance, fill = curve, colour = curve)) +
   # theme_void()
   theme_classic()
 
+
+
+ggplot(df |> filter(curve != "Broad optimum"), aes(temp, performance, fill = curve, colour = curve)) +
+  geom_area(alpha = 0.5, position = "identity") +
+  geom_line(linewidth = 0.7, color = "NA") +
+  scale_fill_manual(values = c(
+    "Broad optimum" = "#009E73",     
+    "Left-skewed" =  "#D55E00",       
+    "Gaussian-like" = "#0072B2" )) +
+  scale_colour_manual(values = c(
+    "Broad optimum" = "#009E73",     
+    "Left-skewed" =  "#D55E00",       
+    "Gaussian-like" = "#0072B2" )) +
+  # theme_void()
+  theme_minimal()
+
 ggplot(df, aes(temp, performance, fill = curve, colour = curve)) +
   annotate("rect",
            xmin = -Inf, xmax = (min(df$temp) + max(df$temp)) / 1/1.65,
